@@ -1,4 +1,6 @@
 <script>
+	import DeleteIcon from "../icons/DeleteIcon.svelte"
+
 	let { item } = $props()
 
 	let name = $state(item.name);
@@ -10,40 +12,55 @@
 </script>
 
 <div class="catalog">
-	<input
-		class="catalog-name"
-        type="text"
-        name="name"
-        required
-        minlength="4"
-        maxlength="128"
-        autocomplete="off"
-        placeholder={name}
-        bind:value={name}
-        onchange={handleNameChange}
-      />
+	<div class="catalog-header">
+		<input
+			class="catalog-name"
+	        type="text"
+	        name="name"
+	        required
+	        minlength="4"
+	        maxlength="128"
+	        autocomplete="off"
+	        placeholder={name}
+	        bind:value={name}
+	        onchange={handleNameChange}
+	    />
+
+	    <button>
+	    	<DeleteIcon />
+	    </button>
+		
+	</div>
+	
 
 
 
 	<textarea 
 		class="catalog-description" 
-		name="story" 
-		rows="5" 
+		name="description" 
+		rows="4" 
 		cols="33"
 		bind:value={description}
 	>
 	</textarea>
 
-	<span
-		class="catalog-quantity"
-	>
-		Number of tracks: 	{ item.quantity }
-	</span>
+	<div class="catalog-footer">
+		<span
+			class="catalog-quantity"
+		>
+			Number of tracks: 	{ item.quantity }
+		</span>
+		<button>
+			Open >
+		</button>
+
+	</div>
+	
 </div>
 
 <style>
 	.catalog {
-		height: 128px;
+		height: fit-content;
 		margin: 8px;
 		padding: 16px;
 		display: flex;
@@ -51,27 +68,65 @@
 		gap: 16px;
 		border: 1px solid black;
 		border-radius: 4px;
+
+
+	}
+
+	.catalog:hover {
+		background-color: #0000000d;
+	}
+
+	.catalog-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
 	}
 
 	.catalog-name {
 		font-size: 18px;
-		font-weight: 500;
+		font-weight: 400;
 		margin: 0;
-		padding: 0;
+		padding: 4px;
 		border: none;
+		border-radius: 4px;
 	}
 
 	.catalog-description {
 		font-size: 16px;
-		font-weight: 200;
+		font-weight: 300;
 		margin: 0;
 		padding: 0;
 		border: none;
 		resize: none;
+		padding: 4px;
+		border-radius: 4px;
+	}
+
+	.catalog-footer {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
 	}
 
 	.catalog-quantity {
 		font-size: 16px;
 		font-weight: 200;
+		padding: 2px;
+	}
+
+	button {
+		margin: 0;
+		padding: 0;
+		background: none;
+		border: 1px solid blue;
+	}
+
+	input, textarea {
+		font-family: "Roboto", serif;
+	    font-optical-sizing: auto;
+	    font-weight: <weight>;
+	    font-style: normal;
+	    font-variation-settings: "wdth" 100;
 	}
 </style>

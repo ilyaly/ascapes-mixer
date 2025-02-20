@@ -1,5 +1,6 @@
 <script>
   import CatalogNew from "./CatalogNew.svelte"
+  
   let { label } = $props();
 </script>
 
