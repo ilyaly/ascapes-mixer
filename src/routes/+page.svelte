@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import Catalogs from "../lib/catalog/Catalogs.svelte";
   import Player from "../lib/player/Player.svelte";
   import OneShotPlayer from "../lib/oneshot/OneShotPlayer.svelte";
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
@@ -38,6 +39,12 @@
       console.error("Error opening the database:", error);
     }
   }
+
+
+  let isMusicCatalogsMode = $state(true);
+  let isAmbientCatalogsMode = $state(false);
+  let isEffectsCatalogsMode = $state(false);
+
 </script>
 
 <!--
@@ -49,19 +56,48 @@
 -->
 <div class="container">
   <div class="music">
-    <Player label={"Music"} {dbName} {dbState} storeName={musicStoreName} />
+    {#if isMusicCatalogsMode}
+
+      <Catalogs />
+    {:else}
+      <Player
+        label={"Music"}
+        {dbName}
+        {dbState}
+        storeName={musicStoreName}
+      />
+    {/if}
   </div>
+
   <div class="ambient">
-    <Player label={"Ambient"} {dbName} {dbState} storeName={ambientStoreName} />
+    {#if isAmbientCatalogsMode}
+      <Catalogs />
+    {:else}
+        <Player
+          label={"Ambient"}
+          {dbName}
+          {dbState}
+          storeName={ambientStoreName} 
+        />
+    {/if}
   </div>
+
   <div class="one-shots">
-    <OneShotPlayer
-      label={"One shots"}
-      {dbName}
-      {dbState}
-      storeName={oneShotsStoreName}
-    />
+    {#if isEffectsCatalogsMode}
+      <Catalogs />
+    {:else}
+      
+        <OneShotPlayer
+          label={"Sound effects"}
+          {dbName}
+          {dbState}
+          storeName={oneShotsStoreName}
+        />
+    {/if}
   </div>
+  
+  
+  
 </div>
 
 <style>
@@ -88,6 +124,7 @@
       "music . one-shots"
       "music . ambient";
   }
+
 
   .container .music,
   .container .ambient {

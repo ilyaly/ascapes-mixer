@@ -2,4 +2,12 @@
   let { label } = $props();
 </script>
 
-<h1>{label}</h1>
+<div class="label">{label}</div>
+
+<style>
+  .label {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 8px;
+  }
+</style>
