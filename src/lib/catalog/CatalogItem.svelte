@@ -1,7 +1,8 @@
 <script>
 	let { item } = $props()
 
-	let name = $state(item.name)
+	let name = $state(item.name);
+	let description = $state(item.description);
 
 	function handleNameChange(argument) {
 		// body...
@@ -22,6 +23,17 @@
         onchange={handleNameChange}
       />
 
+
+
+	<textarea 
+		class="catalog-description" 
+		name="story" 
+		rows="5" 
+		cols="33"
+		bind:value={description}
+	>
+	</textarea>
+
 	<span
 		class="catalog-quantity"
 	>
@@ -31,6 +43,7 @@
 
 <style>
 	.catalog {
+		height: 128px;
 		margin: 8px;
 		padding: 16px;
 		display: flex;
@@ -48,7 +61,17 @@
 		border: none;
 	}
 
+	.catalog-description {
+		font-size: 16px;
+		font-weight: 200;
+		margin: 0;
+		padding: 0;
+		border: none;
+		resize: none;
+	}
+
 	.catalog-quantity {
+		font-size: 16px;
 		font-weight: 200;
 	}
 </style>

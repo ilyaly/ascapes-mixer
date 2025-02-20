@@ -6,22 +6,27 @@
 	const items = $state([
 		{
 			"name" : "SampleCatalogName1",
+			"description": "SampleCatalogDescriptionSampleCatalogDescriptionSampleCatalogDescription1",
 			"quantity" : 10
 		},
 		{
 			"name" : "SampleCatalogName2",
+			"description": "SampleCatalogDescriptionSampleCatalogDescriptionSampleCatalogDescription2",
 			"quantity" : 5
 		},
 		{
 			"name" : "SampleCatalogName3",
+			"description": "SampleCatalogDescriptionSampleCatalogDescriptionSampleCatalogDescription3",
 			"quantity" : 99
 		},
 		{
 			"name" : "SampleCatalogName4",
+			"description": "SampleCatalogDescriptionSampleCatalogDescriptionSampleCatalogDescription4",
 			"quantity" : 199
 		},
 		{
 			"name" : "SampleCatalogName5",
+			"description": "SampleCatalogDescriptionSampleCatalogDescriptionSampleCatalogDescription5",
 			"quantity" : 999
 		}
 	])
