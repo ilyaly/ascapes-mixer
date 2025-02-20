@@ -15,6 +15,7 @@
   let playback = getContext("playback");
   let playbackMode = getContext("playbackMode");
 
+  let fakeCurrentTime = $state(0); //Needed to prevent currentTime is being set twice on seeking
   let currentTime = $state(0);
   let currentVolume = $state(1);
   let duration = $state(0);
@@ -89,7 +90,7 @@
   }
 
   function handlePlaybackSeek(progress) {
-    currentTime = (progress / 100) * duration;
+    fakeCurrentTime = (progress / 100) * duration;
   }
 
   function handlePlaybackSeekEnd(progress) {
@@ -155,7 +156,7 @@
   </div>
 
   <SeekBar
-    currentValue={(currentTime / duration) * 100}
+    currentValue={(fakeCurrentTime / duration) * 100}
     onSeek={handlePlaybackSeek}
     onSeekEnd={handlePlaybackSeekEnd}
     min={0}

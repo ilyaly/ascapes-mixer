@@ -1,5 +1,7 @@
 <script>
+	import OpenListIcon from "../icons/OpenListIcon.svelte"
 	import DeleteIcon from "../icons/DeleteIcon.svelte"
+	import NoteIcon from "../icons/NoteIcon.svelte"
 
 	let { item } = $props()
 
@@ -26,9 +28,11 @@
 	        onchange={handleNameChange}
 	    />
 
-	    <button>
-	    	<DeleteIcon />
-	    </button>
+	    <button class="button">
+			<OpenListIcon />
+		</button>
+
+	    
 		
 	</div>
 	
@@ -48,11 +52,12 @@
 		<span
 			class="catalog-quantity"
 		>
-			Number of tracks: 	{ item.quantity }
+			<NoteIcon />
+			{ item.quantity } tracks
 		</span>
-		<button>
-			Open >
-		</button>
+		<button class="delete-button">
+	    	<DeleteIcon />
+	    </button>
 
 	</div>
 	
@@ -110,6 +115,9 @@
 	}
 
 	.catalog-quantity {
+		display: flex;
+	    gap: 8px;
+	    align-items: center;
 		font-size: 16px;
 		font-weight: 200;
 		padding: 2px;
@@ -119,7 +127,20 @@
 		margin: 0;
 		padding: 0;
 		background: none;
-		border: 1px solid blue;
+		border: none;
+	}
+
+	button:hover {
+	    cursor: pointer;
+		fill: rgb(33 150 243 / 100%);
+	}
+
+	.delete-button {
+		cursor: pointer;
+	}
+
+	.delete-button:hover {
+	    fill: red;
 	}
 
 	input, textarea {

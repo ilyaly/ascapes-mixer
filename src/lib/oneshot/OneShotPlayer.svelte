@@ -15,9 +15,24 @@
 
   let { label, dbName, dbState, storeName } = $props();
 
+  let playListStoreUuid = crypto.randomUUID();
+
   let playlistState = $state({
     isReady: false,
     tracks: [],
+  });
+
+  let playbackState = $state({
+    volume: 0
+  });
+
+  setContext("playback", {
+    getPlaybackVolume() {
+      return playbackState.volume;
+    },
+    setPlaybackVolume(volume) {
+      playbackState.volume = volume;
+    }
   });
 
   setContext("playlist", {

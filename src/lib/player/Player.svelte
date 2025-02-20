@@ -16,6 +16,8 @@
 
   let { label, dbName, dbState, storeName } = $props();
 
+  let playListStoreUuid = crypto.randomUUID();
+
   let playlistState = $state({
     isReady: false,
     tracks: [],

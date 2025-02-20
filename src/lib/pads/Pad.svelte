@@ -46,17 +46,31 @@
     return objectURL;
   }
 
-  function handlePlaybackEnded(argument) {
+  function handlePlaybackEnded() {
     isPlaying = false;
     currentTime = 0;
   }
 
-  function handlePlay(argument) {
+  function handleClick() {
+    if (!isPlaying) {
+      handlePlay();
+    } else {
+      handleStop()
+    }
+  }
+
+  function handlePlay() {
     isPlaying = true;
     audioRef.play();
   }
 
-  function handleNameChange(argument) {
+  function handleStop() {
+    isPlaying = false;
+    audioRef.pause();
+    currentTime = 0.0;
+  }
+
+  function handleNameChange() {
     playlist.setPlaylistTrack({
       id: item.id,
       index: item.index,
@@ -86,10 +100,15 @@
       class="button sample-button {isReady ? '' : 'disabled'} {isPlaying
         ? ''
         : ''}"
-      onclick={handlePlay}
+      onclick={handleClick}
     >
     </button>
-    <div class="progress" style:width="{(currentTime / duration) * 100}%"></div>
+    <div 
+      class="progress" 
+      style:width="{(currentTime / duration) * 100}%"
+      onclick={handleClick}
+    >
+    </div>
   </div>
   <div class="pad-footer">
     <input
@@ -160,7 +179,12 @@
   }
 
   .progress:hover {
-    cursor: not-allowed;
+    cursor: pointer;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(150, 0, 0, 0.2) 0%
+    );
   }
 
   .button {

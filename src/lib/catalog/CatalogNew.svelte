@@ -1,19 +1,19 @@
 <script>
-	
+	import NewListIcon from "../icons/NewListIcon.svelte"
 </script>
 
 
 <button>
-	New
+	<NewListIcon />
 </button>
 
 <style>
 	button {
-		/*
-		width: 128px;
+		
+		width: fit-content;
+		height: auto;
 		background: none;
-		border: 1px solid black;
-		border-radius: 4px;
-		*/
+		border: none;
+		
 	}
 </style>
