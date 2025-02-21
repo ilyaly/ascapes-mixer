@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { setContext, getContext } from "svelte";
 
-  import OneShotPlayerHeader from "./OneShotPlayerHeader.svelte";
   import PadsGrid from "../pads/PadsGrid.svelte";
 
   import {
@@ -104,8 +103,6 @@
 
 <div class="one-shot-player">
   <div class="helpers">
-    <OneShotPlayerHeader {label} />
-    
 		<button
 			onclick={handleReadDataFromDB}
 		>

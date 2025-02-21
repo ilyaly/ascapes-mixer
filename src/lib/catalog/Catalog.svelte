@@ -2,7 +2,6 @@
 	import { onMount } from "svelte";
   	import { setContext, getContext } from "svelte";
 
-	import CatalogsHeader from "./CatalogsHeader.svelte"
 	import CatalogItem from "./CatalogItem.svelte"
 
 	import { flip } from "svelte/animate";
@@ -16,38 +15,16 @@
 	    clearStore,
 	} from "../utils/indexeddb.js";
 
-	let { label, dbName, dbState, storeName } = $props();
+	let { playlists } = $props()
 
 	let items = $state([]);
+	let isReady = $state(false);
 
-	let catalogState = $state({
-	    isReady: false,
-	    isActive: false,
-	    playlists: []
-	});
+	let playlistsState = getContext("playlists");
 
-	setContext("catalog", {
-	    getCatalogReady() {
-	      return catalogState.isReady;
-	    },
-	    setCatalogReady(bool) {
-	    	catalogState.isReady = bool;
-	    },
-	    getCatalogPlaylists() {
-	    	return catalogState.playlists;
-	    },
-	    setCatalogPlaylists(playlists) {
-	    	catalogState.playlists = playlists;
-	    },
-	    getCatalogPlaylist(id) {
-	    	return catalogState.playlists.find(({ id }) => id === id);
-	    },
-	    setCatalogPlaylist(playlist) {
-	    	catalogState.playlists = catalogState.playlists.map((obj) =>
-	   			obj.id === playlist.id ? playlist : obj,
-	    	);
-	    },
-	});
+	$effect(() => {
+		items = playlists;
+	})
 
 	const dropFromOthersDisabled = true;
 	const flipDurationMs = 100;
@@ -62,7 +39,7 @@
 	      itemsSnapshot[i].index = i;
 	    }
 	    items = itemsSnapshot;
-	    catalogState.playlists = items;
+	    playlistsState.setPlaylists(items)
 	};
 
 	function handleDndConsider(e) {
@@ -74,92 +51,13 @@
 	    updateItems();
 	};
 
-	$effect(() => {
-		items = catalogState.playlists;
-	})
-
-	$effect(async () => {
-	    if (dbState.isReady) {
-	      catalogState.playlists = await readData(dbName, storeName);
-
-	      catalogState.playlists = catalogState.playlists.sort(
-	        (a, b) => a.index - b.index,
-	      );
-	      catalogState.isReady = true;
-	    }
-	});
-
-	$effect(async () => {
-	    if (catalogState.isReady) {
-	    	try {
-		        await writeData(
-		          dbName,
-		          storeName,
-		          $state.snapshot(catalogState.playlists),
-		        );
-		    } catch (error) {
-		    	console.error(`Error writing the tracks to DB: ${error}`);
-		    }
-	    }
-	});
-
-	async function handleWriteDataToDB() {
-	    try {
-	        await writeData(
-	          dbName,
-	          storeName,
-	          $state.snapshot(catalogState.playlists),
-	        );
-	    } catch (error) {
-	      console.error(`Error writing the tracks to DB: ${error}`);
-	    };
-	};
-
-	async function handleReadDataFromDB() {
-	    try {
-	      const data = await readData(dbName, storeName);
-	      console.log(`Read data from ${storeName}`);
-	      console.log(data);
-	    } catch (error) {
-	      console.error(error);
-	    };
-	};
-
-	async function handlDeleteAllDataFromDB() {
-	    try {
-	      await clearStore(dbName, storeName); // Clear all entries from the store
-	      catalogState.playlists = [];
-	    } catch (error) {
-	      console.error(error);
-	    };
-	};
-
 </script>
 
 
 <div class="catalogs">
-	<div class="helpers">
-	    <CatalogsHeader
-			label={label}
-		/>
-    
-		<button
-			onclick={handleReadDataFromDB}
-		>
-			Read data from DB
-		</button>
-		<button
-			onclick={handlDeleteAllDataFromDB}
-		>
-			Delete all data from DB
-		</button>
-  	</div>
-	
-
 	<div class="catalogs-list">
 		<span class="zone-tip">Create new playlist</span>
-		{#if items.length === 0}
-		{:else}
+		{#if items}
 			<section
 		        class="playlist-zone"
 		        use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
@@ -193,7 +91,7 @@
 		align-items: stretch;
 		justify-content: start;
 		flex-direction: column;
-		margin: 8px;
+		overflow-y: scroll;
 	}
 
 	.catalogs-list {
@@ -203,11 +101,10 @@
 		flex-direction: column;
 	}
 
-	.helpers {
-	    display: flex;
-	    flex-direction: row;
-	    align-items: center;
-	    gap: 16px;
+	.playlist-zone {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 	}
 
 	.zone-tip {

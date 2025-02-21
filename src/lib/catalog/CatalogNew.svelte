@@ -3,24 +3,25 @@
 
 	import NewListIcon from "../icons/NewListIcon.svelte"
 
-	let catalog = getContext("catalog");
+	let playlistsState = getContext("playlists");
 
 	function handleClick() {
-		let catalogPlaylistsSnapshot = $state.snapshot(catalog.getCatalogPlaylists());
-		catalogPlaylistsSnapshot.push(
+		let playlistsSnapshot = $state.snapshot(playlistsState.getPlaylists());
+		playlistsSnapshot.push(
 			{
 				id: crypto.randomUUID(),
-				name: `Playlist ${catalogPlaylistsSnapshot.length}`,
+				name: `Playlist ${playlistsSnapshot.length}`,
 				description: "",
 				quantity: 0,
 				tracks: [],
 				isActive: false
 			}
 		);
-		for (let i = 0; i < catalogPlaylistsSnapshot.length; i++) {
-	      catalogPlaylistsSnapshot[i].index = i;
+		for (let i = 0; i < playlistsSnapshot.length; i++) {
+	      playlistsSnapshot[i].index = i;
 	    }
-		catalog.setCatalogPlaylists(catalogPlaylistsSnapshot)
+	    console.log(playlistsSnapshot)
+		playlistsState.setPlaylists(playlistsSnapshot)
 	}
 </script>
 

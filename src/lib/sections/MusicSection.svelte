@@ -3,57 +3,126 @@
   	import { setContext, getContext } from "svelte";
 
   	import Catalog from "../catalog/Catalog.svelte";
+  	import CatalogNew from "../catalog/CatalogNew.svelte"
   	import Player from "../player/Player.svelte";
+
+  	import {
+	    registerStore,
+	    writeData,
+	    readData,
+	    deleteData,
+		clearStore,
+	} from "../utils/indexeddb.js";
 
 	let { label, dbName, dbState, storeName } = $props();
 
-	let sectionState = $state({
-		hasActiveCatalog: false,
-		activeCatalogId: null,
-		activeCatalogName: null
+	let isReady = $state(false);
+	let playlists = $state([]);
+	let activePlaylist =$state(null);
+
+	$inspect(playlists)
+  
+	setContext("playlists", {
+	    getPlaylists() {
+	    	return playlists;
+	    },
+	    setPlaylists(items) {
+	    	playlists = items;
+	    },
+	    getPlaylist(id) {
+	    	return playlists.find(({ id }) => id === id);
+	    },
+	    setPlaylist(item) {
+	    	playlists = playlists.map((obj) =>
+	   			obj.id === item.id ? item : obj,
+	    	);
+	    }
 	});
 
-	setContext("section", {
-		getSectionState() {
-			return sectionState;
+	setContext("activePlaylist", {
+		getActivePlaylistId() {
+			return activePlaylist;
 		},
-		setSectionState(state) {
-			sectionState = state;
-		},
-	    getActiveCatalogId() {
-	    	return sectionState.activeCatalogId;
-	    },
-	    setActiveCatalogId(id) {
-	    	sectionState.activeCatalogId = id;
-		},
-		getActiveCatalogName() {
-	    	return sectionState.activeCatalogName;
-	    },
-	    setActiveCatalogName(name) {
-	    	sectionState.activeCatalogName = name;
+		setActivePlaylist(playlist) {
+			activePlaylist = playlist;
 		}
 	});
 
+
+	$effect(async () => {
+	    if (dbState.isReady) {
+	      playlists = await readData(dbName, storeName);
+
+	      playlists = playlists.sort(
+	        (a, b) => a.index - b.index,
+	      );
+	      isReady = true;
+	    }
+	});
+
+	$effect(async () => {
+	    if (isReady) {
+	    	try {
+		        await writeData(
+		          dbName,
+		          storeName,
+		          $state.snapshot(playlists),
+		        );
+		    } catch (error) {
+		    	console.error(`Error writing the tracks to DB: ${error}`);
+		    }
+	    }
+	});
+
+
+
 </script>
 
-<div>
-	{#if !sectionState.hasActiveCatalog}
+<div class="section">
+	<div class="section-header">
+		<div class="section-header-label">
+			{#if !activePlaylist}
+		    	{ label }
+		    {:else}
+		    	<button
+		    		onclick={() => activePlaylist = null}
+		    	>
+		    		Back
+				</button>
+		    	{ activePlaylist.name }
+		    {/if}
+		</div>
+		<div class="section-header-action">
+			{#if !activePlaylist}
+		    	<CatalogNew />
+		    {/if}
+			
+		</div>
+	</div>
+	{#if !activePlaylist}
       <Catalog
-        label={label}
-        {dbName}
-        {dbState}
-        storeName={storeName}
+        playlists={playlists}
       />
     {:else}
       <Player
-        label={sectionState.activeCatalogName}
-        {dbName}
-        {dbState}
-        storeName={storeName}
+      	playlist={activePlaylist}
       />
     {/if}
 </div>
 
 <style>
+
+	.section {
+		font-size: 24px;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.section-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
 	
 </style>

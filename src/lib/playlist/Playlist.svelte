@@ -17,23 +17,35 @@
   import PlayIcon from "../icons/PlayIcon.svelte";
   import PauseIcon from "../icons/PauseIcon.svelte";
 
+  let { playlist } = $props();
+
   let items = $state([]);
 
-  let playlist = getContext("playlist");
+  let activePlaylistState = getContext("activePlaylist");
+  let playlistsState = getContext("playlists");
 
   $effect(() => {
-    items = playlist.getPlaylist();
+    items = playlist.tracks;
   });
 
+  //ToDo; So basically we pass only tracks here instead of passing the whole list of playlists
   function updateItems() {
-    let itemsSnapshot = $state.snapshot(items);
+      let itemsSnapshot = $state.snapshot(items);
 
-    for (let i = 0; i < itemsSnapshot.length; i++) {
-      itemsSnapshot[i].index = i;
-    }
-    items = itemsSnapshot;
-    playlist.setPlaylist(items);
-  }
+      for (let i = 0; i < itemsSnapshot.length; i++) {
+        itemsSnapshot[i].index = i;
+      }
+      items = itemsSnapshot;
+      playlistsState.setPlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: playlist.quantity,
+        tracks: items
+      })
+  };
 
   const dropFromOthersDisabled = true;
   const flipDurationMs = 100;
@@ -83,15 +95,6 @@
     }
   }
 
-  /*
-    Component nesting with the dnd action library, actually caused by animation:flip
-
-    	https://svelte.dev/playground/028674733f67409c94bd52995d5906f1?version=3.59.2
-
-    	https://github.com/sveltejs/svelte/issues/7209
-    */
-
-  /* DRAG AND DROP FILES TRY */
 
   let files = $state([]);
 

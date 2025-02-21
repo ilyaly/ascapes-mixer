@@ -7,15 +7,14 @@
 
 	let { item } = $props()
 
-	let section = getContext("section");
-
-	let catalog = getContext("catalog");
+	let playlistsState = getContext("playlists");
+	let activePlaylistState = getContext("activePlaylist");
 
 	let name = $state(item.name);
 	let description = $state(item.description);
 
 	function handleNameChange() {
-		catalog.setCatalogPlaylist({
+		playlistsState.setPlaylist({
 			id: item.id,
 			name: name,
 			description: item.description,
@@ -26,7 +25,7 @@
 	}
 
 	function handleDescriptionChange() {
-		catalog.setCatalogPlaylist({
+		playlistsState.setPlaylist({
 			id: item.id,
 			name: item.name,
 			description: description,
@@ -35,30 +34,23 @@
 	}
 
 	function handleDelete() {
-		let tempItems = $state.snapshot(catalog.getCatalogPlaylists());
+		let tempItems = $state.snapshot(playlistsState.getPlaylists());
 	    tempItems = tempItems.filter((playlist) => playlist.id !== item.id);
-	    console.log(tempItems)
 	    for (let i = 0; i < tempItems.length; i++) {
 	      tempItems[i].index = i;
 	    }
-	    catalog.setCatalogPlaylists(tempItems);
+	    playlistsState.setPlaylists(tempItems);
 	}
 
 	function handleOpenPlaylist() {
-		section.setSectionState(
-			{
-				hasActiveCatalog: true,
-				activeCatalogId: item.id,
-				activeCatalogName: item.name
-			}
-		)
+		activePlaylistState.setActivePlaylist(item)
 	}
 </script>
 
-<div class="catalog">
-	<div class="catalog-header">
+<div class="playlist">
+	<div class="playlist-header">
 		<input
-			class="catalog-name"
+			class="playlist-name"
 	        type="text"
 	        name="name"
 	        required
@@ -78,7 +70,7 @@
 		</button>
 	</div>
 	<textarea 
-		class="catalog-description" 
+		class="playlist-description" 
 		name="description" 
 		rows="2" 
 		cols="33"
@@ -87,9 +79,9 @@
 	>
 	</textarea>
 
-	<div class="catalog-footer">
+	<div class="playlist-footer">
 		<span
-			class="catalog-quantity"
+			class="playlist-quantity"
 		>
 			<NoteIcon />
 			{ item.quantity } tracks
@@ -106,9 +98,8 @@
 </div>
 
 <style>
-	.catalog {
+	.playlist {
 		height: fit-content;
-		margin: 8px;
 		padding: 16px;
 		display: flex;
 		flex-direction: column;
@@ -116,22 +107,20 @@
 		border: 1px solid black;
 		border-radius: 4px;
 		background-color: #fff;
-
-
 	}
 
-	.catalog:hover {
+	.playlist:hover {
 		
 	}
 
-	.catalog-header {
+	.playlist-header {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 
 	}
 
-	.catalog-name {
+	.playlist-name {
 		font-size: 18px;
 		font-weight: 400;
 		margin: 0;
@@ -140,11 +129,11 @@
 		border-radius: 4px;
 	}
 
-	.catalog-name:hover {
+	.playlist-name:hover {
 		background-color: #0000000d;
 	}
 
-	.catalog-description {
+	.playlist-description {
 		font-size: 16px;
 		font-weight: 300;
 		margin: 0;
@@ -155,13 +144,13 @@
 		border-radius: 4px;
 	}
 
-	.catalog-footer {
+	.playlist-footer {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 	}
 
-	.catalog-quantity {
+	.playlist-quantity {
 		display: flex;
 	    gap: 8px;
 	    align-items: center;
