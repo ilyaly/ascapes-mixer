@@ -1,8 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import Catalogs from "../lib/catalog/Catalogs.svelte";
-  import Player from "../lib/player/Player.svelte";
-  import OneShotPlayer from "../lib/oneshot/OneShotPlayer.svelte";
+
+  import MusicSection from "../lib/sections/MusicSection.svelte";
+  import AmbientSection from "../lib/sections/AmbientSection.svelte";
+  import EffectsSection from "../lib/sections/EffectsSection.svelte";
+
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
   import { exists, mkdir, BaseDirectory } from "@tauri-apps/plugin-fs";
 
@@ -12,7 +14,7 @@
 
   let ambientStoreName = "ambient-tracks";
 
-  let oneShotsStoreName = "oneshot-tracks";
+  let effectsStoreName = "oneshot-tracks";
 
   let dbState = $state({
     isReady: false,
@@ -26,7 +28,7 @@
     try {
       await registerStore(dbName, musicStoreName);
       await registerStore(dbName, ambientStoreName);
-      await registerStore(dbName, oneShotsStoreName);
+      await registerStore(dbName, effectsStoreName);
       dbState.isReady = true;
 
       let audioDir = await exists("audio", {
@@ -42,58 +44,37 @@
 
 
   let isMusicCatalogsMode = $state(true);
-  let isAmbientCatalogsMode = $state(false);
-  let isEffectsCatalogsMode = $state(false);
+  let isAmbientCatalogsMode = $state(true);
+  let isEffectsCatalogsMode = $state(true);
 
 </script>
 
-<!--
-<button
-		onclick={ () => { deleteDatabase(dbName) }}
-	>
-		DELETE DATABSE
-</button>
--->
 <div class="container">
   <div class="music">
-    {#if isMusicCatalogsMode}
-
-      <Catalogs />
-    {:else}
-      <Player
-        label={"Music"}
-        {dbName}
-        {dbState}
-        storeName={musicStoreName}
-      />
-    {/if}
+    <MusicSection
+      label={"Music"}
+      {dbName}
+      {dbState}
+      storeName={musicStoreName}
+    />
   </div>
 
   <div class="ambient">
-    {#if isAmbientCatalogsMode}
-      <Catalogs />
-    {:else}
-        <Player
-          label={"Ambient"}
-          {dbName}
-          {dbState}
-          storeName={ambientStoreName} 
-        />
-    {/if}
+    <AmbientSection
+      label={"Ambient"}
+      {dbName}
+      {dbState}
+      storeName={ambientStoreName}
+    />
   </div>
 
   <div class="one-shots">
-    {#if isEffectsCatalogsMode}
-      <Catalogs />
-    {:else}
-      
-        <OneShotPlayer
-          label={"Sound effects"}
-          {dbName}
-          {dbState}
-          storeName={oneShotsStoreName}
-        />
-    {/if}
+    <EffectsSection
+      label={"Effects"}
+      {dbName}
+      {dbState}
+      storeName={effectsStoreName}
+    />
   </div>
   
   

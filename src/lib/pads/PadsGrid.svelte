@@ -15,6 +15,7 @@
     items = playlist.getPlaylist();
   });
 
+  const dropFromOthersDisabled = true;
   const flipDurationMs = 100;
   const dropTargetStyle = {
     outline: "rgba(0, 0, 255, 0.0) solid 1px",
@@ -146,7 +147,7 @@
 >
   <section
     class="samples"
-    use:dndzone={{ items, flipDurationMs, dropTargetStyle }}
+    use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
     onconsider={handleDndConsider}
     onfinalize={handleDndFinalize}
   >

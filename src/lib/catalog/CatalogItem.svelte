@@ -1,15 +1,57 @@
 <script>
+	import { getContext } from "svelte";
+
 	import OpenListIcon from "../icons/OpenListIcon.svelte"
 	import DeleteIcon from "../icons/DeleteIcon.svelte"
 	import NoteIcon from "../icons/NoteIcon.svelte"
 
 	let { item } = $props()
 
+	let section = getContext("section");
+
+	let catalog = getContext("catalog");
+
 	let name = $state(item.name);
 	let description = $state(item.description);
 
-	function handleNameChange(argument) {
-		// body...
+	function handleNameChange() {
+		catalog.setCatalogPlaylist({
+			id: item.id,
+			name: name,
+			description: item.description,
+			quantity: item.quantity,
+			tracks: [],
+			isActive: false
+		})
+	}
+
+	function handleDescriptionChange() {
+		catalog.setCatalogPlaylist({
+			id: item.id,
+			name: item.name,
+			description: description,
+			quantity: item.quantity
+		})
+	}
+
+	function handleDelete() {
+		let tempItems = $state.snapshot(catalog.getCatalogPlaylists());
+	    tempItems = tempItems.filter((playlist) => playlist.id !== item.id);
+	    console.log(tempItems)
+	    for (let i = 0; i < tempItems.length; i++) {
+	      tempItems[i].index = i;
+	    }
+	    catalog.setCatalogPlaylists(tempItems);
+	}
+
+	function handleOpenPlaylist() {
+		section.setSectionState(
+			{
+				hasActiveCatalog: true,
+				activeCatalogId: item.id,
+				activeCatalogName: item.name
+			}
+		)
 	}
 </script>
 
@@ -28,23 +70,20 @@
 	        onchange={handleNameChange}
 	    />
 
-	    <button class="button">
+	    <button 
+	    	class="button"
+	    	onclick={handleOpenPlaylist} 
+	    >
 			<OpenListIcon />
 		</button>
-
-	    
-		
 	</div>
-	
-
-
-
 	<textarea 
 		class="catalog-description" 
 		name="description" 
-		rows="4" 
+		rows="2" 
 		cols="33"
 		bind:value={description}
+		onchange={handleDescriptionChange}
 	>
 	</textarea>
 
@@ -55,7 +94,10 @@
 			<NoteIcon />
 			{ item.quantity } tracks
 		</span>
-		<button class="delete-button">
+		<button
+		class="delete-button"
+			onclick={handleDelete}
+		>
 	    	<DeleteIcon />
 	    </button>
 
@@ -73,12 +115,13 @@
 		gap: 16px;
 		border: 1px solid black;
 		border-radius: 4px;
+		background-color: #fff;
 
 
 	}
 
 	.catalog:hover {
-		background-color: #0000000d;
+		
 	}
 
 	.catalog-header {
@@ -95,6 +138,10 @@
 		padding: 4px;
 		border: none;
 		border-radius: 4px;
+	}
+
+	.catalog-name:hover {
+		background-color: #0000000d;
 	}
 
 	.catalog-description {

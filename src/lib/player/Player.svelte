@@ -199,6 +199,18 @@
     }
   });
 
+  async function handleWriteDataToDB() {
+    try {
+        await writeData(
+          dbName,
+          storeName,
+          $state.snapshot(playlistState.tracks),
+        );
+    } catch (error) {
+      console.error(`Error writing the tracks to DB: ${error}`);
+    }
+  }
+
   async function handleReadDataFromDB() {
     try {
       const data = await readData(dbName, storeName);
@@ -222,7 +234,7 @@
 <div class="player">
   <div class="helpers">
     <PlayerHeader {label} />
-    <!--
+    
 		<button
 			onclick={handleReadDataFromDB}
 		>
@@ -233,7 +245,6 @@
 		>
 			Delete all data from DB
 		</button>
-		-->
   </div>
 
   <Playlist />

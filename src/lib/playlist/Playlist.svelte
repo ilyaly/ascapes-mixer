@@ -35,6 +35,7 @@
     playlist.setPlaylist(items);
   }
 
+  const dropFromOthersDisabled = true;
   const flipDurationMs = 100;
   const dropTargetStyle = {
     outline: "rgba(0, 0, 255, 0.0) solid 1px",
@@ -159,24 +160,18 @@
 </script>
 
 <div class="playlist">
-  <!--
-	<PlaylistDropNew
-		onFilesDrop={handleFilesDrop}
-
-	/>
-	-->
-  <div
+<div
     class="drag-zone {isDragging ? 'highlight' : ''}"
     ondragover={preventDefault(handleDragOver)}
     ondragenter={preventDefault(handleDragEnter)}
     ondragleave={preventDefault(handleDragLeave)}
     ondrop={preventDefault(handleDrop)}
   >
-    <span class="drag-zone-tip">Drop .mp3 or .waw files here.</span>
+    <span class="drag-zone-tip">Drop .mp3 or .waw files here</span>
     {#if items.length === 0}{:else}
       <section
         class="playlist-zone"
-        use:dndzone={{ items, flipDurationMs, dropTargetStyle }}
+        use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
         onconsider={handleDndConsider}
         onfinalize={handleDndFinalize}
       >

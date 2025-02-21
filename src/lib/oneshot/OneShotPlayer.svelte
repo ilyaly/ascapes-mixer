@@ -105,7 +105,7 @@
 <div class="one-shot-player">
   <div class="helpers">
     <OneShotPlayerHeader {label} />
-    <!--
+    
 		<button
 			onclick={handleReadDataFromDB}
 		>
@@ -116,7 +116,7 @@
 		>
 			Delete all data from DB
 		</button>
-		-->
+		
   </div>
 
   <PadsGrid />
