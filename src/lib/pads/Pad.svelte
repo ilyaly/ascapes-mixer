@@ -10,8 +10,8 @@
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
   let { item } = $props();
-
-  let playlist = getContext("playlist");
+  $inspect(item)
+  let activePlaylistState = getContext("activePlaylist");
 
   let name = $state($state.snapshot(item.name));
 
@@ -27,7 +27,7 @@
   $effect(async () => {
     if (!isReady) {
       try {
-        let objectURL = await readFileFromDisk(item.path);
+        let objectURL = await readFileFromDisk($state.snapshot(item.path));
         url = objectURL;
         isReady = true;
       } catch (error) {
@@ -71,7 +71,7 @@
   }
 
   function handleNameChange() {
-    playlist.setPlaylistTrack({
+    activePlaylistState.setActivePlaylistTrack({
       id: item.id,
       index: item.index,
       name: name,
@@ -81,7 +81,7 @@
   }
 
   async function handleDelete() {
-    let tempItems = $state.snapshot(playlist.getPlaylist());
+    let tempItems = $state.snapshot(activePlaylistState.getActivePlaylist().tracks);
     tempItems = tempItems.filter((track) => track.id !== item.id);
 
     for (let i = 0; i < tempItems.length; i++) {
@@ -90,7 +90,7 @@
 
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
 
-    playlist.setPlaylist(tempItems);
+    activePlaylistState.setActivePlaylist(tempItems);
   }
 </script>
 

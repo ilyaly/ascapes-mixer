@@ -23,6 +23,7 @@
 
   let activePlaylistState = getContext("activePlaylist");
   let playlistsState = getContext("playlists");
+  let currentTrackState = getContext("currentTrack");
 
   $effect(() => {
     items = playlist.tracks;
@@ -35,14 +36,27 @@
       for (let i = 0; i < itemsSnapshot.length; i++) {
         itemsSnapshot[i].index = i;
       }
+
+
       items = itemsSnapshot;
+
+      activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: items.length,
+        tracks: items
+      })
+
       playlistsState.setPlaylist({
         id: playlist.id,
         name: playlist.name,
         description: playlist.description,
         index: playlist.index,
         isActive: playlist.isActive,
-        quantity: playlist.quantity,
+        quantity: items.length,
         tracks: items
       })
   };
@@ -170,8 +184,10 @@
     ondragleave={preventDefault(handleDragLeave)}
     ondrop={preventDefault(handleDrop)}
   >
-    <span class="drag-zone-tip">Drop .mp3 or .waw files here</span>
-    {#if items.length === 0}{:else}
+    
+    {#if items && items.length === 0}
+    <span class="drag-zone-tip">Drop audio files here</span>
+    {:else}
       <section
         class="playlist-zone"
         use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
@@ -224,11 +240,11 @@
 
   .drag-zone {
     position: relative;
-    height: 100%;
+    height: -webkit-fill-available;
   }
 
   .drag-zone.highlight {
-    /*background-color: #0000000d;*/
+    background-color: #0000000d;
   }
 
   .drag-zone-tip {
@@ -239,7 +255,8 @@
     justify-content: center;
     height: -webkit-fill-available;
     align-items: center;
-    font-size: 24px;
+    font-size: 48px;
+    font-weight: 100;
     z-index: -1;
   }
 </style>

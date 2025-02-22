@@ -7,6 +7,7 @@
 
 
   let { playlist } = $props();
+
   let currentTrackState = $state({
     id: null,
     index: null,
@@ -134,6 +135,8 @@
       playbackModeState.isShuffle = bool;
     },
   });
+
+
 
 
 </script>

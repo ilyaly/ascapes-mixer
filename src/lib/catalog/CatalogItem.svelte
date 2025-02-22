@@ -5,6 +5,8 @@
 	import DeleteIcon from "../icons/DeleteIcon.svelte"
 	import NoteIcon from "../icons/NoteIcon.svelte"
 
+	import { remove, BaseDirectory } from "@tauri-apps/plugin-fs";
+
 	let { item } = $props()
 
 	let playlistsState = getContext("playlists");
@@ -33,12 +35,28 @@
 		})
 	}
 
-	function handleDelete() {
+	async function handleDelete() {
 		let tempItems = $state.snapshot(playlistsState.getPlaylists());
 	    tempItems = tempItems.filter((playlist) => playlist.id !== item.id);
 	    for (let i = 0; i < tempItems.length; i++) {
 	      tempItems[i].index = i;
 	    }
+
+
+	    let tempTracks = $state.snapshot(item).tracks;
+
+	    if( tempTracks && tempTracks.length > 0 ) {
+	    	for (let j = 0; j < tempTracks.length; j++) {
+		    	let track = tempTracks[j];
+		    	try {
+		    		await remove(track.path, { baseDir: BaseDirectory.AppLocalData });
+		    	} catch (error) {
+		    		console.error(`Error deleting file from disk: ${error}`);
+		    	}
+		    }
+	    }
+	    
+
 	    playlistsState.setPlaylists(tempItems);
 	}
 
@@ -54,10 +72,10 @@
 	        type="text"
 	        name="name"
 	        required
-	        minlength="4"
+	        minlength="128"
 	        maxlength="128"
 	        autocomplete="off"
-	        placeholder={name}
+	        placeholder="Enter playlist name"
 	        bind:value={name}
 	        onchange={handleNameChange}
 	    />
@@ -76,6 +94,7 @@
 		cols="33"
 		bind:value={description}
 		onchange={handleDescriptionChange}
+		placeholder="Enter playlist description"
 	>
 	</textarea>
 
@@ -127,6 +146,7 @@
 		padding: 4px;
 		border: none;
 		border-radius: 4px;
+		width: -webkit-fill-available;
 	}
 
 	.playlist-name:hover {

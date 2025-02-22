@@ -1,8 +1,8 @@
-# ascape mixer
+# Ascape Mixer
 
 ![](./static/ascapes-mixer-preview.jpg)
 
-## TTRPG Audio Player & Mixer
+## About
 
 An audio player and mixer designed for TTRPG actual play, enabling control of music, ambiance, and sound effects during gameplay.
 
@@ -30,6 +30,8 @@ An audio player and mixer designed for TTRPG actual play, enabling control of mu
 4. Drag and drop .mp3 of .waw files to the sections of your interset.
 
 ## Developing
+
+To start the development clone the repo and:
 
 ```bash
 npm install

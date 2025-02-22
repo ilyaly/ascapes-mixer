@@ -5,13 +5,14 @@
   	import Catalog from "../catalog/Catalog.svelte";
   	import CatalogNew from "../catalog/CatalogNew.svelte"
   	import Player from "../player/Player.svelte";
+  	import OpenListIcon from "../icons/OpenListIcon.svelte"
 
   	import {
 	    registerStore,
 	    writeData,
 	    readData,
 	    deleteData,
-		clearStore,
+			clearStore,
 	} from "../utils/indexeddb.js";
 
 	let { label, dbName, dbState, storeName } = $props();
@@ -40,12 +41,29 @@
 	});
 
 	setContext("activePlaylist", {
-		getActivePlaylistId() {
+		getActivePlaylist() {
 			return activePlaylist;
 		},
 		setActivePlaylist(playlist) {
 			activePlaylist = playlist;
-		}
+			playlist.quantity = playlist.tracks.length;
+			playlists = playlists.map((obj) => 
+				obj.id === activePlaylist.id ? activePlaylist : obj
+			);
+		},
+		getActivePlaylistTrack(id) {
+      return activePlaylist.tracks.find(({ id }) => id === id);
+    },
+    setActivePlaylistTrack(track) {
+    	//Update active playlist tracks
+      activePlaylist.tracks = activePlaylist.tracks.map((obj) =>
+        obj.id === track.id ? track : obj
+      );
+      //Update playlists respectively
+      playlists = playlists.map((obj) => 
+				obj.id === activePlaylist.id ? activePlaylist : obj
+			);
+    }
 	});
 
 
@@ -85,11 +103,12 @@
 		    	{ label }
 		    {:else}
 		    	<button
+		    		class="back-button"
 		    		onclick={() => activePlaylist = null}
 		    	>
-		    		Back
-				</button>
-		    	{ activePlaylist.name }
+		    		{ label } 
+					</button>
+		    	/ { activePlaylist.name }
 		    {/if}
 		</div>
 		<div class="section-header-action">
@@ -117,6 +136,7 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+		gap: 32px;
 	}
 
 	.section-header {
@@ -124,5 +144,27 @@
 		flex-direction: row;
 		justify-content: space-between;
 	}
+
+	button {
+		background: none;
+		border: none;
+	}
+
+	.back-button {
+		font-size: 24px;
+	}
+
+	.back-button:hover {
+		cursor: pointer;
+		color: #2196f3;
+	}
+
+	.back-button::before {
+		content: "< ";
+	}
+
+
+
+
 	
 </style>

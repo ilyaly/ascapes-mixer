@@ -9,27 +9,27 @@
   import ShuffleIcon from "../icons/ShuffleIcon.svelte";
   import LoopIcon from "../icons/LoopIcon.svelte";
 
-  let playlist = getContext("playlist");
-  let currentTrack = getContext("currentTrack");
-  let playback = getContext("playback");
-  let playbackMode = getContext("playbackMode");
+  let activePlaylistState = getContext("activePlaylist");
+  let currentTrackState = getContext("currentTrack");
+  let playbackState = getContext("playback");
+  let playbackModeState = getContext("playbackMode");
 
   function handlePlay() {
-    playback.setPlaybackPlaying(true);
+    playbackState.setPlaybackPlaying(true);
   }
 
   function handlePause() {
-    playback.setPlaybackPlaying(false);
+    playbackState.setPlaybackPlaying(false);
   }
 
   function handleBack() {
     let currentTrackIndex = $state.snapshot(
-      currentTrack.getCurrentTrackIndex(),
+      currentTrackState.getCurrentTrackIndex(),
     );
 
     let previousTrackIndex = currentTrackIndex - 1;
 
-    let currentPlaylist = $state.snapshot(playlist.getPlaylist());
+    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
 
     let nextTrack;
 
@@ -44,18 +44,16 @@
     }
 
     if (nextTrack) {
-      currentTrack.setCurrentTrack(nextTrack);
+      currentTrackState.setCurrentTrack(nextTrack);
     }
   }
 
   function handleForward() {
-    let currentTrackIndex = $state.snapshot(
-      currentTrack.getCurrentTrackIndex(),
-    );
+    let currentTrackIndex = currentTrackState.getCurrentTrackIndex();
 
     let nextTrackIndex = currentTrackIndex + 1;
 
-    let currentPlaylist = $state.snapshot(playlist.getPlaylist());
+    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
 
     let currentPlaylistLength = currentPlaylist.length;
 
@@ -70,30 +68,30 @@
     }
 
     if (nextTrack) {
-      currentTrack.setCurrentTrack(nextTrack);
+      currentTrackState.setCurrentTrack(nextTrack);
     }
   }
 
   function handleLoop() {
-    if (!playbackMode.getPlaybackModeIsRepeat()) {
-      playbackMode.setPlaybackModeIsRepeat(true);
+    if (!playbackModeState.getPlaybackModeIsRepeat()) {
+      playbackModeState.setPlaybackModeIsRepeat(true);
     } else {
-      playbackMode.setPlaybackModeIsRepeat(false);
+      playbackModeState.setPlaybackModeIsRepeat(false);
     }
   }
 
   function handleShuffle() {
-    if (!playbackMode.getPlaybackModeIsShuffle()) {
-      playbackMode.setPlaybackModeIsShuffle(true);
+    if (!playbackModeState.getPlaybackModeIsShuffle()) {
+      playbackModeState.setPlaybackModeIsShuffle(true);
     } else {
-      playbackMode.setPlaybackModeIsShuffle(false);
+      playbackModeState.setPlaybackModeIsShuffle(false);
     }
   }
 </script>
 
 <div class="playback-controls">
   <button
-    class="shuffle-button {playbackMode.getPlaybackModeIsShuffle()
+    class="shuffle-button {playbackModeState.getPlaybackModeIsShuffle()
       ? 'shuffle-active'
       : ''}"
     onclick={handleShuffle}
@@ -103,7 +101,7 @@
   <button class="back-button" onclick={handleBack}>
     <BackIcon />
   </button>
-  {#if !playback.getPlayback().isPlaying}
+  {#if !playbackState.getPlayback().isPlaying}
     <button class="play-button" onclick={handlePlay}>
       <PlayIcon />
     </button>
@@ -117,7 +115,7 @@
   </button>
 
   <button
-    class="loop-button {playbackMode.getPlaybackModeIsRepeat()
+    class="loop-button {playbackModeState.getPlaybackModeIsRepeat()
       ? 'loop-active'
       : ''}"
     onclick={handleLoop}

@@ -54,12 +54,14 @@
 </script>
 
 
-<div class="catalogs">
-	<div class="catalogs-list">
-		<span class="zone-tip">Create new playlist</span>
-		{#if items}
+<div class="catalog">
+	<div class="catalog-list">
+		
+		{#if items.length === 0}
+			<span class="zone-tip">Create new playlist</span>
+		{:else}
 			<section
-		        class="playlist-zone"
+		        class="catalog-zone"
 		        use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
 		        onconsider={handleDndConsider}
 		        onfinalize={handleDndFinalize}
@@ -84,7 +86,7 @@
 
 <style>
 
-	.catalogs {
+	.catalog {
 		height: 100%;
 		width: -webkit-fill-available;
 		display: flex;
@@ -94,14 +96,14 @@
 		overflow-y: scroll;
 	}
 
-	.catalogs-list {
+	.catalog-list {
 		position: relative;
     	height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
 
-	.playlist-zone {
+	.catalog-zone {
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
@@ -115,7 +117,8 @@
 	    justify-content: center;
 	    height: -webkit-fill-available;
 	    align-items: center;
-	    font-size: 24px;
+	    font-size: 48px;
+	    font-weight: 100;
 		z-index: -1;
 	}
 
