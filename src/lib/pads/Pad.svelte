@@ -81,16 +81,27 @@
   }
 
   async function handleDelete() {
-    let tempItems = $state.snapshot(activePlaylistState.getActivePlaylist().tracks);
+    let playlist = $state.snapshot(activePlaylistState.getActivePlaylist());
+    let tempItems = playlist.tracks;
+
     tempItems = tempItems.filter((track) => track.id !== item.id);
 
     for (let i = 0; i < tempItems.length; i++) {
       tempItems[i].index = i;
     }
 
-    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
+    console.log(tempItems)
 
-    activePlaylistState.setActivePlaylist(tempItems);
+    activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: tempItems.length,
+        tracks: tempItems
+    });
+    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
 </script>
 
