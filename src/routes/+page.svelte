@@ -95,11 +95,12 @@
   }
 
   .container {
-    height: 100vh;
+    height:100vh;
+    max-height:100vh;
     display: grid;
     grid-template-columns: 1fr 0fr 1fr;
-    grid-template-rows: 0.3fr 0.3fr 1fr;
-    gap: 8px 8px;
+    grid-template-rows: 0.45fr 0.45fr 1fr;
+    gap: 24px 8px;
     grid-template-areas:
       "music . one-shots"
       "music . one-shots"
@@ -109,10 +110,11 @@
 
   .container .music,
   .container .ambient {
-    /* Allow scrolling within these containers if the content overflows */
+
+    /* Allow scrolling within these containers if the content overflows 
     overflow-y: auto; /* Enables vertical scrolling */
-    -ms-overflow-style: none; /* For Internet Explorer 10+ */
-    scrollbar-width: none; /* For Firefox */
+    /*-ms-overflow-style: none; /* For Internet Explorer 10+ */
+    /*scrollbar-width: none; /* For Firefox */
   }
 
   .container .music {
@@ -120,8 +122,8 @@
     /* Style the first container */
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 
   .container .ambient {
@@ -129,20 +131,17 @@
     /* Style the first container */
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 
   .container .one-shots {
     grid-area: one-shots;
-    overflow-y: auto; /* Allow scrolling if content overflows in the bottom container */
-    /* You can also apply height if necessary to control the height of the bottom container */
-
     /* Style the bottom container */
     height: -webkit-fill-available;
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 </style>

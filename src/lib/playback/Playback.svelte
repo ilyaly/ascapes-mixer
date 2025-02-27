@@ -151,11 +151,17 @@
   }
 </script>
 
-<div class="player">
-  <div class="player-header">
-    {#if currentTrackState.getCurrentTrack().name}
-      <PlaybackMeta />
-    {/if}
+<div class="playback">
+    
+  <div class="playback-header">
+    <PlaybackMeta
+        name={
+          currentTrackState.getCurrentTrack().name ? currentTrackState.getCurrentTrack().name : "-"
+        }
+    />
+  </div>
+  <div class="playback-body">
+    
     <PlaybackControl />
     <div class="volume-control">
       <button>
@@ -193,25 +199,30 @@
 </div>
 
 <style>
-  .player {
-    min-height: 80px;
-
-    margin-block: 8px;
-    padding: 16px;
+  .playback {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     border: 1px solid grey;
+    padding: 16px;
     border-radius: 8px;
   }
 
-  .player-header {
+  .playback-header {
+    min-height: 16px;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .playback-body {
+    display: flex;
+    flex-direction: row;
+    width: -webkit-fill-available;
+    justify-content: space-between;
   }
 
   .volume-control {

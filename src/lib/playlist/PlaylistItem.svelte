@@ -142,10 +142,11 @@
   </div>
 
   <div class="playlist-item-actions">
-    {#if isMouseOver}
-      <button class="button delete-button" onclick={handleDelete}>
+    <button class="button delete-button" onclick={handleDelete}>
         <DeleteIcon />
       </button>
+    {#if isMouseOver}
+      
     {/if}
   </div>
 </div>

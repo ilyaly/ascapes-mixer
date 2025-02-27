@@ -3,6 +3,7 @@
   	import { setContext, getContext } from "svelte";
 
 	import CatalogItem from "./CatalogItem.svelte"
+	import CatalogNew from "../catalog/CatalogNew.svelte"
 
 	import { flip } from "svelte/animate";
   	import { dndzone } from "svelte-dnd-action";
@@ -34,6 +35,7 @@
 
 	function updateItems() {
 	    let itemsSnapshot = $state.snapshot(items);
+	    console.log(items)
 
 	    for (let i = 0; i < itemsSnapshot.length; i++) {
 	      itemsSnapshot[i].index = i;
@@ -58,7 +60,11 @@
 	<div class="catalog-list">
 		
 		{#if items.length === 0}
-			<span class="zone-tip">Create new playlist</span>
+			<div class="catalog-empty-tip">
+				<span>Create new playlist</span>
+				<CatalogNew />
+			</div>
+			
 		{:else}
 			<section
 		        class="catalog-zone"
@@ -94,7 +100,15 @@
 		justify-content: start;
 		flex-direction: column;
 		overflow-y: scroll;
+		scrollbar-width: none; /* For Firefox */
+    	-ms-overflow-style: none;  /* For Internet Explorer and Edge */
 	}
+
+	/* For WebKit browsers (Chrome, Safari) */
+	.catalog::-webkit-scrollbar {
+		display: none;
+	}
+
 
 	.catalog-list {
 		position: relative;
@@ -109,17 +123,21 @@
 		gap: 16px;
 	}
 
-	.zone-tip {
-	    position: absolute;
-	    color: rgb(0 0 0 / 20%);
-	    display: flex;
-	    width: 100%;
+	.catalog-empty-tip {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	    width: 100%; /* Changed from -webkit-fill-available */
 	    justify-content: center;
-	    height: -webkit-fill-available;
 	    align-items: center;
-	    font-size: 48px;
-	    font-weight: 100;
-		z-index: -1;
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    /*pointer-events: none;  Allow clicks to pass through */
+	    color: rgb(0 0 0 / 20%);
+	    font-size: 32px;
+	    font-weight: 200;
 	}
 
 

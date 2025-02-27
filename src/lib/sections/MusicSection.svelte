@@ -34,6 +34,7 @@
 	    	return playlists.find(({ id }) => id === id);
 	    },
 	    setPlaylist(item) {
+	    	console.log(item)
 	    	playlists = playlists.map((obj) =>
 	   			obj.id === item.id ? item : obj,
 	    	);
@@ -99,50 +100,75 @@
 <div class="section">
 	<div class="section-header">
 		<div class="section-header-label">
-			{#if !activePlaylist}
-		    	{ label }
-		    {:else}
-		    	<button
-		    		class="back-button"
-		    		onclick={() => activePlaylist = null}
-		    	>
-		    		{ label } 
-					</button>
-		    	/ { activePlaylist.name }
-		    {/if}
+		{#if !activePlaylist}
+		 	{ label }
+		{:else}
+			<button
+		   	class="back-button"
+		   	onclick={() => activePlaylist = null}
+		  >
+		   	{ label } 
+			</button>
+			<div class="section-header-label-text">
+				/ { activePlaylist.name }
+			</div>
+		   	
+		 {/if}
 		</div>
 		<div class="section-header-action">
-			{#if !activePlaylist}
-		    	<CatalogNew />
-		    {/if}
+		{#if !activePlaylist}
+		 	<CatalogNew />
+		{/if}
 			
 		</div>
 	</div>
 	{#if !activePlaylist}
-      <Catalog
-        playlists={playlists}
-      />
-    {:else}
-      <Player
-      	playlist={activePlaylist}
-      />
-    {/if}
+    <Catalog
+      playlists={playlists}
+    />
+  {:else}
+    <Player
+      playlist={activePlaylist}
+    />
+  {/if}
 </div>
 
 <style>
 
 	.section {
-		font-size: 24px;
+		
 		height: 100%;
+    max-height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 32px;
+		gap: 16px;
+
 	}
 
 	.section-header {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+	  display: grid;
+	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
+	  gap: 16px;
+	  padding-block: 16px;
+	  width: 100%;
+	}
+
+	.section-header-label {
+	  font-size: 32px;
+	  font-weight: 600;
+	  display: flex;
+	  align-items: center;
+	  max-width: 70%; /* Reduced from 80% */
+	  min-width: 0; /* Critical for flex items with text overflow */
+	  overflow: hidden;
+	}
+
+
+	.section-header-label-text {
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  min-width: 0; /* Important for text overflow to work in flex containers */
 	}
 
 	button {
@@ -151,7 +177,9 @@
 	}
 
 	.back-button {
-		font-size: 24px;
+		font-size: 32px;
+		font-weight: 600;
+		text-decoration: underline;
 	}
 
 	.back-button:hover {
@@ -160,7 +188,7 @@
 	}
 
 	.back-button::before {
-		content: "< ";
+		content: "";
 	}
 
 

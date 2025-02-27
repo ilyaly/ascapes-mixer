@@ -21,8 +21,7 @@
 			name: name,
 			description: item.description,
 			quantity: item.quantity,
-			tracks: [],
-			isActive: false
+			tracks: item.tracks,
 		})
 	}
 
@@ -31,7 +30,8 @@
 			id: item.id,
 			name: item.name,
 			description: description,
-			quantity: item.quantity
+			quantity: item.quantity,
+			tracks: item.tracks,
 		})
 	}
 
@@ -67,18 +67,31 @@
 
 <div class="playlist">
 	<div class="playlist-header">
-		<input
-			class="playlist-name"
-	        type="text"
-	        name="name"
-	        required
-	        minlength="128"
-	        maxlength="128"
-	        autocomplete="off"
-	        placeholder="Enter playlist name"
-	        bind:value={name}
-	        onchange={handleNameChange}
-	    />
+		<div class="playlist-meta">
+			<input
+				class="playlist-name"
+		        type="text"
+		        name="name"
+		        required
+		        minlength="128"
+		        maxlength="128"
+		        autocomplete="off"
+		        placeholder="Enter playlist name"
+		        bind:value={name}
+		        onchange={handleNameChange}
+		    />
+		    <textarea 
+				class="playlist-description" 
+				name="description" 
+				rows="2" 
+				cols="33"
+				bind:value={description}
+				onchange={handleDescriptionChange}
+				placeholder="Enter playlist description"
+			>
+			</textarea>
+		</div>
+
 
 	    <button 
 	    	class="button"
@@ -87,16 +100,8 @@
 			<OpenListIcon />
 		</button>
 	</div>
-	<textarea 
-		class="playlist-description" 
-		name="description" 
-		rows="2" 
-		cols="33"
-		bind:value={description}
-		onchange={handleDescriptionChange}
-		placeholder="Enter playlist description"
-	>
-	</textarea>
+
+	
 
 	<div class="playlist-footer">
 		<span
@@ -123,20 +128,30 @@
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
-		border: 1px solid black;
+		border: 1px solid #0000004d;
 		border-radius: 4px;
 		background-color: #fff;
 	}
 
 	.playlist:hover {
-		
+		background-color: #0000000d;
+
 	}
+
 
 	.playlist-header {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+		align-items: flex-start;
+		gap: 16px;
+	}
 
+	.playlist-meta {
+		display: flex;
+    	flex-direction: column;
+    	gap: 8px;
+    	width: 100%;
 	}
 
 	.playlist-name {
@@ -147,10 +162,6 @@
 		border: none;
 		border-radius: 4px;
 		width: -webkit-fill-available;
-	}
-
-	.playlist-name:hover {
-		background-color: #0000000d;
 	}
 
 	.playlist-description {
@@ -205,5 +216,17 @@
 	    font-weight: <weight>;
 	    font-style: normal;
 	    font-variation-settings: "wdth" 100;
+	}
+
+	input, textarea:hover {
+	    /*cursor: default;*/
+	}
+
+	input, textarea:focus {
+		/*width: -webkit-fill-available;*/
+	    border: 0px solid blue; /* Green border on focus */
+	    background-color: #fff;
+	    border-radius: 4px;
+	    outline: none; /* Remove default outline */
 	}
 </style>

@@ -1,13 +1,11 @@
 <script>
   import { onMount } from "svelte";
   import { setContext, getContext } from "svelte";
-
   import Playlist from "../playlist/Playlist.svelte";
   import Playback from "../playback/Playback.svelte";
-
-
+  
   let { playlist } = $props();
-
+  
   let currentTrackState = $state({
     id: null,
     index: null,
@@ -15,7 +13,7 @@
     author: null,
     path: null
   });
-
+  
   let playbackState = $state({
     url: null,
     duration: 0,
@@ -24,12 +22,12 @@
     isReady: false,
     isPlaying: false
   });
-
+  
   let playbackModeState = $state({
     isRepeat: false,
     isShuffle: false
   });
-
+  
   setContext("currentTrack", {
     getCurrentTrack() {
       return currentTrackState;
@@ -68,7 +66,7 @@
       currentTrackState.path = path;
     },
   });
-
+  
   setContext("playback", {
     getPlayback() {
       return playbackState;
@@ -113,7 +111,7 @@
       playbackState.isPlaying = bool;
     },
   });
-
+  
   setContext("playbackMode", {
     getPlaybackMode() {
       return playbackModeState;
@@ -130,31 +128,38 @@
     setPlaybackModeIsRepeat(bool) {
       playbackModeState.isRepeat = bool;
     },
-
     setPlaybackModeIsShuffle(bool) {
       playbackModeState.isShuffle = bool;
     },
   });
-
-
-
-
 </script>
 
 <div class="player">
-  <Playlist 
-    playlist={playlist}
-  />
-  <Playback />
+  <div class="playlist-container">
+    <Playlist playlist={playlist} />
+  </div>
+  <div class="playback-container">
+    <Playback />
+  </div>
 </div>
 
 <style>
   .player {
-    height: 100%;
-    width: -webkit-fill-available;
     display: flex;
-    align-items: stretch;
-    justify-content: start;
     flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+    box-sizing: border-box;
+  }
+  
+  .playlist-container {
+    flex: 1; /* Take up available space */
+    min-height: 0; /* Allow flex container to shrink below content size */
+    overflow: auto; /* Add scrolling to playlist only */
+  }
+  
+  .playback-container {
+    flex-shrink: 0; /* Prevent playback from shrinking */
   }
 </style>

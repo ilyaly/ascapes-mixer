@@ -170,7 +170,7 @@
   ondrop={preventDefault(handleDrop)}
 >
   {#if items && items.length === 0}
-    <span class="drag-zone-tip">Drop audio files here</span>
+    <span class="empty-pads-tip">Drop audio files here</span>
   {:else}
     <section
       class="samples"
@@ -207,18 +207,25 @@
     display: grid;
     grid-template-columns: 33% 33% 33%;
     gap: 8px;
+
+    justify-content: space-between;
+    justify-items: start;
   }
 
-  .drag-zone-tip {
-    position: absolute;
-    color: rgb(0 0 0 / 20%);
+
+
+  .empty-pads-tip {
     display: flex;
-    width: 100%;
+    width: 100%; /* Changed from -webkit-fill-available */
     justify-content: center;
-    height: -webkit-fill-available;
     align-items: center;
-    font-size: 48px;
-    font-weight: 100;
-    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Allow clicks to pass through */
+    color: rgb(0 0 0 / 20%);
+    font-size: 32px;
+    font-weight: 200;
   }
 </style>

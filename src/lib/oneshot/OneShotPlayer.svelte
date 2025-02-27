@@ -60,10 +60,18 @@
 <style>
   .one-shot-player {
     height: 100%;
-    width: -webkit-fill-available;
+    width: 100%;
     display: flex;
     align-items: stretch;
     justify-content: start;
     flex-direction: column;
+    overflow: scroll;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  }
+
+  /* For WebKit browsers (Chrome, Safari) */
+  .one-shot-player::-webkit-scrollbar {
+    display: none;
   }
 </style>

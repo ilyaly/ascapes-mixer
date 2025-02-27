@@ -1,27 +1,26 @@
 <script>
   import { getContext } from "svelte";
 
-  let currentTrack = getContext("currentTrack");
+  let { name } = $props();
+
 </script>
 
 <div class="audio-info">
-  <span class="audio-name">{currentTrack.getCurrentTrackName()}</span>
+  <span class="audio-name">{name}</span>
 </div>
 
 <style>
   .audio-info {
     width: 100%;
-    height: 64px;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
   .audio-name {
-    font-size: 14px;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
   }
 
-  .artist-name {
-    font-size: 12px;
-  }
 </style>

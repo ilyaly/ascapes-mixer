@@ -1,12 +1,13 @@
 <script>
 	import { onMount } from "svelte";
-  import { setContext, getContext } from "svelte";
+  	import { setContext, getContext } from "svelte";
 
-  import Catalog from "../catalog/Catalog.svelte";
-  import CatalogNew from "../catalog/CatalogNew.svelte"
-  import OneShotPlayer from "../oneshot/OneShotPlayer.svelte";
+  	import Catalog from "../catalog/Catalog.svelte";
+  	import CatalogNew from "../catalog/CatalogNew.svelte"
+  	import OneShotPlayer from "../oneshot/OneShotPlayer.svelte";
+  	import OpenListIcon from "../icons/OpenListIcon.svelte"
 
-  import {
+  	import {
 	    registerStore,
 	    writeData,
 	    readData,
@@ -15,7 +16,6 @@
 	} from "../utils/indexeddb.js";
 
 	let { label, dbName, dbState, storeName } = $props();
-
 
 	let isReady = $state(false);
 	let playlists = $state([]);
@@ -34,6 +34,7 @@
 	    	return playlists.find(({ id }) => id === id);
 	    },
 	    setPlaylist(item) {
+	    	console.log(item)
 	    	playlists = playlists.map((obj) =>
 	   			obj.id === item.id ? item : obj,
 	    	);
@@ -46,6 +47,7 @@
 		},
 		setActivePlaylist(playlist) {
 			activePlaylist = playlist;
+			playlist.quantity = playlist.tracks.length;
 			playlists = playlists.map((obj) => 
 				obj.id === activePlaylist.id ? activePlaylist : obj
 			);
@@ -98,50 +100,75 @@
 <div class="section">
 	<div class="section-header">
 		<div class="section-header-label">
-			{#if !activePlaylist}
-		    	{ label }
-		    {:else}
-		    	<button
-		    		class="back-button"
-		    		onclick={() => activePlaylist = null}
-		    	>
-		    		{ label } 
-					</button>
-		    	/ { activePlaylist.name }
-		    {/if}
+		{#if !activePlaylist}
+		 	{ label }
+		{:else}
+			<button
+		   	class="back-button"
+		   	onclick={() => activePlaylist = null}
+		  >
+		   	{ label } 
+			</button>
+			<div class="section-header-label-text">
+				/ { activePlaylist.name }
+			</div>
+		   	
+		 {/if}
 		</div>
 		<div class="section-header-action">
-			{#if !activePlaylist}
-		    	<CatalogNew />
-		    {/if}
+		{#if !activePlaylist}
+		 	<CatalogNew />
+		{/if}
 			
 		</div>
 	</div>
 	{#if !activePlaylist}
-      <Catalog
-        playlists={playlists}
-      />
+    <Catalog
+      playlists={playlists}
+    />
   {:else}
-      <OneShotPlayer
-      	playlist={activePlaylist}
-      />
+    <OneShotPlayer
+      playlist={activePlaylist}
+    />
   {/if}
 </div>
 
 <style>
 
 	.section {
-		font-size: 24px;
+		
 		height: 100%;
+    max-height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 32px;
+		gap: 16px;
+
 	}
 
 	.section-header {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
+	  display: grid;
+	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
+	  gap: 16px;
+	  padding-block: 16px;
+	  width: 100%;
+	}
+
+	.section-header-label {
+	  font-size: 32px;
+	  font-weight: 600;
+	  display: flex;
+	  align-items: center;
+	  max-width: 70%; /* Reduced from 80% */
+	  min-width: 0; /* Critical for flex items with text overflow */
+	  overflow: hidden;
+	}
+
+
+	.section-header-label-text {
+	  white-space: nowrap;
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  min-width: 0; /* Important for text overflow to work in flex containers */
 	}
 
 	button {
@@ -150,7 +177,9 @@
 	}
 
 	.back-button {
-		font-size: 24px;
+		font-size: 32px;
+		font-weight: 600;
+		text-decoration: underline;
 	}
 
 	.back-button:hover {
@@ -159,7 +188,11 @@
 	}
 
 	.back-button::before {
-		content: "< ";
+		content: "";
 	}
+
+
+
+
 	
 </style>
