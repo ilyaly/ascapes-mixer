@@ -1,5 +1,19 @@
 # Change Log
 
+## 0.2.0 2025.02.27
+
+### PLEASE NOTE
+
+**Old playlists will not be saved after installing the new version of the application.**  
+
+### Features
+
+- Added the ability to create and manage multiple playlists in every section.
+  - Playlist creation  
+  - Playlist name and description management  
+  - Display of the number of tracks in a playlist  
+  - Playlist reordering  
+
 ## 0.1.0 2025.02.19
 
 ### Features
