@@ -1,8 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import Catalogs from "../lib/catalog/Catalogs.svelte";
-  import Player from "../lib/player/Player.svelte";
-  import OneShotPlayer from "../lib/oneshot/OneShotPlayer.svelte";
+
+  import MusicSection from "../lib/sections/MusicSection.svelte";
+  import AmbientSection from "../lib/sections/AmbientSection.svelte";
+  import EffectsSection from "../lib/sections/EffectsSection.svelte";
+
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
   import { exists, mkdir, BaseDirectory } from "@tauri-apps/plugin-fs";
 
@@ -12,7 +14,7 @@
 
   let ambientStoreName = "ambient-tracks";
 
-  let oneShotsStoreName = "oneshot-tracks";
+  let effectsStoreName = "oneshot-tracks";
 
   let dbState = $state({
     isReady: false,
@@ -26,7 +28,7 @@
     try {
       await registerStore(dbName, musicStoreName);
       await registerStore(dbName, ambientStoreName);
-      await registerStore(dbName, oneShotsStoreName);
+      await registerStore(dbName, effectsStoreName);
       dbState.isReady = true;
 
       let audioDir = await exists("audio", {
@@ -42,58 +44,37 @@
 
 
   let isMusicCatalogsMode = $state(true);
-  let isAmbientCatalogsMode = $state(false);
-  let isEffectsCatalogsMode = $state(false);
+  let isAmbientCatalogsMode = $state(true);
+  let isEffectsCatalogsMode = $state(true);
 
 </script>
 
-<!--
-<button
-		onclick={ () => { deleteDatabase(dbName) }}
-	>
-		DELETE DATABSE
-</button>
--->
 <div class="container">
   <div class="music">
-    {#if isMusicCatalogsMode}
-
-      <Catalogs />
-    {:else}
-      <Player
-        label={"Music"}
-        {dbName}
-        {dbState}
-        storeName={musicStoreName}
-      />
-    {/if}
+    <MusicSection
+      label={"Music"}
+      {dbName}
+      {dbState}
+      storeName={musicStoreName}
+    />
   </div>
 
   <div class="ambient">
-    {#if isAmbientCatalogsMode}
-      <Catalogs />
-    {:else}
-        <Player
-          label={"Ambient"}
-          {dbName}
-          {dbState}
-          storeName={ambientStoreName} 
-        />
-    {/if}
+    <AmbientSection
+      label={"Ambient"}
+      {dbName}
+      {dbState}
+      storeName={ambientStoreName}
+    />
   </div>
 
   <div class="one-shots">
-    {#if isEffectsCatalogsMode}
-      <Catalogs />
-    {:else}
-      
-        <OneShotPlayer
-          label={"Sound effects"}
-          {dbName}
-          {dbState}
-          storeName={oneShotsStoreName}
-        />
-    {/if}
+    <EffectsSection
+      label={"Effects"}
+      {dbName}
+      {dbState}
+      storeName={effectsStoreName}
+    />
   </div>
   
   
@@ -114,11 +95,12 @@
   }
 
   .container {
-    height: 100vh;
+    height:100vh;
+    max-height:100vh;
     display: grid;
     grid-template-columns: 1fr 0fr 1fr;
-    grid-template-rows: 0.3fr 0.3fr 1fr;
-    gap: 8px 8px;
+    grid-template-rows: 0.45fr 0.45fr 1fr;
+    gap: 24px 8px;
     grid-template-areas:
       "music . one-shots"
       "music . one-shots"
@@ -128,10 +110,11 @@
 
   .container .music,
   .container .ambient {
-    /* Allow scrolling within these containers if the content overflows */
+
+    /* Allow scrolling within these containers if the content overflows 
     overflow-y: auto; /* Enables vertical scrolling */
-    -ms-overflow-style: none; /* For Internet Explorer 10+ */
-    scrollbar-width: none; /* For Firefox */
+    /*-ms-overflow-style: none; /* For Internet Explorer 10+ */
+    /*scrollbar-width: none; /* For Firefox */
   }
 
   .container .music {
@@ -139,8 +122,8 @@
     /* Style the first container */
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 
   .container .ambient {
@@ -148,20 +131,17 @@
     /* Style the first container */
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 
   .container .one-shots {
     grid-area: one-shots;
-    overflow-y: auto; /* Allow scrolling if content overflows in the bottom container */
-    /* You can also apply height if necessary to control the height of the bottom container */
-
     /* Style the bottom container */
     height: -webkit-fill-available;
     width: -webkit-fill-available;
     border: 1px solid #bdbdbd;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 0px;
+    padding: 16px;
   }
 </style>

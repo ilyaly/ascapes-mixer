@@ -2,11 +2,9 @@
   import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
   /*
-
-	When we adding a track to the list we have to make it data 
-	like other with the isPlaying property.
-
-	*/
+  When we adding a track to the list we have to make it data 
+  like other with the isPlaying property.
+  */
   import { getContext } from "svelte";
 
   import { flip } from "svelte/animate";
@@ -17,24 +15,51 @@
   import PlayIcon from "../icons/PlayIcon.svelte";
   import PauseIcon from "../icons/PauseIcon.svelte";
 
+  let { playlist } = $props();
+
   let items = $state([]);
 
-  let playlist = getContext("playlist");
+  let activePlaylistState = getContext("activePlaylist");
+  let playlistsState = getContext("playlists");
+  let currentTrackState = getContext("currentTrack");
 
   $effect(() => {
-    items = playlist.getPlaylist();
+    items = playlist.tracks;
   });
 
+  //ToDo; So basically we pass only tracks here instead of passing the whole list of playlists
   function updateItems() {
-    let itemsSnapshot = $state.snapshot(items);
+      let itemsSnapshot = $state.snapshot(items);
 
-    for (let i = 0; i < itemsSnapshot.length; i++) {
-      itemsSnapshot[i].index = i;
-    }
-    items = itemsSnapshot;
-    playlist.setPlaylist(items);
-  }
+      for (let i = 0; i < itemsSnapshot.length; i++) {
+        itemsSnapshot[i].index = i;
+      }
 
+
+      items = itemsSnapshot;
+
+      activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: items.length,
+        tracks: items
+      })
+
+      playlistsState.setPlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: items.length,
+        tracks: items
+      })
+  };
+
+  const dropFromOthersDisabled = true;
   const flipDurationMs = 100;
   const dropTargetStyle = {
     outline: "rgba(0, 0, 255, 0.0) solid 1px",
@@ -82,15 +107,6 @@
     }
   }
 
-  /*
-    Component nesting with the dnd action library, actually caused by animation:flip
-
-    	https://svelte.dev/playground/028674733f67409c94bd52995d5906f1?version=3.59.2
-
-    	https://github.com/sveltejs/svelte/issues/7209
-    */
-
-  /* DRAG AND DROP FILES TRY */
 
   let files = $state([]);
 
@@ -159,89 +175,94 @@
 </script>
 
 <div class="playlist">
-  <!--
-	<PlaylistDropNew
-		onFilesDrop={handleFilesDrop}
-
-	/>
-	-->
+  {#if items && items.length === 0}
+    <span class="playlist-empty-tip">Drop audio files here</span>
+  {/if}
   <div
-    class="drag-zone {isDragging ? 'highlight' : ''}"
+    class="playlist-drag-zone {isDragging ? 'highlight' : ''}"
     ondragover={preventDefault(handleDragOver)}
     ondragenter={preventDefault(handleDragEnter)}
     ondragleave={preventDefault(handleDragLeave)}
     ondrop={preventDefault(handleDrop)}
   >
-    <span class="drag-zone-tip">Drop .mp3 or .waw files here.</span>
-    {#if items.length === 0}{:else}
-      <section
-        class="playlist-zone"
-        use:dndzone={{ items, flipDurationMs, dropTargetStyle }}
-        onconsider={handleDndConsider}
-        onfinalize={handleDndFinalize}
-      >
-        {#each items as item, index (item.id)}
-          <div
-            class="playlist-item-wrapper"
-            animate:flip={{
-              duration: flipDurationMs,
-              css: "rgba(0, 255, 255, 0.2) solid 10px",
-            }}
-          >
-            <PlaylistItem {item} />
-          </div>
-        {/each}
-      </section>
-    {/if}
+    
+  {#if items }
+    <section
+      class="playlist-items-zone"
+      use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
+      onconsider={handleDndConsider}
+      onfinalize={handleDndFinalize}
+    >
+      {#each items as item, index (item.id)}
+        <div
+          class="playlist-item-wrapper"
+          animate:flip={{
+            duration: flipDurationMs,
+            css: "rgba(0, 255, 255, 0.2) solid 10px",
+          }}
+        >
+          <PlaylistItem {item} />
+        </div>
+      {/each}
+    </section>
+  {/if}
   </div>
 </div>
 
 <style>
   .playlist {
-    height: 100%;
-    overflow: auto;
-    scrollbar-width: none; /* Hides the scrollbar */
+    display: flex;
+    flex-direction: column; /* Ensure items stack vertically */
+    height: 100%; /* Changed from -webkit-fill-available */
+    box-sizing: border-box;
+    overflow-y: auto; /* Changed from scroll to auto */
+    position: relative; /* Add positioning context */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
   }
 
-  /* Hide scrollbar for webkit browsers (Chrome, Safari) */
+  /* For WebKit browsers (Chrome, Safari) */
   .playlist::-webkit-scrollbar {
     display: none;
   }
 
-  .playlist-zone {
-    border-radius: 8px;
-    /*
-		padding: 16px;
-		margin: 8px;
-		*/
+  .playlist-empty-tip {
+    display: flex;
+    width: 100%; /* Changed from -webkit-fill-available */
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Allow clicks to pass through */
+    color: rgb(0 0 0 / 20%);
+    font-size: 32px;
+    font-weight: 200;
+  }
+
+  .playlist-drag-zone {
+    width: 100%; /* Changed from -webkit-fill-available */
+    height: 100%; /* Changed from -webkit-fill-available */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .playlist-items-zone {
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
   }
 
   .playlist-item-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .drag-zone {
-    position: relative;
-    height: 100%;
-  }
-
-  .drag-zone.highlight {
-    /*background-color: #0000000d;*/
-  }
-
-  .drag-zone-tip {
-    position: absolute;
-    color: rgb(0 0 0 / 20%);
-    display: flex;
     width: 100%;
-    justify-content: center;
-    height: -webkit-fill-available;
-    align-items: center;
-    font-size: 24px;
-    z-index: -1;
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+
+  /* Styling for the highlight state during drag */
+  .highlight {
+    background-color: rgba(0, 0, 255, 0.05);
+    border: 2px dashed rgba(0, 0, 255, 0.2);
   }
 </style>

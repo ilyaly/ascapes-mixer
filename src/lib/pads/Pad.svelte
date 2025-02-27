@@ -10,8 +10,8 @@
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
   let { item } = $props();
-
-  let playlist = getContext("playlist");
+  $inspect(item)
+  let activePlaylistState = getContext("activePlaylist");
 
   let name = $state($state.snapshot(item.name));
 
@@ -27,7 +27,7 @@
   $effect(async () => {
     if (!isReady) {
       try {
-        let objectURL = await readFileFromDisk(item.path);
+        let objectURL = await readFileFromDisk($state.snapshot(item.path));
         url = objectURL;
         isReady = true;
       } catch (error) {
@@ -46,18 +46,32 @@
     return objectURL;
   }
 
-  function handlePlaybackEnded(argument) {
+  function handlePlaybackEnded() {
     isPlaying = false;
     currentTime = 0;
   }
 
-  function handlePlay(argument) {
+  function handleClick() {
+    if (!isPlaying) {
+      handlePlay();
+    } else {
+      handleStop()
+    }
+  }
+
+  function handlePlay() {
     isPlaying = true;
     audioRef.play();
   }
 
-  function handleNameChange(argument) {
-    playlist.setPlaylistTrack({
+  function handleStop() {
+    isPlaying = false;
+    audioRef.pause();
+    currentTime = 0.0;
+  }
+
+  function handleNameChange() {
+    activePlaylistState.setActivePlaylistTrack({
       id: item.id,
       index: item.index,
       name: name,
@@ -67,16 +81,27 @@
   }
 
   async function handleDelete() {
-    let tempItems = $state.snapshot(playlist.getPlaylist());
+    let playlist = $state.snapshot(activePlaylistState.getActivePlaylist());
+    let tempItems = playlist.tracks;
+
     tempItems = tempItems.filter((track) => track.id !== item.id);
 
     for (let i = 0; i < tempItems.length; i++) {
       tempItems[i].index = i;
     }
 
-    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
+    console.log(tempItems)
 
-    playlist.setPlaylist(tempItems);
+    activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: tempItems.length,
+        tracks: tempItems
+    });
+    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
 </script>
 
@@ -86,10 +111,15 @@
       class="button sample-button {isReady ? '' : 'disabled'} {isPlaying
         ? ''
         : ''}"
-      onclick={handlePlay}
+      onclick={handleClick}
     >
     </button>
-    <div class="progress" style:width="{(currentTime / duration) * 100}%"></div>
+    <div 
+      class="progress" 
+      style:width="{(currentTime / duration) * 100}%"
+      onclick={handleClick}
+    >
+    </div>
   </div>
   <div class="pad-footer">
     <input
@@ -160,7 +190,12 @@
   }
 
   .progress:hover {
-    cursor: not-allowed;
+    cursor: pointer;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(150, 0, 0, 0.2) 0%
+    );
   }
 
   .button {

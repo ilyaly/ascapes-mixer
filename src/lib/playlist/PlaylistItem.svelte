@@ -16,20 +16,28 @@
   let isMouseOver = $state(false);
   let isFocus = $state(false);
 
-  let playlist = getContext("playlist");
-  let currentTrack = getContext("currentTrack");
-  let playback = getContext("playback");
+  let activePlaylistState = getContext("activePlaylist");
+  let currentTrackState = getContext("currentTrack");
+  let playbackState = getContext("playback");
 
   $effect(() => {
-    if (currentTrack.getCurrentTrack().id === item.id) {
+    if (currentTrackState.getCurrentTrack().id === item.id) {
       isCurrentTrack = true;
     } else {
       isCurrentTrack = false;
     }
   });
 
+  $effect(() => {
+    if (item.index) {
+      if (isCurrentTrack) {
+        currentTrackState.setCurrentTrackIndex(item.index);
+      }
+    }
+  })
+
   function handleNameChange() {
-    playlist.setPlaylistTrack({
+    activePlaylistState.setActivePlaylistTrack({
       id: item.id,
       index: item.index,
       name: name,
@@ -38,12 +46,12 @@
     });
 
     if (isCurrentTrack) {
-      currentTrack.setCurrentTrackName(name);
+      currentTrackState.setCurrentTrackName(name);
     }
   }
 
   function handlePlay() {
-    currentTrack.setCurrentTrack({
+    currentTrackState.setCurrentTrack({
       id: item.id,
       index: item.index,
       name: item.name,
@@ -51,11 +59,12 @@
       url: item.url,
     });
 
-    playback.setPlaybackPlaying(true);
+    playbackState.setPlaybackPlaying(true);
+    
   }
 
   function handlePause() {
-    currentTrack.setCurrentTrack({
+    currentTrackState.setCurrentTrack({
       id: item.id,
       index: item.index,
       name: item.name,
@@ -63,21 +72,34 @@
       url: item.url,
     });
 
-    playback.setPlaybackPlaying(false);
+    playbackState.setPlaybackPlaying(false);
   }
 
   async function handleDelete() {
-    let tempItems = $state.snapshot(playlist.getPlaylist());
+    let playlist = $state.snapshot(activePlaylistState.getActivePlaylist());
+    let tempItems = playlist.tracks;
+
     tempItems = tempItems.filter((track) => track.id !== item.id);
 
     for (let i = 0; i < tempItems.length; i++) {
       tempItems[i].index = i;
     }
 
-    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
+    console.log(tempItems)
 
-    playlist.setPlaylist(tempItems);
-    playback.setPlaybackPlaying(false);
+    activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: tempItems.length,
+        tracks: tempItems
+    });
+
+    playbackState.setPlaybackPlaying(false);
+
+    await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
 </script>
 
@@ -91,7 +113,7 @@
   }}
 >
   <div class="playlist-item-info">
-    {#if !isCurrentTrack || !playback.getPlayback().isPlaying}
+    {#if !isCurrentTrack || !playbackState.getPlayback().isPlaying}
       <button class="button play-button" onclick={handlePlay}>
         <PlayIcon />
       </button>
@@ -120,10 +142,11 @@
   </div>
 
   <div class="playlist-item-actions">
-    {#if isMouseOver}
-      <button class="button delete-button" onclick={handleDelete}>
+    <button class="button delete-button" onclick={handleDelete}>
         <DeleteIcon />
       </button>
+    {#if isMouseOver}
+      
     {/if}
   </div>
 </div>

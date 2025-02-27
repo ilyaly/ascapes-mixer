@@ -7,14 +7,49 @@
 
   import Pad from "./Pad.svelte";
 
+  let { playlist } = $props();
   let items = $state([]);
 
-  let playlist = getContext("playlist");
+  let activePlaylistState = getContext("activePlaylist");
+  let playlistsState = getContext("playlists");
 
   $effect(() => {
-    items = playlist.getPlaylist();
+    items = playlist.tracks;
   });
 
+  //ToDo; So basically we pass only tracks here instead of passing the whole list of playlists
+  function updateItems() {
+      let itemsSnapshot = $state.snapshot(items);
+
+      for (let i = 0; i < itemsSnapshot.length; i++) {
+        itemsSnapshot[i].index = i;
+      }
+
+
+      items = itemsSnapshot;
+
+      activePlaylistState.setActivePlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: items.length,
+        tracks: items
+      })
+
+      playlistsState.setPlaylist({
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        index: playlist.index,
+        isActive: playlist.isActive,
+        quantity: items.length,
+        tracks: items
+      })
+  };
+
+  const dropFromOthersDisabled = true;
   const flipDurationMs = 100;
   const dropTargetStyle = {
     outline: "rgba(0, 0, 255, 0.0) solid 1px",
@@ -26,16 +61,6 @@
 
   function handleDndFinalize(e) {
     items = e.detail.items;
-  }
-
-  function updateItems() {
-    let itemsSnapshot = $state.snapshot(items);
-
-    for (let i = 0; i < itemsSnapshot.length; i++) {
-      itemsSnapshot[i].index = i;
-    }
-    items = itemsSnapshot;
-    playlist.setPlaylist(items);
   }
 
   async function handleFilesDrop(files) {
@@ -120,7 +145,7 @@
 
         try {
           const uint8Array = await readFileAsUint8Array(file);
-          await writeFile(`./audio/${file.name}`, uint8Array, {
+          await writeFile(`audio/${file.name}`, uint8Array, {
             baseDir: BaseDirectory.AppLocalData,
           });
         } catch (error) {
@@ -144,46 +169,34 @@
   ondragleave={preventDefault(handleDragLeave)}
   ondrop={preventDefault(handleDrop)}
 >
-  <section
-    class="samples"
-    use:dndzone={{ items, flipDurationMs, dropTargetStyle }}
-    onconsider={handleDndConsider}
-    onfinalize={handleDndFinalize}
-  >
-    {#each items as item, index (item.id)}
-      <div
-        class="playlist-item-wrapper"
-        animate:flip={{
-          duration: flipDurationMs,
-          css: "rgba(0, 255, 255, 0.2) solid 10px",
-        }}
-      >
-        <Pad {item} />
-      </div>
-    {/each}
-  </section>
+  {#if items && items.length === 0}
+    <span class="empty-pads-tip">Drop audio files here</span>
+  {:else}
+    <section
+      class="samples"
+      use:dndzone={{ items, flipDurationMs, dropTargetStyle, dropFromOthersDisabled }}
+      onconsider={handleDndConsider}
+      onfinalize={handleDndFinalize}
+    >
+      {#each items as item, index (item.id)}
+        <div
+          class="playlist-item-wrapper"
+          animate:flip={{
+            duration: flipDurationMs,
+            css: "rgba(0, 255, 255, 0.2) solid 10px",
+          }}
+        >
+          <Pad {item} />
+        </div>
+      {/each}
+    </section>
+  {/if}
 </div>
-
-<!--
-<div class="samples">
-	{#each samples as sample}
-		<button
-			class="sample-button"
-		>
-			<span
-				class="sample-name"
-			>
-				{sample}
-			</span>
-		</button>
-		
-	{/each}
-</div>
--->
 
 <style>
   .drag-zone {
-    height: 100%;
+    position: relative;
+    height: -webkit-fill-available;
   }
 
   .drag-zone.highlight {
@@ -194,5 +207,25 @@
     display: grid;
     grid-template-columns: 33% 33% 33%;
     gap: 8px;
+
+    justify-content: space-between;
+    justify-items: start;
+  }
+
+
+
+  .empty-pads-tip {
+    display: flex;
+    width: 100%; /* Changed from -webkit-fill-available */
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Allow clicks to pass through */
+    color: rgb(0 0 0 / 20%);
+    font-size: 32px;
+    font-weight: 200;
   }
 </style>

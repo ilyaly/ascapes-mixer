@@ -10,11 +10,12 @@
 
   import { exists, readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
-  let playlist = getContext("playlist");
-  let currentTrack = getContext("currentTrack");
-  let playback = getContext("playback");
-  let playbackMode = getContext("playbackMode");
+  let activePlaylistState = getContext("activePlaylist");
+  let currentTrackState = getContext("currentTrack");
+  let playbackState = getContext("playback");
+  let playbackModeState = getContext("playbackMode");
 
+  let fakeCurrentTime = $state(0); //Needed to prevent currentTime is being set twice on seeking
   let currentTime = $state(0);
   let currentVolume = $state(1);
   let duration = $state(0);
@@ -22,11 +23,12 @@
   let audioRef;
 
   $effect(() => {
-    playback.setPlaybackTime(currentTime);
+    playbackState.setPlaybackTime(currentTime);
+    fakeCurrentTime = currentTime;
   });
 
   $effect(() => {
-    playback.setPlaybackVolume(currentVolume);
+    playbackState.setPlaybackVolume(currentVolume);
     if (audioRef) {
       audioRef.volume = currentVolume;
     }
@@ -34,45 +36,50 @@
 
   $effect(() => {
     //Update playbackReady when track is changed
-    if (currentTrack.getCurrentTrackId()) {
-      playback.setPlaybackReady(false);
+    if (currentTrackState.getCurrentTrackPath()) {
+      playbackState.setPlaybackReady(false);
     }
   });
 
   $effect(async () => {
-    if (currentTrack.getCurrentTrackId() && !playback.getPlaybackReady()) {
+    //Load and update playbackReady if not
+    if (currentTrackState.getCurrentTrackPath() && !playbackState.getPlaybackReady()) {
       try {
         let objectURL = await readFileFromDisk(
-          currentTrack.getCurrentTrackPath(),
+          currentTrackState.getCurrentTrackPath(),
         );
-        playback.setPlaybackUrl(objectURL);
-        playback.setPlaybackReady(true);
+        playbackState.setPlaybackUrl(objectURL);
+        playbackState.setPlaybackReady(true);
       } catch (error) {
         console.error(`Error reading file fron disk: ${error}`);
       }
     }
   });
 
+  
+
   $effect(() => {
-    if (playback.getPlaybackReady()) {
-      audioRef.src = playback.getPlaybackUrl();
-      playback.setPlaybackTime(audioRef.currentTime);
-      playback.setPlaybackDuration(audioRef.duration);
+    if (playbackState.getPlaybackReady()) {
+      audioRef.src = playbackState.getPlaybackUrl();
+      playbackState.setPlaybackTime(audioRef.currentTime);
+      playbackState.setPlaybackDuration(audioRef.duration);
       audioRef.load();
     }
   });
 
   $effect(() => {
-    if (playback.getPlaybackReady() && playback.getPlaybackPlaying()) {
+    if (playbackState.getPlaybackReady() && playbackState.getPlaybackPlaying()) {
       audioRef.play();
     }
   });
 
   $effect(() => {
-    if (playback.getPlaybackReady() && !playback.getPlaybackPlaying()) {
+    if (playbackState.getPlaybackReady() && !playbackState.getPlaybackPlaying()) {
       audioRef.pause();
     }
   });
+
+
 
   function getRandomIntInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -89,11 +96,12 @@
   }
 
   function handlePlaybackSeek(progress) {
-    currentTime = (progress / 100) * duration;
+    fakeCurrentTime = (progress / 100) * duration;
   }
 
   function handlePlaybackSeekEnd(progress) {
     currentTime = (progress / 100) * duration;
+    fakeCurrentTime = (progress / 100) * duration;
   }
 
   function handleVolumeSeek(progress) {
@@ -105,40 +113,55 @@
   }
 
   function handlePlaybackEnded() {
-    let currentTrackIndex = currentTrack.getCurrentTrackIndex();
+    let currentTrackIndex = currentTrackState.getCurrentTrackIndex();
 
-    let currentPlaylist = $state.snapshot(playlist.getPlaylist());
+
+    let nextTrackIndex = currentTrackIndex + 1;
+    console.log(`Next track index: ${nextTrackIndex}`)
+
+    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
 
     let currentPlaylistLength = currentPlaylist.length;
 
-    let nextTrackIndex = currentTrackIndex + 1;
-    if (nextTrackIndex === currentPlaylistLength) {
-      nextTrackIndex = 0;
+    let nextTrack;
+
+    if (nextTrackIndex === currentPlaylist.length) {
+      nextTrack = currentPlaylist.find((obj) => obj.index === 0);
+    } else {
+      nextTrack = currentPlaylist.find(
+        (obj) => obj.index === currentTrackIndex + 1,
+      );
     }
 
-    if (playbackMode.getPlaybackModeIsShuffle()) {
+    if (playbackModeState.getPlaybackModeIsShuffle()) {
       nextTrackIndex = getRandomIntInRange(0, currentPlaylistLength - 1);
+      nextTrack = currentPlaylist[nextTrackIndex]
     }
 
-    if (playbackMode.getPlaybackModeIsRepeat()) {
+    if (playbackModeState.getPlaybackModeIsRepeat()) {
       nextTrackIndex = currentTrackIndex;
+      nextTrack = currentPlaylist[nextTrackIndex]
     }
 
-    let nextTrack = $state
-      .snapshot(playlist.getPlaylist())
-      .find((obj) => obj.index === nextTrackIndex);
-
+    console.log(nextTrack)
     if (nextTrack) {
-      currentTrack.setCurrentTrack(nextTrack);
+      currentTrackState.setCurrentTrack(nextTrack);
     }
+    
   }
 </script>
 
-<div class="player">
-  <div class="player-header">
-    {#if currentTrack.getCurrentTrack().name}
-      <PlaybackMeta />
-    {/if}
+<div class="playback">
+    
+  <div class="playback-header">
+    <PlaybackMeta
+        name={
+          currentTrackState.getCurrentTrack().name ? currentTrackState.getCurrentTrack().name : "-"
+        }
+    />
+  </div>
+  <div class="playback-body">
+    
     <PlaybackControl />
     <div class="volume-control">
       <button>
@@ -162,9 +185,9 @@
     max={100}
   />
 
-  {#if playback.getPlaybackUrl()}
+  {#if playbackState.getPlaybackUrl()}
     <audio
-      src={playback.getPlaybackUrl()}
+      src={playbackState.getPlaybackUrl()}
       bind:this={audioRef}
       bind:currentTime
       bind:duration
@@ -176,25 +199,30 @@
 </div>
 
 <style>
-  .player {
-    min-height: 80px;
-
-    margin-block: 8px;
-    padding: 16px;
+  .playback {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     border: 1px solid grey;
+    padding: 16px;
     border-radius: 8px;
   }
 
-  .player-header {
+  .playback-header {
+    min-height: 16px;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .playback-body {
+    display: flex;
+    flex-direction: row;
+    width: -webkit-fill-available;
+    justify-content: space-between;
   }
 
   .volume-control {
