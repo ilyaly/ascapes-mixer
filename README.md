@@ -1,43 +1,40 @@
-# Ascape Mixer
+# Ascape Mixer  
 
-![](./static/ascapes-mixer-preview.jpg)
+![](./static/ascapes-mixer-preview.jpg)  
 
-## About
+## About  
 
-An audio player and mixer designed for TTRPG actual play, enabling control of music, ambiance, and sound effects during gameplay.
+Ascape Mixer is an audio player and mixer designed for TTRPG actual play, allowing you to control music, ambiance, and sound effects seamlessly during gameplay.  
 
-### Technologies
+## Technologies  
 
-- Built with **Svelte 5.x** and **Tauri 2.x**.
+- Built with **Svelte 5.x** and **Tauri 2.x**.  
 
-### Features
+## Features  
 
-- Three dedicated players:
-  - **Music Playlist Player**
-  - **Ambience Playlist Player**
-  - **Sound Effects Sample Player**
-- Imported audio files are stored locally in `AppLocalData/audio/`.
-- Playlists are saved in **IndexedDB** for fast access and management.
+- Create and manage playlists for music, ambiance, and sound effects.  
+- Add tracks to playlists via drag-and-drop.  
+- Manage track aliases and reorder playlists.  
+- Control playback with options for repeat, shuffle, and volume adjustments.  
+- Mix music, ambiance, and sound effects in three dedicated players.  
+- Added tracks are stored in `%localappdata%/ascapes.mixer/audio/`.  
+- Playlist metadata is stored in IndexedDB.  
 
-## Using
+## Installation  
 
-1. Download the latest released installer for your OS from the releases page.
+1. Download the latest installer for your OS from the [Releases](#) page.  
+2. Run the installer and follow the instructions.  
+3. Launch the application.
+4. Create a playlist in a section of your interset and open it.  
+4. Drag and drop `.mp3` or `.wav` files into the playlist.  
 
-2. Run the installer and follow the instructions.
+## Development  
 
-3. Launch the application
-
-4. Drag and drop .mp3 of .waw files to the sections of your interset.
-
-## Developing
-
-To start the development clone the repo and:
+To set up the development environment, clone the repository and run:  
 
 ```bash
 npm install
-
 npm run tauri dev
-
 ```
 
 ## Building
