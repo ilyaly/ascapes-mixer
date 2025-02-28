@@ -25,8 +25,6 @@ Ascape Mixer is an audio player and mixer designed for TTRPG actual play, allowi
 1. Download the latest installer for your OS from the [Releases](#) page.  
 2. Run the installer and follow the instructions.  
 3. Launch the application.
-4. Create a playlist in a section of your interset and open it.  
-4. Drag and drop `.mp3` or `.wav` files into the playlist.  
 
 ## Development  
 
