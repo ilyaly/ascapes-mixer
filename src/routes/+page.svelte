@@ -47,7 +47,9 @@
   let isAmbientCatalogsMode = $state(true);
   let isEffectsCatalogsMode = $state(true);
 
+
 </script>
+
 
 <div class="container">
   <div class="music">

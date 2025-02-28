@@ -14,6 +14,7 @@
 
 	let name = $state(item.name);
 	let description = $state(item.description);
+	let isMouseOver = $state(false)
 
 	function handleNameChange() {
 		playlistsState.setPlaylist({
@@ -92,13 +93,13 @@
 			</textarea>
 		</div>
 
-
-	    <button 
-	    	class="button"
-	    	onclick={handleOpenPlaylist} 
-	    >
+		<button 
+		   	class="button"
+		   	onclick={handleOpenPlaylist} 
+		>
 			<OpenListIcon />
 		</button>
+	    
 	</div>
 
 	
@@ -138,6 +139,10 @@
 	.playlist:hover {
 		background-color: #f0f0ff;
 		
+	}
+
+	.playlist:hover button {
+		visibility: visible;
 	}
 
 
@@ -193,6 +198,7 @@
 	}
 
 	button {
+		visibility: hidden;
 		margin: 0;
 		padding: 0;
 		background: none;
