@@ -123,6 +123,7 @@
 
 <style>
 	.playlist {
+		font-family: "Roboto", serif;
 		height: fit-content;
 		padding: 16px;
 		display: flex;
@@ -131,11 +132,12 @@
 		border: 1px solid #0000004d;
 		border-radius: 4px;
 		background-color: #fff;
+		box-shadow: 0 0 8px 2px #0000001a;
 	}
 
 	.playlist:hover {
-		background-color: #0000000d;
-
+		background-color: #f0f0ff;
+		
 	}
 
 
@@ -211,7 +213,7 @@
 	}
 
 	input, textarea {
-		font-family: "Roboto", serif;
+
 	    text-overflow: ellipsis;
 	    width: 50% /*-webkit-fill-available*/;
 	    margin-block: 4px;

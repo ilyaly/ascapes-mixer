@@ -99,6 +99,7 @@
 
   /* Grid container */
   .container {
+    font-family: "Roboto", serif;
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two equal columns */

@@ -143,6 +143,7 @@
 
 <style>
   .playlist-item {
+    font-family: "Roboto", serif;
     width: -webkit-fill-available;
     display: flex;
     flex-direction: row;
@@ -156,7 +157,7 @@
   }
 
   .playlist-item:hover {
-    background-color: #0000000d;
+    background-color: #f0f0ff;
   }
 
   .active {
