@@ -22,7 +22,7 @@ Ascape Mixer is an audio player and mixer designed for TTRPG actual play, allowi
 
 ## Installation  
 
-1. Download the latest installer for your OS from the [Releases](#) page.  
+1. Download the latest installer for your OS from the [Releases](https://github.com/ilyaly/ascapes-mixer/releases) page.  
 2. Run the installer and follow the instructions.  
 3. Launch the application.
 
