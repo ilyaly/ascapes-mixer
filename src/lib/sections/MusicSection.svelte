@@ -136,7 +136,7 @@
 <style>
 
 	.section {
-		
+		font-family: "Roboto", serif;
 		height: 100%;
     max-height: 100%;
 		display: flex;
@@ -149,7 +149,7 @@
 	  display: grid;
 	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
 	  gap: 16px;
-	  padding-block: 16px;
+	  padding-block: 0px;
 	  width: 100%;
 	}
 
@@ -179,7 +179,7 @@
 	.back-button {
 		font-size: 32px;
 		font-weight: 600;
-		text-decoration: underline;
+		
 	}
 
 	.back-button:hover {

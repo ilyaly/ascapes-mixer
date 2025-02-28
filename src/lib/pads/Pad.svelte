@@ -7,6 +7,8 @@
   } from "@tauri-apps/plugin-fs";
   import { getContext } from "svelte";
 
+  import PlayIcon from "../icons/PlayIcon.svelte";
+  import PauseIcon from "../icons/PauseIcon.svelte";
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
   let { item } = $props();
@@ -51,20 +53,12 @@
     currentTime = 0;
   }
 
-  function handleClick() {
-    if (!isPlaying) {
-      handlePlay();
-    } else {
-      handleStop()
-    }
-  }
-
   function handlePlay() {
     isPlaying = true;
     audioRef.play();
   }
 
-  function handleStop() {
+  function handlePause() {
     isPlaying = false;
     audioRef.pause();
     currentTime = 0.0;
@@ -107,37 +101,39 @@
 
 <div class="pad">
   <div class="pad-header">
-    <button
-      class="button sample-button {isReady ? '' : 'disabled'} {isPlaying
-        ? ''
-        : ''}"
-      onclick={handleClick}
-    >
-    </button>
-    <div 
-      class="progress" 
-      style:width="{(currentTime / duration) * 100}%"
-      onclick={handleClick}
-    >
-    </div>
+    {#if !isPlaying}
+      <button class="button play-button" onclick={handlePlay}>
+        <PlayIcon size={50} />
+      </button>
+    {:else}
+      <button class="button pause-button" onclick={handlePause}>
+        <PauseIcon size={50}/>
+      </button>
+    {/if}
   </div>
   <div class="pad-footer">
-    <input
-      type="text"
-      name="name"
-      required
-      minlength="4"
-      maxlength="128"
-      autocomplete="off"
-      placeholder={name}
-      bind:value={name}
-      onchange={handleNameChange}
-    />
-    <button class="button delete-button" onclick={handleDelete}>
-      <DeleteIcon />
-    </button>
+    <div class="pad-footer-head">
+      <input
+        type="text"
+        name="name"
+        required
+        minlength="4"
+        maxlength="128"
+        autocomplete="off"
+        placeholder={name}
+        bind:value={name}
+        onchange={handleNameChange}
+      />
+      <button class="button delete-button" onclick={handleDelete}>
+        <DeleteIcon />
+      </button>
+    </div>
   </div>
-
+  <div 
+    class="progress" 
+    style:width="{(currentTime / duration) * 100}%"
+  >
+  </div>
   {#if url}
     <audio
       src={url}
@@ -153,54 +149,56 @@
 
 <style>
   .pad {
-    border: 1px solid #bdbdbd;
-    border-radius: 4px;
+    position: relative;
+    border: 1px solid #0000004d;
+    border-radius: 16px; 
   }
 
-  .pad:hover .pad-footer {
-    background-color: #0000000d;
+  .pad:hover {
+    background-color: #f0f0ff;
   }
+
 
   .pad-header {
-    position: relative; /* Necessary for positioning child elements inside it */
+
+    
     display: flex;
-    background-color: #0088ff1a;
+    justify-content: center;
+    min-height: 90px;
   }
 
   .pad-footer {
     display: flex;
-    flex-direction: row;
-    height: 80px;
+    min-height: 80px;
     align-items: flex-start;
+  }
+
+  .pad-footer-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 
   /* Progress bar */
   .progress {
-    position: absolute; /* Position it absolutely within the parent */
-    bottom: 0; /* Place it at the bottom of the parent div */
-    left: 0; /* Start from the left */
-    height: -webkit-fill-available; /* Set the height for the progress bar */
-    border-radius: 0px 4px 4px 0px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: -webkit-fill-available;
+    border-radius: 16px;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.2) 0%,
       rgba(33, 150, 243, 0.2) 0%
     );
-    /*transition: width 0.1s ease-in;  Smooth transition when updating the width */
-  }
-
-  .progress:hover {
-    cursor: pointer;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(150, 0, 0, 0.2) 0%
-    );
+    z-index: 1; /* Add this line to explicitly set a low z-index */
   }
 
   .button {
     background: none;
     border: none;
+    position: relative; /* Add this line */
+    z-index: 2; /* Add this line to ensure buttons are above the progress bar */
   }
 
   .sample-button {
@@ -213,6 +211,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+
   }
 
   .pad:hover .delete-button {
@@ -250,6 +249,7 @@
   }
 
   input {
+    font-family: "Roboto", serif;
     text-overflow: ellipsis;
     width: 100% /*-webkit-fill-available*/;
     margin-block: 4px;

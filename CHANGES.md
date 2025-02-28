@@ -1,18 +1,19 @@
-# Change Log
+# Change Log  
 
-## 0.2.0 2025.02.27
+## 0.2.1 (2025-02-28)  
 
-### PLEASE NOTE
+### IMPORTANT NOTICE  
 
-**Old playlists will not be saved after installing the new version of the application.**  
+**If you had version 0.1.0 installed, the application may not work properly after the update. To minimize potential issues, please uninstall the application and delete the `%localappdata%/ascapes.mixer/audio/` folder before installing the new version.**  
 
-### Features
+### Features  
 
-- Added the ability to create and manage multiple playlists in every section.
+- Added support for creating and managing multiple playlists in each section.  
   - Playlist creation  
   - Playlist name and description management  
   - Display of the number of tracks in a playlist  
   - Playlist reordering  
+
 
 ## 0.1.0 2025.02.19
 

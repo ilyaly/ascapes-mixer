@@ -200,14 +200,13 @@
   }
 
   .drag-zone.highlight {
-    background-color: #0000000d;
+    background-color: #f0f0ff;
   }
 
   .samples {
     display: grid;
-    grid-template-columns: 33% 33% 33%;
-    gap: 8px;
-
+    grid-template-columns: repeat(3, 1fr); /* Ensures three equal columns */
+    gap: 16px;
     justify-content: space-between;
     justify-items: start;
   }
