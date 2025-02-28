@@ -212,18 +212,37 @@
 
 	input, textarea {
 		font-family: "Roboto", serif;
-	    font-optical-sizing: auto;
-	    font-weight: <weight>;
-	    font-style: normal;
-	    font-variation-settings: "wdth" 100;
+	    text-overflow: ellipsis;
+	    width: 50% /*-webkit-fill-available*/;
+	    margin-block: 4px;
+	    padding-block: 4px;
+	    margin-inline: 4px;
+	    padding-inline: 4px;
+	    font-size: 16px;
+	    background: none;
+	    border: 0px solid grey; /* Green border on focus */
+	    border-radius: 4px;
+		outline: none; /* Remove default outline */
 	}
 
-	input, textarea:hover {
+	input:hover {
 	    /*cursor: default;*/
 	}
 
-	input, textarea:focus {
-		/*width: -webkit-fill-available;*/
+	textarea:hover {
+	    /*cursor: default;*/
+	}
+
+	input:focus {
+	    width: -webkit-fill-available;
+	    border: 0px solid blue; /* Green border on focus */
+	    background-color: #fff;
+	    border-radius: 4px;
+	    outline: none; /* Remove default outline */
+	}
+
+	textarea:focus {
+	    width: -webkit-fill-available;
 	    border: 0px solid blue; /* Green border on focus */
 	    background-color: #fff;
 	    border-radius: 4px;

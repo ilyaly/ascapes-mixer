@@ -84,9 +84,12 @@
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
-  :global(body) {
-    /* applies to <body> */
+  /* Remove default margins */
+  :global(body, html) {
     margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: auto; /* Prevents scroll */
     font-family: "Roboto", serif;
     font-optical-sizing: auto;
     font-weight: <weight>;
@@ -94,54 +97,40 @@
     font-variation-settings: "wdth" 100;
   }
 
+  /* Grid container */
   .container {
-    height:100vh;
-    max-height:100vh;
+    height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 0fr 1fr;
-    grid-template-rows: 0.45fr 0.45fr 1fr;
-    gap: 24px 8px;
-    grid-template-areas:
-      "music . one-shots"
-      "music . one-shots"
-      "music . ambient";
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-rows: 1fr 1fr; /* Two equal rows */
+    gap: 8px; /* Adjust spacing */
   }
 
-
-  .container .music,
-  .container .ambient {
-
-    /* Allow scrolling within these containers if the content overflows 
-    overflow-y: auto; /* Enables vertical scrolling */
-    /*-ms-overflow-style: none; /* For Internet Explorer 10+ */
-    /*scrollbar-width: none; /* For Firefox */
-  }
-
-  .container .music {
-    grid-area: music;
-    /* Style the first container */
-    width: -webkit-fill-available;
+  /* Ensure all sections fit properly */
+  .music,
+  .ambient,
+  .one-shots {
     border: 1px solid #bdbdbd;
-    border-radius: 0px;
     padding: 16px;
+    overflow: hidden; /* Ensures no extra scroll */
   }
 
-  .container .ambient {
-    grid-area: ambient;
-    /* Style the first container */
-    width: -webkit-fill-available;
-    border: 1px solid #bdbdbd;
-    border-radius: 0px;
-    padding: 16px;
+  /* Music section takes full height */
+  .music {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3; /* Spans two rows */
   }
 
-  .container .one-shots {
-    grid-area: one-shots;
-    /* Style the bottom container */
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-    border: 1px solid #bdbdbd;
-    border-radius: 0px;
-    padding: 16px;
+  /* The right two sections */
+  .one-shots {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
   }
+
+  .ambient {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+  }
+
+
 </style>

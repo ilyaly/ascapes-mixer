@@ -13,7 +13,6 @@
   let name = $state($state.snapshot(item.name));
 
   let isCurrentTrack = $state(false);
-  let isMouseOver = $state(false);
   let isFocus = $state(false);
 
   let activePlaylistState = getContext("activePlaylist");
@@ -105,12 +104,6 @@
 
 <div
   class="playlist-item {isCurrentTrack ? 'active' : ''}"
-  onmouseover={() => {
-    isMouseOver = true;
-  }}
-  onmouseleave={() => {
-    isMouseOver = false;
-  }}
 >
   <div class="playlist-item-info">
     {#if !isCurrentTrack || !playbackState.getPlayback().isPlaying}
@@ -145,9 +138,6 @@
     <button class="button delete-button" onclick={handleDelete}>
         <DeleteIcon />
       </button>
-    {#if isMouseOver}
-      
-    {/if}
   </div>
 </div>
 
