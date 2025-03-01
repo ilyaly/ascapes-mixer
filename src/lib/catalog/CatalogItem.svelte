@@ -180,6 +180,7 @@
 		resize: none;
 		padding: 4px;
 		border-radius: 4px;
+		overflow: hidden;
 	}
 
 	.playlist-footer {
