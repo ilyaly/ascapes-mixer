@@ -1,4 +1,9 @@
 <script>
+  import { Menu } from '@tauri-apps/api/menu';
+
+  
+
+
   import { onMount } from "svelte";
 
   import MusicSection from "../lib/sections/MusicSection.svelte";
@@ -22,6 +27,32 @@
 
   onMount(async () => {
     initApp();
+
+   const menu = await Menu.new({
+      items: [
+        {
+          id: 'about',
+          text: 'About',
+          action: () => {
+            window.open("https://github.com/ilyaly/ascapes-mixer");
+          },
+        },
+        {
+          id: 'releases',
+          text: 'Releases',
+          action: () => {
+            window.open("https://github.com/ilyaly/ascapes-mixer/releases");
+          },
+        }
+      ],
+    });
+
+    // If a window was not created with an explicit menu or had one set explicitly,
+    // this menu will be assigned to it.
+    menu.setAsAppMenu().then((res) => {
+      console.log('menu set success', res);
+    });
+
   });
 
   async function initApp() {
