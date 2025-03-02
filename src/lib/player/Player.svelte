@@ -6,6 +6,17 @@
   
   let { playlist } = $props();
   
+  /*
+
+  ToDo:
+
+  Move current track and playback states to the Music / Ambiente component
+  to be able to get to playlists page without stopping the playback.
+
+  Maybe should even put the player on the playlists page, to be able to 
+  controll playback while managing playlists.
+  
+  */
   let currentTrackState = $state({
     id: null,
     index: null,

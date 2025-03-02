@@ -100,7 +100,10 @@
 
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
+
+  
 </script>
+
 
 <div
   class="playlist-item {isCurrentTrack ? 'active' : ''}"
@@ -141,10 +144,12 @@
   </div>
 </div>
 
+
+
 <style>
   .playlist-item {
     font-family: "Roboto", serif;
-    width: -webkit-fill-available;
+    width: 100%;;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -160,12 +165,16 @@
     background-color: #f0f0ff;
   }
 
+  .playlist-item:hover .delete-button {
+    visibility: visible;
+  }
+
   .active {
     background-color: #0000001a;
   }
 
   .playlist-item-info {
-    width: -webkit-fill-available;
+    width: 100%;;
     display: flex;
     flex-direction: row;
     gap: 8px;
@@ -176,11 +185,11 @@
   }
 
   .playlist-item-meta {
+    width: 100%;;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 8px;
-    width: -webkit-fill-available;
   }
 
   .playlist-item-name-container {
@@ -201,7 +210,8 @@
     width: auto;
   }
 
-  .button {
+  button {
+
     width: 48px;
     height: 48px;
 
@@ -213,12 +223,13 @@
     border: none;
   }
 
-  .button:hover {
+  button:hover {
     cursor: pointer;
     fill: rgb(33 150 243 / 100%);
   }
 
   .delete-button {
+    visibility: hidden;
     cursor: pointer;
   }
 

@@ -172,7 +172,15 @@
     handleFilesDrop(droppedFiles);
     isDragging = false;
   }
+
+  function handleKeydown(event) {
+    console.log(event)
+  }
 </script>
+
+
+<svelte:window onkeydown={handleKeydown} />
+
 
 <div class="playlist">
   {#if items && items.length === 0}
