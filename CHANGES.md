@@ -1,5 +1,11 @@
 # Change Log  
 
+## 0.2.2 (2025-03-02)
+
+### Improvements
+
+- Delete button are only displayed on mouse over  
+
 ## 0.2.1 (2025-02-28)  
 
 ### IMPORTANT NOTICE  
