@@ -1,4 +1,4 @@
-# Ascape Mixer  
+# Ascapes Mixer  
 
 ![](./static/ascapes-mixer-preview.jpg)  
 
