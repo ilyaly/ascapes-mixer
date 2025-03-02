@@ -4,7 +4,7 @@
 
 ## About  
 
-Ascape Mixer is an audio player and mixer designed for TTRPG actual play, allowing you to control music, ambiance, and sound effects seamlessly during gameplay.  
+Ascapes Mixer is an audio player and mixer designed for TTRPG actual play, allowing you to control music, ambiance, and sound effects seamlessly during gameplay.  
 
 ## Technologies  
 
