@@ -37,7 +37,7 @@
             action: async () => {
               const appVersion = await getVersion();
               await message(
-                `Ascapes Mixer\n\nVersion ${appVersion}\n\nAn audio player and mixer for tabletop role-playing games.\n\nCopyright (c) 2025 Ilya Shevelev\n\nhttps://github.com/ilyaly/ascapes-mixer`,
+                `Ascapes Mixer\n\nVersion ${appVersion}\n\nAn audio player and mixer for tabletop role-playing games.\n\nCopyright (c) 2025 Ilya Shevelev\n\nSource code: https://github.com/ilyaly/ascapes-mixer\n\nMIT license`,
                 { 
                   title: 'About',
                   kind: 'info',
