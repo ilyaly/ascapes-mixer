@@ -1,4 +1,10 @@
 <script>
+  import { getVersion } from '@tauri-apps/api/app';
+  import { Menu } from '@tauri-apps/api/menu';
+  import { message } from '@tauri-apps/plugin-dialog';
+  import { confirm } from '@tauri-apps/plugin-dialog';
+
+
   import { onMount } from "svelte";
 
   import MusicSection from "../lib/sections/MusicSection.svelte";
@@ -22,6 +28,49 @@
 
   onMount(async () => {
     initApp();
+
+    const menu = await Menu.new({
+        items: [
+          {
+            id: 'about',
+            text: 'About',
+            action: async () => {
+              const appVersion = await getVersion();
+              await message(
+                `Ascapes Mixer\n\nVersion ${appVersion}\n\nAn audio player and mixer for tabletop role-playing games.\n\nCopyright (c) 2025 Ilya Shevelev\n\nSource code: https://github.com/ilyaly/ascapes-mixer\n\nMIT license`,
+                { 
+                  title: 'About',
+                  kind: 'info',
+                  okLabel: "Ok" 
+                }
+              );
+              //window.open("https://github.com/ilyaly/ascapes-mixer");
+            },
+          },
+          {
+            id: 'releases',
+            text: 'Releases',
+            action: async () => {
+
+              const confirmation = await confirm(
+                `Open the application's releases webpage?`,
+                { 
+                  title: 'Releases',
+                  kind: 'info'
+                }
+              );
+
+              if (confirmation) {
+                window.open("https://github.com/ilyaly/ascapes-mixer/releases");
+              }
+            },
+          }
+        ],
+    });
+
+    menu.setAsAppMenu().then((res) => {
+        console.log('menu set success', res);
+    });
   });
 
   async function initApp() {
