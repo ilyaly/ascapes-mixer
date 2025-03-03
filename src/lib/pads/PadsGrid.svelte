@@ -204,11 +204,11 @@
   }
 
   .samples {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Ensures three equal columns */
+    display: flex;
+    flex-wrap: wrap;
     gap: 16px;
-    justify-content: space-between;
-    justify-items: start;
+    align-content: flex-start;
+    justify-content: center;
   }
 
 

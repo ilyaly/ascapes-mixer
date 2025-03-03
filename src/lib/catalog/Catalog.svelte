@@ -113,14 +113,19 @@
 	.catalog-list {
 		position: relative;
     	height: 100%;
+    	width: 100%;
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 	}
 
 	.catalog-zone {
 		display: flex;
-		flex-direction: column;
-		gap: 16px;
+	    flex-direction: row;
+	    gap: 16px;
+	    width: 100%;
+	    flex-wrap: wrap;
+	    align-content: flex-start;
+	    justify-content: center;
 	}
 
 	.catalog-empty-tip {

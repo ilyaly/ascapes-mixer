@@ -153,9 +153,9 @@
     font-family: "Roboto", serif;
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    grid-template-rows: 1fr 1fr; /* Two equal rows */
-    gap: 8px; /* Adjust spacing */
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 70% 30%;
+    
   }
 
   /* Ensure all sections fit properly */
@@ -169,20 +169,20 @@
 
   /* Music section takes full height */
   .music {
-    grid-column: 1 / 2;
-    grid-row: 1 / 3; /* Spans two rows */
+
+  }
+
+  .ambient {
+    
   }
 
   /* The right two sections */
   .one-shots {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
+    grid-column: 1 / span 2; /* Span across both columns */
   }
 
-  .ambient {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-  }
+
+
 
 
 </style>

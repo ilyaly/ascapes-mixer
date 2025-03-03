@@ -109,8 +109,9 @@
 		  >
 		   	{ label } 
 			</button>
+			 &nbsp;/&nbsp;
 			<div class="section-header-label-text">
-				/ { activePlaylist.name }
+				  { activePlaylist.name }
 			</div>
 		   	
 		 {/if}
@@ -148,13 +149,16 @@
 	.section-header {
 	  display: grid;
 	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
+	  align-items: start;
 	  gap: 16px;
 	  padding-block: 0px;
 	  width: 100%;
+	  border-bottom: 2px solid grey;
+	  min-height: 40px;
 	}
 
 	.section-header-label {
-	  font-size: 32px;
+	  font-size: 24px;
 	  font-weight: 600;
 	  display: flex;
 	  align-items: center;
@@ -174,11 +178,16 @@
 	button {
 		background: none;
 		border: none;
+		margin: 0;
+		padding: 0;
 	}
 
 	.back-button {
-		font-size: 32px;
+		font-size: 24px;
 		font-weight: 600;
+		font-style: normal;
+		margin: 0;
+		padding: 0;
 		
 	}
 

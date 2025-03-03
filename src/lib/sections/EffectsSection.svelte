@@ -154,7 +154,7 @@
 	}
 
 	.section-header-label {
-	  font-size: 32px;
+	  font-size: 24px;
 	  font-weight: 600;
 	  display: flex;
 	  align-items: center;
@@ -177,7 +177,7 @@
 	}
 
 	.back-button {
-		font-size: 32px;
+		font-size: 24px;
 		font-weight: 600;
 		text-decoration: underline;
 	}
