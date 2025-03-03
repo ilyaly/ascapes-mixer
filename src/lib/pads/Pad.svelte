@@ -249,7 +249,6 @@
   }
 
   input {
-    font-family: "Roboto", serif;
     text-overflow: ellipsis;
     width: 100% /*-webkit-fill-available*/;
     margin-block: 4px;

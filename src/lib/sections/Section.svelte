@@ -273,7 +273,6 @@
 <style>
 
 	.section {
-		font-family: "Roboto", serif;
 		height: 100%;
     max-height: 100%;
 		display: flex;
@@ -283,15 +282,18 @@
 	}
 
 	.section-header {
-	  display: grid;
-	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
-	  gap: 16px;
-	  padding-block: 0px;
-	  width: 100%;
+	  display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-block: 0px;
+    padding-inline: 16px;
+    width: auto;
+    border-bottom: 2px solid grey;
+    justify-content: space-between;
 	}
 
 	.section-header-label {
-	  font-size: 32px;
+	  font-size: 24px;
 	  font-weight: 600;
 	  display: flex;
 	  align-items: center;
@@ -308,14 +310,23 @@
 	  min-width: 0; /* Important for text overflow to work in flex containers */
 	}
 
+	.section-header-action {
+
+	}
+
 	button {
 		background: none;
 		border: none;
+		margin: 0;
+		padding: 0;
 	}
 
 	.back-button {
-		font-size: 32px;
+		font-size: 24px;
 		font-weight: 600;
+		font-style: normal;
+		margin: 0;
+		padding: 0;
 		
 	}
 

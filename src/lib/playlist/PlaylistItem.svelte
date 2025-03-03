@@ -147,9 +147,10 @@
 
 
 <style>
+  
   .playlist-item {
-    font-family: "Roboto", serif;
     width: auto;
+    
     display: flex;
     flex-direction: row;
     align-items: center;

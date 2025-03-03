@@ -7,9 +7,7 @@
 
   import { onMount } from "svelte";
 
-  import MusicSection from "../lib/sections/MusicSection.svelte";
-  import AmbientSection from "../lib/sections/AmbientSection.svelte";
-  import EffectsSection from "../lib/sections/EffectsSection.svelte";
+  import Section from "../lib/sections/Section.svelte";
 
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
   import { exists, mkdir, BaseDirectory } from "@tauri-apps/plugin-fs";
@@ -102,28 +100,31 @@
 
 <div class="container">
   <div class="music">
-    <MusicSection
+    <Section
       label={"Music"}
-      {dbName}
-      {dbState}
+      type={"playlist"}
+      dbName={dbName}
+      dbState={dbState}
       storeName={musicStoreName}
     />
   </div>
 
   <div class="ambient">
-    <AmbientSection
+    <Section
       label={"Ambient"}
-      {dbName}
-      {dbState}
+      type={"playlist"}
+      dbName={dbName}
+      dbState={dbState}
       storeName={ambientStoreName}
     />
   </div>
 
   <div class="one-shots">
-    <EffectsSection
+    <Section
       label={"Effects"}
-      {dbName}
-      {dbState}
+      type={"samples"}
+      dbName={dbName}
+      dbState={dbState}
       storeName={effectsStoreName}
     />
   </div>
@@ -133,7 +134,7 @@
 </div>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
   /* Remove default margins */
   :global(body, html) {
@@ -141,16 +142,20 @@
     padding: 0;
     height: 100vh;
     overflow: auto; /* Prevents scroll */
-    font-family: "Roboto", serif;
+    
+  }
+
+  :global(body, html, button, input, textarea) {
+    font-family: "Roboto Mono", serif;
     font-optical-sizing: auto;
-    font-weight: <weight>;
+    font-weight: 400;
     font-style: normal;
     font-variation-settings: "wdth" 100;
   }
 
   /* Grid container */
   .container {
-    font-family: "Roboto", serif;
+    font-size: 48px;
     height: 100vh;
     display: grid;
     grid-template-columns: 50% 50%;
@@ -162,8 +167,7 @@
   .music,
   .ambient,
   .one-shots {
-    border: 1px solid #bdbdbd;
-    padding: 16px;
+    border: 2px solid #bdbdbd;
     overflow: hidden; /* Ensures no extra scroll */
   }
 
@@ -173,7 +177,7 @@
   }
 
   .ambient {
-    
+
   }
 
   /* The right two sections */

@@ -264,8 +264,6 @@
   }
 
   .playlist-item-wrapper {
-    width: 100%;
-    flex-shrink: 0; /* Prevent shrinking */
   }
 
   /* Styling for the highlight state during drag */
