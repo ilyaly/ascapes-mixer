@@ -74,10 +74,13 @@
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "$APPDATA"
+          "path": "$APPDATA/Local/*"
         },
         {
-          "path": "$APPDATA/*"
+          "path": "$HOME/Library/Application Support/*"
+        },
+        {
+          "path": "$HOME/.local/share/*"
         }
       ]
     },

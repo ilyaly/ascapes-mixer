@@ -84,8 +84,6 @@
       tempItems[i].index = i;
     }
 
-    console.log(tempItems)
-
     activePlaylistState.setActivePlaylist({
         id: playlist.id,
         name: playlist.name,
@@ -151,7 +149,7 @@
   .pad {
     position: relative;
     border: 1px solid #0000004d;
-    border-radius: 16px; 
+    border-radius: 8px; 
   }
 
   .pad:hover {
@@ -185,13 +183,14 @@
     bottom: 0;
     left: 0;
     height: -webkit-fill-available;
-    border-radius: 16px;
+    border-radius: 8px;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.2) 0%,
       rgba(33, 150, 243, 0.2) 0%
     );
     z-index: 1; /* Add this line to explicitly set a low z-index */
+    box-sizing: border-box;
   }
 
   .button {
@@ -205,7 +204,6 @@
     width: 100%;
     background: none;
     height: 128px;
-    border-radius: 4px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

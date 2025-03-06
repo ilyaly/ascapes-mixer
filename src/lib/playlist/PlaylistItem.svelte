@@ -10,93 +10,77 @@
 
   let { item } = $props();
 
-  let name = $state($state.snapshot(item.name));
+  let playlistsContext = getContext("playlists");
+  let playbackContext = getContext("playback");
+  let playingTrackContext = getContext("playingTrack");
+  let openedPlaylistContext = getContext("openedPlaylist");
+  let playingPlaylistContext = getContext("playingPlaylist");
 
-  let isCurrentTrack = $state(false);
+  let track = $state(
+    $state.snapshot(item)
+  );
+
+  let isCurrentTrack = $state(track.id === playingTrackContext.getPlayingTrackId());
   let isFocus = $state(false);
 
-  let activePlaylistState = getContext("activePlaylist");
-  let currentTrackState = getContext("currentTrack");
-  let playbackState = getContext("playback");
-
   $effect(() => {
-    if (currentTrackState.getCurrentTrack().id === item.id) {
-      isCurrentTrack = true;
-    } else {
-      isCurrentTrack = false;
-    }
+    track = $state.snapshot(item);
   });
 
   $effect(() => {
-    if (item.index) {
-      if (isCurrentTrack) {
-        currentTrackState.setCurrentTrackIndex(item.index);
-      }
-    }
-  })
+    isCurrentTrack = track.id === playingTrackContext.getPlayingTrackId();
+  });
 
   function handleNameChange() {
-    activePlaylistState.setActivePlaylistTrack({
-      id: item.id,
-      index: item.index,
-      name: name,
-      path: item.path,
-      url: item.url,
-    });
-
-    if (isCurrentTrack) {
-      currentTrackState.setCurrentTrackName(name);
-    }
+    playlistsContext.setPlaylistTrackName(
+      openedPlaylistContext.getOpenedPlaylistId(),
+      track.id,
+      track.name
+    )
   }
 
   function handlePlay() {
-    currentTrackState.setCurrentTrack({
+    playingPlaylistContext.setPlayingPlaylistId(
+      openedPlaylistContext.getOpenedPlaylistId()
+    );
+
+    playingPlaylistContext.setPlayingPlaylistName(
+      openedPlaylistContext.getOpenedPlaylistId()
+    );
+
+    playingTrackContext.setPlayingTrack({
       id: item.id,
-      index: item.index,
+      index:item.index,
       name: item.name,
       path: item.path,
       url: item.url,
+      isReady: false
     });
 
-    playbackState.setPlaybackPlaying(true);
-    
+    playbackContext.setPlaybackIsPlaying(true);
   }
 
   function handlePause() {
-    currentTrackState.setCurrentTrack({
-      id: item.id,
-      index: item.index,
-      name: item.name,
-      path: item.path,
-      url: item.url,
-    });
-
-    playbackState.setPlaybackPlaying(false);
+    playbackContext.setPlaybackIsPlaying(false);
   }
 
   async function handleDelete() {
-    let playlist = $state.snapshot(activePlaylistState.getActivePlaylist());
-    let tempItems = playlist.tracks;
+    let openedPlaylistId = openedPlaylistIdContext.getOpenedPlaylistId();
 
-    tempItems = tempItems.filter((track) => track.id !== item.id);
+    let tempPlaylist = $state.snapshot(
+      playlistsContext.getPlaylist(openedPlaylistId)
+    );
 
-    for (let i = 0; i < tempItems.length; i++) {
-      tempItems[i].index = i;
+    let tempTracks = tempPlaylist.tracks;
+
+    tempTracks = tempTracks.filter((track) => track.id !== item.id);
+
+    for (let i = 0; i < tempTracks.length; i++) {
+      tempTracks[i].index = i;
     }
 
-    console.log(tempItems)
-
-    activePlaylistState.setActivePlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: tempItems.length,
-        tracks: tempItems
-    });
-
-    playbackState.setPlaybackPlaying(false);
+    playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
+    playbackContext.setPlaybackPlaying(false);
 
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
@@ -109,7 +93,7 @@
   class="playlist-item {isCurrentTrack ? 'active' : ''}"
 >
   <div class="playlist-item-info">
-    {#if !isCurrentTrack || !playbackState.getPlayback().isPlaying}
+    {#if !isCurrentTrack || !playbackContext.getPlayback().isPlaying}
       <button class="button play-button" onclick={handlePlay}>
         <PlayIcon />
       </button>
@@ -127,8 +111,8 @@
         minlength="4"
         maxlength="128"
         autocomplete="off"
-        placeholder={name}
-        bind:value={name}
+        placeholder={item.id}
+        bind:value={item.name}
         onchange={handleNameChange}
         onmouseleave={() => {
           isFocus = false;

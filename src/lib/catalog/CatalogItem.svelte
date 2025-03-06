@@ -9,35 +9,24 @@
 
 	let { item } = $props()
 
-	let playlistsState = getContext("playlists");
-	let activePlaylistState = getContext("activePlaylist");
+	let playlistsContext = getContext("playlists");
+	//let activePlaylistState = getContext("activePlaylist");
+	let openedPlaylistContext = getContext("openedPlaylist")
 
 	let name = $state(item.name);
 	let description = $state(item.description);
 	let isMouseOver = $state(false)
 
 	function handleNameChange() {
-		playlistsState.setPlaylist({
-			id: item.id,
-			name: name,
-			description: item.description,
-			quantity: item.quantity,
-			tracks: item.tracks,
-		})
+		playlistsContext.setPlaylistName(item.id, name)
 	}
 
 	function handleDescriptionChange() {
-		playlistsState.setPlaylist({
-			id: item.id,
-			name: item.name,
-			description: description,
-			quantity: item.quantity,
-			tracks: item.tracks,
-		})
+		playlistsContext.setPlaylistDescription(item.id, description)
 	}
 
 	async function handleDelete() {
-		let tempItems = $state.snapshot(playlistsState.getPlaylists());
+		let tempItems = $state.snapshot(playlistsContext.getPlaylists());
 	    tempItems = tempItems.filter((playlist) => playlist.id !== item.id);
 	    for (let i = 0; i < tempItems.length; i++) {
 	      tempItems[i].index = i;
@@ -58,11 +47,11 @@
 	    }
 	    
 
-	    playlistsState.setPlaylists(tempItems);
+	    playlistsContext.setPlaylists(tempItems);
 	}
 
 	function handleOpenPlaylist() {
-		activePlaylistState.setActivePlaylist(item)
+		openedPlaylistContext.setOpenedPlaylistId(item.id)
 	}
 </script>
 

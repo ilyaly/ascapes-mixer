@@ -9,116 +9,135 @@
   import ShuffleIcon from "../icons/ShuffleIcon.svelte";
   import LoopIcon from "../icons/LoopIcon.svelte";
 
-  let activePlaylistState = getContext("activePlaylist");
-  let currentTrackState = getContext("currentTrack");
-  let playbackState = getContext("playback");
-  let playbackModeState = getContext("playbackMode");
+  let { 
+    currentPlayback,
+    currentTrack,
+    openedPlaylistData,
+    playingPlaylistData
+  } = $props();
+
+  let playlistsContext = getContext("playlists");
+  let playbackContext = getContext("playback");
+  let playingTrackContext = getContext("playingTrack");
+
 
   function handlePlay() {
-    playbackState.setPlaybackPlaying(true);
+    playbackContext.setPlaybackIsPlaying(true);
   }
 
   function handlePause() {
-    playbackState.setPlaybackPlaying(false);
+    playbackContext.setPlaybackIsPlaying(false);
   }
 
   function handleBack() {
-    let currentTrackIndex = $state.snapshot(
-      currentTrackState.getCurrentTrackIndex(),
-    );
-
-    let previousTrackIndex = currentTrackIndex - 1;
-
-    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
-
     let nextTrack;
+    let tracks = $state.snapshot(playingPlaylistData).tracks;
 
+    let currentTrackIndex = $state.snapshot(currentTrack).index;
+    let previousTrackIndex = currentTrackIndex - 1;
+    
     if (previousTrackIndex === -1) {
-      nextTrack = currentPlaylist.find(
-        (obj) => obj.index === currentPlaylist.length - 1,
+      nextTrack = tracks.find(
+        (obj) => obj.index === tracks.length - 1,
       );
     } else {
-      nextTrack = currentPlaylist.find(
+      nextTrack = tracks.find(
         (obj) => obj.index === currentTrackIndex - 1,
       );
     }
-
     if (nextTrack) {
-      currentTrackState.setCurrentTrack(nextTrack);
+      playingTrackContext.setPlayingTrack(nextTrack);
     }
   }
 
   function handleForward() {
-    let currentTrackIndex = currentTrackState.getCurrentTrackIndex();
-
-    let nextTrackIndex = currentTrackIndex + 1;
-
-    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
-
-    let currentPlaylistLength = currentPlaylist.length;
-
     let nextTrack;
+    let tracks = $state.snapshot(playingPlaylistData).tracks;
 
-    if (nextTrackIndex === currentPlaylist.length) {
-      nextTrack = currentPlaylist.find((obj) => obj.index === 0);
+    let currentTrackIndex = $state.snapshot(currentTrack).index;
+    let nextTrackIndex = currentTrackIndex + 1;
+    
+    if (nextTrackIndex === tracks.length) {
+      nextTrack = tracks.find((obj) => obj.index === 0);
     } else {
-      nextTrack = currentPlaylist.find(
+      nextTrack = tracks.find(
         (obj) => obj.index === currentTrackIndex + 1,
       );
     }
-
     if (nextTrack) {
-      currentTrackState.setCurrentTrack(nextTrack);
-    }
-  }
-
-  function handleLoop() {
-    if (!playbackModeState.getPlaybackModeIsRepeat()) {
-      playbackModeState.setPlaybackModeIsRepeat(true);
-    } else {
-      playbackModeState.setPlaybackModeIsRepeat(false);
+      playingTrackContext.setPlayingTrack(nextTrack);
     }
   }
 
   function handleShuffle() {
-    if (!playbackModeState.getPlaybackModeIsShuffle()) {
-      playbackModeState.setPlaybackModeIsShuffle(true);
+    if (!currentPlayback.isShuffle) {
+      playbackContext.setPlaybackIsShuffle(true);
     } else {
-      playbackModeState.setPlaybackModeIsShuffle(false);
+      playbackContext.setPlaybackIsShuffle(false);
     }
   }
+
+  function handleRepeat() {
+    if (!currentPlayback.isRepeat) {
+      playbackContext.setPlaybackIsRepeat(true);
+    } else {
+      playbackContext.setPlaybackIsRepeat(false);
+    }
+    console.log(currentPlayback.isRepeat)
+  }
+
 </script>
 
 <div class="playback-controls">
   <button
-    class="shuffle-button {playbackModeState.getPlaybackModeIsShuffle()
+    class="shuffle-button {currentPlayback.isShuffle
       ? 'shuffle-active'
       : ''}"
     onclick={handleShuffle}
   >
     <ShuffleIcon />
   </button>
-  <button class="back-button" onclick={handleBack}>
+  <button 
+    class="back-button {currentTrack.id
+      ? ''
+      : 'disabled'}"  
+    onclick={handleBack}
+  >
     <BackIcon />
   </button>
-  {#if !playbackState.getPlayback().isPlaying}
-    <button class="play-button" onclick={handlePlay}>
+  {#if !currentPlayback.isPlaying}
+    <button 
+      class="play-button {currentTrack.id
+      ? ''
+      : 'disabled'}" 
+      onclick={handlePlay}
+    >
       <PlayIcon />
     </button>
   {:else}
-    <button class="pause-button" onclick={handlePause}>
+    <button 
+      class="pause-button {currentTrack.id
+      ? ''
+      : 'disabled'}"  
+      onclick={handlePause}
+    >
       <PauseIcon />
     </button>
   {/if}
-  <button class="forward-icon" onclick={handleForward}>
+  <button 
+    class="forward-icon {currentTrack.id
+      ? ''
+      : 'disabled'}"  
+    onclick={handleForward}
+  >
     <ForwardIcon />
   </button>
 
   <button
-    class="loop-button {playbackModeState.getPlaybackModeIsRepeat()
+    class="loop-button {currentPlayback.isRepeat
       ? 'loop-active'
       : ''}"
-    onclick={handleLoop}
+    onclick={handleRepeat}
   >
     <LoopIcon />
   </button>
@@ -141,21 +160,15 @@
     border: none;
   }
 
+
   button:hover {
     cursor: pointer;
     fill: rgb(33 150 243 / 100%);
   }
 
-  .shuffle-active {
-    fill: blue;
-  }
-
-  .loop-active {
-    fill: blue;
-  }
-
-  .disabled {
-    color: grey;
+  button.disabled {
+    pointer-events: none;
     cursor: not-allowed;
+    opacity: 0.2;
   }
 </style>

@@ -16,16 +16,20 @@
 	    clearStore,
 	} from "../utils/indexeddb.js";
 
-	let { playlists } = $props()
+	let { label, playlists } = $props()
 
-	let items = $state([]);
-	let isReady = $state(false);
+	let playlistsContext = getContext("playlists");
 
-	let playlistsState = getContext("playlists");
+	let items = $state(
+		$state.snapshot(playlists)
+	);
 
 	$effect(() => {
-		items = playlists;
+		if (playlists) {
+			items = $state.snapshot(playlists);
+		}
 	})
+
 
 	const dropFromOthersDisabled = true;
 	const flipDurationMs = 100;
@@ -35,13 +39,11 @@
 
 	function updateItems() {
 	    let itemsSnapshot = $state.snapshot(items);
-	    console.log(items)
-
 	    for (let i = 0; i < itemsSnapshot.length; i++) {
 	      itemsSnapshot[i].index = i;
 	    }
 	    items = itemsSnapshot;
-	    playlistsState.setPlaylists(items)
+	    playlistsContext.setPlaylists(items)
 	};
 
 	function handleDndConsider(e) {
@@ -62,7 +64,9 @@
 		{#if items.length === 0}
 			<div class="catalog-empty-tip">
 				<span>Create new playlist</span>
-				<CatalogNew />
+				<CatalogNew
+					label={label}
+			    />
 			</div>
 			
 		{:else}

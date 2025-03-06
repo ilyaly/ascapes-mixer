@@ -1,6 +1,5 @@
 <script>
-  import { appDataDir, join } from "@tauri-apps/api/path";
-  import { convertFileSrc } from "@tauri-apps/api/core";
+  import { exists, readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
   import { getContext } from "svelte";
   import PlaybackMeta from "./PlaybackMeta.svelte";
@@ -8,78 +7,84 @@
   import SeekBar from "./SeekBar.svelte";
   import VolumeIcon from "../icons/VolumeIcon.svelte";
 
-  import { exists, readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
+  let { 
+    currentPlayback,
+    currentTrack,
+    playingPlaylist,
+    playingPlaylistData
+  } = $props();
 
-  let activePlaylistState = getContext("activePlaylist");
-  let currentTrackState = getContext("currentTrack");
-  let playbackState = getContext("playback");
-  let playbackModeState = getContext("playbackMode");
+  let playlistsContext = getContext("playlists");
+  let playbackContext = getContext("playback");
+  let playingTrackContext = getContext("playingTrack");
 
+  let url = $state(null);
   let fakeCurrentTime = $state(0); //Needed to prevent currentTime is being set twice on seeking
   let currentTime = $state(0);
   let currentVolume = $state(1);
   let duration = $state(0);
 
+  console.log(BaseDirectory.AppLocalData)
+
   let audioRef;
 
   $effect(() => {
-    playbackState.setPlaybackTime(currentTime);
-    fakeCurrentTime = currentTime;
-  });
-
-  $effect(() => {
-    playbackState.setPlaybackVolume(currentVolume);
-    if (audioRef) {
-      audioRef.volume = currentVolume;
+    if (currentPlayback) {
+      fakeCurrentTime = currentTime;
+      playbackContext.setPlaybackTime(currentTime);
     }
   });
 
   $effect(() => {
-    //Update playbackReady when track is changed
-    if (currentTrackState.getCurrentTrackPath()) {
-      playbackState.setPlaybackReady(false);
+    if (currentVolume) {
+      playbackContext.setPlaybackVolume(currentVolume);
+      if (audioRef) {
+        audioRef.volume = currentVolume;
+      }
     }
   });
 
   $effect(async () => {
-    //Load and update playbackReady if not
-    if (currentTrackState.getCurrentTrackPath() && !playbackState.getPlaybackReady()) {
+    if (currentPlayback.isPlaying && !currentTrack.isReady) {
       try {
         let objectURL = await readFileFromDisk(
-          currentTrackState.getCurrentTrackPath(),
+          currentTrack.path
         );
-        playbackState.setPlaybackUrl(objectURL);
-        playbackState.setPlaybackReady(true);
+        playingTrackContext.setPlayingTrackUrl(objectURL);
+        playingTrackContext.setPlayingTrackIsReady(true);
       } catch (error) {
         console.error(`Error reading file fron disk: ${error}`);
       }
     }
   });
 
-  
-
   $effect(() => {
-    if (playbackState.getPlaybackReady()) {
-      audioRef.src = playbackState.getPlaybackUrl();
-      playbackState.setPlaybackTime(audioRef.currentTime);
-      playbackState.setPlaybackDuration(audioRef.duration);
+    if (currentTrack.isReady) {
+      audioRef.src = currentTrack.url;
       audioRef.load();
     }
   });
 
   $effect(() => {
-    if (playbackState.getPlaybackReady() && playbackState.getPlaybackPlaying()) {
+    if (currentTrack.isReady && currentPlayback.isPlaying) {
       audioRef.play();
     }
   });
 
   $effect(() => {
-    if (playbackState.getPlaybackReady() && !playbackState.getPlaybackPlaying()) {
+    if (currentPlayback.isPlaying) {
+      playbackContext.setPlaybackTime(currentTime);
+      playbackContext.setPlaybackDuration(duration)
+    }
+    
+  });
+  
+
+  $effect(() => {
+    if (!currentPlayback.isPlaying) {
       audioRef.pause();
     }
   });
-
-
 
   function getRandomIntInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -113,39 +118,32 @@
   }
 
   function handlePlaybackEnded() {
-    let currentTrackIndex = currentTrackState.getCurrentTrackIndex();
-
-
-    let nextTrackIndex = currentTrackIndex + 1;
-    console.log(`Next track index: ${nextTrackIndex}`)
-
-    let currentPlaylist = $state.snapshot(activePlaylistState.getActivePlaylist()).tracks;
-
-    let currentPlaylistLength = currentPlaylist.length;
-
     let nextTrack;
+    let tracks = $state.snapshot(playingPlaylistData).tracks;
+    
+    let currentTrackIndex = $state.snapshot(currentTrack).index;
+    let nextTrackIndex = currentTrackIndex + 1;
 
-    if (nextTrackIndex === currentPlaylist.length) {
-      nextTrack = currentPlaylist.find((obj) => obj.index === 0);
+    if (nextTrackIndex === tracks.length) {
+      nextTrack = tracks.find((obj) => obj.index === 0);
     } else {
-      nextTrack = currentPlaylist.find(
+      nextTrack = tracks.find(
         (obj) => obj.index === currentTrackIndex + 1,
       );
     }
 
-    if (playbackModeState.getPlaybackModeIsShuffle()) {
+    if (currentPlayback.isShuffle) {
       nextTrackIndex = getRandomIntInRange(0, currentPlaylistLength - 1);
-      nextTrack = currentPlaylist[nextTrackIndex]
+      nextTrack = tracks.find((obj) => obj.index === nextTrackIndex);
     }
 
-    if (playbackModeState.getPlaybackModeIsRepeat()) {
+    if (currentPlayback.isRepeat) {
       nextTrackIndex = currentTrackIndex;
-      nextTrack = currentPlaylist[nextTrackIndex]
+      nextTrack = tracks.find((obj) => obj.index === nextTrackIndex);
     }
 
-    console.log(nextTrack)
     if (nextTrack) {
-      currentTrackState.setCurrentTrack(nextTrack);
+      playingTrackContext.setPlayingTrack(nextTrack);
     }
     
   }
@@ -156,13 +154,18 @@
   <div class="playback-header">
     <PlaybackMeta
         name={
-          currentTrackState.getCurrentTrack().name ? currentTrackState.getCurrentTrack().name : "-"
+          currentTrack.name ? currentTrack.name : "-"
         }
     />
   </div>
   <div class="playback-body">
     
-    <PlaybackControl />
+    <PlaybackControl 
+      currentPlayback={currentPlayback}
+      currentTrack={currentTrack}
+      playingPlaylist={playingPlaylist}
+      playingPlaylistData={playingPlaylistData}
+    />
     <div class="volume-control">
       <button>
         <VolumeIcon />
@@ -185,17 +188,15 @@
     max={100}
   />
 
-  {#if playbackState.getPlaybackUrl()}
-    <audio
-      src={playbackState.getPlaybackUrl()}
+  <audio
+      src={currentTrack.url}
       bind:this={audioRef}
       bind:currentTime
       bind:duration
       bind:volume={currentVolume}
       onended={handlePlaybackEnded}
     >
-    </audio>
-  {/if}
+  </audio>
 </div>
 
 <style>

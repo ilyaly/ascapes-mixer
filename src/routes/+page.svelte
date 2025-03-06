@@ -67,7 +67,6 @@
     });
 
     menu.setAsAppMenu().then((res) => {
-        console.log('menu set success', res);
     });
   });
 
@@ -89,45 +88,42 @@
     }
   }
 
-
-  let isMusicCatalogsMode = $state(true);
-  let isAmbientCatalogsMode = $state(true);
-  let isEffectsCatalogsMode = $state(true);
-
-
 </script>
 
 
 <div class="container">
-  <div class="music">
-    <Section
-      label={"Music"}
-      type={"playlist"}
-      dbName={dbName}
-      dbState={dbState}
-      storeName={musicStoreName}
-    />
-  </div>
+  {#if dbState.isReady}
+    <div class="music">
+      <Section
+        label={"Music"}
+        type={"playlist"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={musicStoreName}
+      />
+    </div>
 
-  <div class="ambient">
-    <Section
-      label={"Ambient"}
-      type={"playlist"}
-      dbName={dbName}
-      dbState={dbState}
-      storeName={ambientStoreName}
-    />
-  </div>
+    <div class="ambient">
+      <Section
+        label={"Ambient"}
+        type={"playlist"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={ambientStoreName}
+      />
+    </div>
 
-  <div class="one-shots">
-    <Section
-      label={"Effects"}
-      type={"samples"}
-      dbName={dbName}
-      dbState={dbState}
-      storeName={effectsStoreName}
-    />
-  </div>
+    <div class="one-shots">
+      <Section
+        label={"Effects"}
+        type={"samples"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={effectsStoreName}
+      />
+    </div>
+  {/if}
+  
   
   
   
