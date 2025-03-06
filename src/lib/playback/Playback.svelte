@@ -133,7 +133,7 @@
     }
 
     if (currentPlayback.isShuffle) {
-      nextTrackIndex = getRandomIntInRange(0, currentPlaylistLength - 1);
+      nextTrackIndex = getRandomIntInRange(0, tracks.length - 1);
       nextTrack = tracks.find((obj) => obj.index === nextTrackIndex);
     }
 
@@ -227,7 +227,7 @@
   }
 
   .volume-control {
-    width: 30%;
+    width: 250px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

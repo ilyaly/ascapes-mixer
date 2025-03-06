@@ -432,7 +432,7 @@
 
 	.section-header-label {
 	  font-size: 24px;
-	  font-weight: 600;
+
 	  display: flex;
 	  align-items: center;
 
@@ -451,11 +451,11 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-end;
-		width: 30%;
+		
 	}
 
 	.volume-control {
-    width: 100%;
+    width: 250px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -472,7 +472,6 @@
 
 	.back-button {
 		font-size: 24px;
-		font-weight: 600;
 		font-style: normal;
 		margin: 0;
 		padding: 0;
