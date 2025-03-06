@@ -155,7 +155,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 70% 30%;
+    grid-template-rows: 60% 40%;
     
   }
 

@@ -11,9 +11,10 @@
   import PauseIcon from "../icons/PauseIcon.svelte";
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
-  let { item } = $props();
-  $inspect(item)
-  let activePlaylistState = getContext("activePlaylist");
+  let { playlistId, item, masterVolume } = $props();
+
+  let playlistsContext = getContext("playlists");
+  let playbackContext = getContext("playback");
 
   let name = $state($state.snapshot(item.name));
 
@@ -21,10 +22,17 @@
   let isPlaying = $state(false);
   let url = $state();
   let currentTime = $state(0);
-  let currentVolume = $state(1);
+  let currentVolume = $state(masterVolume);
   let duration = $state(0);
 
   let audioRef;
+
+  $effect(() => {
+    if (masterVolume) {
+      currentVolume = masterVolume;
+    }
+  })
+
 
   $effect(async () => {
     if (!isReady) {
@@ -55,6 +63,7 @@
 
   function handlePlay() {
     isPlaying = true;
+
     audioRef.play();
   }
 
@@ -65,34 +74,33 @@
   }
 
   function handleNameChange() {
-    activePlaylistState.setActivePlaylistTrack({
-      id: item.id,
-      index: item.index,
-      name: name,
-      path: item.path,
-      url: item.url,
-    });
+    playlistsContext.setPlaylistTrackName(
+      playlistId,
+      item.id,
+      item.name
+    )
   }
 
   async function handleDelete() {
-    let playlist = $state.snapshot(activePlaylistState.getActivePlaylist());
-    let tempItems = playlist.tracks;
+    let openedPlaylistId = openedPlaylistContext.getOpenedPlaylistId();
 
-    tempItems = tempItems.filter((track) => track.id !== item.id);
+    let tempPlaylist = playlistsContext.getPlaylist(openedPlaylistId)
 
-    for (let i = 0; i < tempItems.length; i++) {
-      tempItems[i].index = i;
+    let tempTracks = tempPlaylist.tracks;
+
+    tempTracks = tempTracks.filter((track) => track.id !== item.id);
+
+    for (let i = 0; i < tempTracks.length; i++) {
+      tempTracks[i].index = i;
     }
 
-    activePlaylistState.setActivePlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: tempItems.length,
-        tracks: tempItems
-    });
+    playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
+    /*ToDo
+      
+      Need to implement playback stop if currently playing track was deleted.
+
+    */
+
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
 </script>

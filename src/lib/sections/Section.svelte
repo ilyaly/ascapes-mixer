@@ -7,6 +7,8 @@
   import Player from "../player/Player.svelte";
   import OneShotPlayer from "../oneshot/OneShotPlayer.svelte";
   import Playback from "../playback/Playback.svelte";
+  import SeekBar from "../playback/SeekBar.svelte";
+  import VolumeIcon from "../icons/VolumeIcon.svelte"
   import OpenListIcon from "../icons/OpenListIcon.svelte"
 
   import {
@@ -20,8 +22,11 @@
 	let { label, type, dbName, storeName } = $props();
 
 	let isReady = $state(false);
+	let masterVolume = $state(1); 
 
 	let playlists = $state([]);
+
+	$inspect(playlists)
 
 	onMount(async () => {
 		let tempPlaylists = await readData(dbName, storeName);
@@ -32,6 +37,7 @@
 		isReady = true;
 	})
 	
+	// ToDo not sure how to change parameters of 
 	setContext("playlists", {
 	    getPlaylists() {
 	    	return playlists;
@@ -84,57 +90,57 @@
 	    },
 	    getPlaylistTrack(playlistId, trackId) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	return playlist.find(({ id }) => id === trackId);
+	    	return playlist.tracks.find(({ id }) => id === trackId);
 	    },
 	    setPlaylistTrack(playlistsId, updatedTrack) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	playlist.tracks = items.map(item => 
+
+	    	playlist.tracks = playlist.tracks.map(item => 
 				  item.id === updatedTrack.id ? updatedTrack : item
 				);
 	    },
 	    getPlaylistTrackIndex(playlistId, trackId) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	return playlist.find(({ id }) => id === trackId).index;
+
+	    	return playlist.tracks.find(({ id }) => id === trackId).index;
 	    },
 	    setPlaylistTrackIndex(playlistId, trackId, updatedIndex) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
 
-	    	playlist.tracks = playlists.map(item => 
-				  item.id === trackId ? { ...item, index: updatedIndex } : item
-				);
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"index": updatedIndex});
 	    },
 	    getPlaylistTrackName(playlistId, trackId) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	return playlist.find(({ id }) => id === trackId).name;
+
+	    	return playlist.tracks.find(({ id }) => id === trackId).name;
 	    },
 	    setPlaylistTrackName(playlistId, trackId, updatedName) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
 
-	    	playlist.tracks = playlists.map(item => 
-				  item.id === trackId ? { ...item, name: updatedName } : item
-				);
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"name": updatedName});
 	    },
 	    getPlaylistTrackPath(playlistId, trackId) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	return playlist.find(({ id }) => id === trackId).path;
+
+	    	return playlist.tracks.find(({ id }) => id === trackId).path;
 	    },
 	    setPlaylistTrackPath(playlistId, trackId, updatedPath) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
 
-	    	playlist.tracks = playlists.map(item => 
-				  item.id === trackId ? { ...item, path: updatedPath } : item
-				);
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"path": updatedPath});
 	    },
 	    getPlaylistTrackUrl(playlistId, trackId) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
-	    	return playlist.find(({ id }) => id === trackId).url;
+	    	return playlist.tracks.find(({ id }) => id === trackId).url;
 	    },
 	    setPlaylistTrackUrl(playlistId, trackId, updatedUrl) {
 	    	let playlist = playlists.find(({ id }) => id === playlistId);
 
-	    	playlist.tracks = playlists.map(item => 
-				  item.id === trackId ? { ...item, url: updatedUrl } : item
-				);
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"url": updatedUrl});
 	    }
 	});
 
@@ -312,6 +318,13 @@
 		  }
 	});
 
+	function handleVolumeSeek(progress) {
+    masterVolume = progress / 100;
+  }
+
+  function handleVolumeSeekEnd(progress) {
+    masterVolume = progress / 100;
+  }
 
 
 </script>
@@ -342,6 +355,21 @@
 		 	<CatalogNew
 		 		label={label}
 		  />
+		{:else}
+			{#if type !== "playlist"}
+			<div class="volume-control">
+	      <button>
+	        <VolumeIcon />
+	      </button>
+	      <SeekBar
+	        currentValue={masterVolume * 100}
+	        onSeek={handleVolumeSeek}
+	        onSeekEnd={handleVolumeSeekEnd}
+	        min={0}
+	        max={100}
+	      />
+	    </div>
+	    {/if}
 		{/if}
 		</div>
 	</div>
@@ -358,10 +386,12 @@
 	    	openedPlaylistData={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
 	    	currentPlayback={playback}
 	    	currentTrack={playingTrack}
+
     	/>
 	  {:else}
 	    <OneShotPlayer
-	      playlist={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
+	    	openedPlaylistData={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
+	    	masterVolume={masterVolume}
 	    />
 	  {/if}   
   {/if}
@@ -402,7 +432,7 @@
 
 	.section-header-label {
 	  font-size: 24px;
-	  font-weight: 600;
+
 	  display: flex;
 	  align-items: center;
 
@@ -418,8 +448,20 @@
 	}
 
 	.section-header-action {
-
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		
 	}
+
+	.volume-control {
+    width: 250px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
 
 	button {
 		background: none;
@@ -430,11 +472,9 @@
 
 	.back-button {
 		font-size: 24px;
-		font-weight: 600;
 		font-style: normal;
 		margin: 0;
 		padding: 0;
-		
 	}
 
 	.back-button:hover {

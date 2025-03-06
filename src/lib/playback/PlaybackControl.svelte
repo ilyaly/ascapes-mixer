@@ -91,7 +91,7 @@
 <div class="playback-controls">
   <button
     class="shuffle-button {currentPlayback.isShuffle
-      ? 'shuffle-active'
+      ? 'active'
       : ''}"
     onclick={handleShuffle}
   >
@@ -135,7 +135,7 @@
 
   <button
     class="loop-button {currentPlayback.isRepeat
-      ? 'loop-active'
+      ? 'active'
       : ''}"
     onclick={handleRepeat}
   >
@@ -170,5 +170,9 @@
     pointer-events: none;
     cursor: not-allowed;
     opacity: 0.2;
+  }
+
+  button.active {
+    fill: rgb(33 150 243 / 100%);
   }
 </style>
