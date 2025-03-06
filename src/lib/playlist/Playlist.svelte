@@ -190,7 +190,10 @@
             css: "rgba(0, 255, 255, 0.2) solid 10px",
           }}
         >
-          <PlaylistItem {item} />
+          <PlaylistItem 
+            playlistId={id} 
+            item={item}
+          />
         </div>
       {/each}
     </section>

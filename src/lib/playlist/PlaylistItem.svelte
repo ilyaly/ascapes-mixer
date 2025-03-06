@@ -8,7 +8,7 @@
   import PauseIcon from "../icons/PauseIcon.svelte";
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
-  let { item } = $props();
+  let { playlistId, item } = $props();
 
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
@@ -33,7 +33,7 @@
 
   function handleNameChange() {
     playlistsContext.setPlaylistTrackName(
-      openedPlaylistContext.getOpenedPlaylistId(),
+      playlistId,
       track.id,
       track.name
     )
@@ -65,11 +65,9 @@
   }
 
   async function handleDelete() {
-    let openedPlaylistId = openedPlaylistIdContext.getOpenedPlaylistId();
+    let openedPlaylistId = openedPlaylistContext.getOpenedPlaylistId();
 
-    let tempPlaylist = $state.snapshot(
-      playlistsContext.getPlaylist(openedPlaylistId)
-    );
+    let tempPlaylist = playlistsContext.getPlaylist(openedPlaylistId)
 
     let tempTracks = tempPlaylist.tracks;
 
@@ -80,7 +78,11 @@
     }
 
     playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
-    playbackContext.setPlaybackPlaying(false);
+    /*ToDo
+      
+      Need to implement playback stop if currently playing track was deleted.
+
+    */
 
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }

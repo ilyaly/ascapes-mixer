@@ -7,46 +7,38 @@
 
   import Pad from "./Pad.svelte";
 
-  let { playlist } = $props();
-  let items = $state([]);
+  let { openedPlaylistData, masterVolume } = $props();
 
-  let activePlaylistState = getContext("activePlaylist");
-  let playlistsState = getContext("playlists");
+  let id = $state(
+    $state.snapshot(openedPlaylistData.id)
+  );
+
+  let items = $state(
+    $state.snapshot(openedPlaylistData.tracks)
+  );
 
   $effect(() => {
-    items = playlist.tracks;
+    if (openedPlaylistData) {
+      id = $state.snapshot(openedPlaylistData.id)
+      items = $state.snapshot(openedPlaylistData.tracks)
+    }
   });
 
-  //ToDo; So basically we pass only tracks here instead of passing the whole list of playlists
+  let playlistsContext = getContext("playlists");
+  let openedPlaylistContext = getContext("openedPlaylist");
+
+
+
   function updateItems() {
       let itemsSnapshot = $state.snapshot(items);
 
       for (let i = 0; i < itemsSnapshot.length; i++) {
         itemsSnapshot[i].index = i;
-      }
-
+      };
 
       items = itemsSnapshot;
-
-      activePlaylistState.setActivePlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: items.length,
-        tracks: items
-      })
-
-      playlistsState.setPlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: items.length,
-        tracks: items
-      })
+      playlistsContext.setPlaylistTracks(id, items);
+      playlistsContext.setPlaylistQuantity(id, itemsSnapshot.length);
   };
 
   const dropFromOthersDisabled = true;
@@ -82,6 +74,7 @@
         });
         tempItems.push({
           id: uuid,
+          index: null,
           name: file.name,
           path: `./audio/${file.name}`,
           url: null,
@@ -186,7 +179,11 @@
             css: "rgba(0, 255, 255, 0.2) solid 10px",
           }}
         >
-          <Pad {item} />
+          <Pad
+            playlistId={id} 
+            item={item} 
+            masterVolume={masterVolume}
+          />
         </div>
       {/each}
     </section>
