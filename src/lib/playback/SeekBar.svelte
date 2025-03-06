@@ -63,7 +63,7 @@
   });
 </script>
 
-<div class="seek-bar" bind:this={seekBarRef} on:mousedown={handleMouseDown}>
+<div class="seek-bar" bind:this={seekBarRef} onmousedown={handleMouseDown}>
   <div class="progress" style:width="{currentValue}%"></div>
   <div class="thumb" class:dragging style:left="{currentValue}%"></div>
 </div>

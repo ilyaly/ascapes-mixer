@@ -1,10 +1,7 @@
 <script>
   import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
-  /*
-  When we adding a track to the list we have to make it data 
-  like other with the isPlaying property.
-  */
+  import { onMount } from "svelte";
   import { getContext } from "svelte";
 
   import { flip } from "svelte/animate";
@@ -15,48 +12,35 @@
   import PlayIcon from "../icons/PlayIcon.svelte";
   import PauseIcon from "../icons/PauseIcon.svelte";
 
-  let { playlist } = $props();
+  let { openedPlaylistData } = $props();
 
-  let items = $state([]);
+  let playlistsContext = getContext("playlists");
+  let openedPlaylistContext = getContext("openedPlaylist");
 
-  let activePlaylistState = getContext("activePlaylist");
-  let playlistsState = getContext("playlists");
-  let currentTrackState = getContext("currentTrack");
+  let id = $state(
+    $state.snapshot(openedPlaylistData.id)
+  );
+
+  let items = $state(
+    $state.snapshot(openedPlaylistData.tracks)
+  );
 
   $effect(() => {
-    items = playlist.tracks;
+    if (openedPlaylistData) {
+      id = $state.snapshot(openedPlaylistData.id)
+      items = $state.snapshot(openedPlaylistData.tracks)
+    }
   });
 
-  //ToDo; So basically we pass only tracks here instead of passing the whole list of playlists
   function updateItems() {
       let itemsSnapshot = $state.snapshot(items);
 
       for (let i = 0; i < itemsSnapshot.length; i++) {
         itemsSnapshot[i].index = i;
-      }
-
-
+      };
       items = itemsSnapshot;
-
-      activePlaylistState.setActivePlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: items.length,
-        tracks: items
-      })
-
-      playlistsState.setPlaylist({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        index: playlist.index,
-        isActive: playlist.isActive,
-        quantity: items.length,
-        tracks: items
-      })
+      playlistsContext.setPlaylistTracks(id, items);
+      playlistsContext.setPlaylistQuantity(id, itemsSnapshot.length);
   };
 
   const dropFromOthersDisabled = true;
@@ -93,6 +77,7 @@
         });
         tempItems.push({
           id: uuid,
+          index: null,
           name: file.name,
           path: `./audio/${file.name}`,
           url: null,
@@ -173,13 +158,9 @@
     isDragging = false;
   }
 
-  function handleKeydown(event) {
-    console.log(event)
-  }
 </script>
 
 
-<svelte:window onkeydown={handleKeydown} />
 
 
 <div class="playlist">
@@ -264,8 +245,6 @@
   }
 
   .playlist-item-wrapper {
-    width: 100%;
-    flex-shrink: 0; /* Prevent shrinking */
   }
 
   /* Styling for the highlight state during drag */

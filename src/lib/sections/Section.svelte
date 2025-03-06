@@ -6,6 +6,7 @@
   import CatalogNew from "../catalog/CatalogNew.svelte"
   import Player from "../player/Player.svelte";
   import OneShotPlayer from "../oneshot/OneShotPlayer.svelte";
+  import Playback from "../playback/Playback.svelte";
   import OpenListIcon from "../icons/OpenListIcon.svelte"
 
   import {
@@ -16,11 +17,20 @@
 			clearStore,
 	} from "../utils/indexeddb.js";
 
-	let { label, type, dbName, dbState, storeName } = $props();
+	let { label, type, dbName, storeName } = $props();
 
 	let isReady = $state(false);
 
 	let playlists = $state([]);
+
+	onMount(async () => {
+		let tempPlaylists = await readData(dbName, storeName);
+		tempPlaylists = tempPlaylists.sort(
+			(a, b) => a.index - b.index,
+		);
+		playlists = tempPlaylists;
+		isReady = true;
+	})
 	
 	setContext("playlists", {
 	    getPlaylists() {
@@ -29,198 +39,277 @@
 	    setPlaylists(items) {
 	    	playlists = items;
 	    },
-	    getPlaylist(id) {
-	    	return playlists.find(({ id }) => id === id);
+	    getPlaylist(playlistId) {
+	    	return playlists.find(({ id }) => id === playlistId);
 	    },
-	    setPlaylist(item) {
-	    	console.log(item)
-	    	playlists = playlists.map((obj) =>
-	   			obj.id === item.id ? item : obj,
-	    	);
+	    setPlaylist(updatedPlaylist) {
+	    	playlists = items.map(playlist => 
+				  playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+				);
+	    },
+	    setPlaylistIndex(playlistId, updatedIndex) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, index: updatedIndex } : item
+				);
+	    },
+	    setPlaylistName(playlistId, updatedName) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, name: updatedName } : item
+				);
+	    },
+	    setPlaylistDescription(playlistId, updatedDescription) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, description: updatedDescription } : item
+				);
+	    },
+	    setPlaylistQuantity(playlistId, updatedQuantity) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, quantity: updatedQuantity } : item
+				);
+	    },
+	    setPlaylistTracks(playlistId, updatedTracks) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, tracks: updatedTracks } : item
+				);
+	    },
+	    setPlaylistIsOpened(playlistId, updatedIsOpened) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, isOpened: updatedIsOpened } : item
+				);
+	    },
+	    setPlaylistIsActive(playlistId, updatedIsActive) {
+	    	playlists = playlists.map(item => 
+				  item.id === playlistId ? { ...item, isActive: updatedIsActive } : item
+				);
+	    },
+	    getPlaylistTrack(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.find(({ id }) => id === trackId);
+	    },
+	    setPlaylistTrack(playlistsId, updatedTrack) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	playlist.tracks = items.map(item => 
+				  item.id === updatedTrack.id ? updatedTrack : item
+				);
+	    },
+	    getPlaylistTrackIndex(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.find(({ id }) => id === trackId).index;
+	    },
+	    setPlaylistTrackIndex(playlistId, trackId, updatedIndex) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	playlist.tracks = playlists.map(item => 
+				  item.id === trackId ? { ...item, index: updatedIndex } : item
+				);
+	    },
+	    getPlaylistTrackName(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.find(({ id }) => id === trackId).name;
+	    },
+	    setPlaylistTrackName(playlistId, trackId, updatedName) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	playlist.tracks = playlists.map(item => 
+				  item.id === trackId ? { ...item, name: updatedName } : item
+				);
+	    },
+	    getPlaylistTrackPath(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.find(({ id }) => id === trackId).path;
+	    },
+	    setPlaylistTrackPath(playlistId, trackId, updatedPath) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	playlist.tracks = playlists.map(item => 
+				  item.id === trackId ? { ...item, path: updatedPath } : item
+				);
+	    },
+	    getPlaylistTrackUrl(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.find(({ id }) => id === trackId).url;
+	    },
+	    setPlaylistTrackUrl(playlistId, trackId, updatedUrl) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	playlist.tracks = playlists.map(item => 
+				  item.id === trackId ? { ...item, url: updatedUrl } : item
+				);
 	    }
 	});
 
-	let activePlaylist =$state(null);
-
-	setContext("activePlaylist", {
-		getActivePlaylist() {
-			return activePlaylist;
-		},
-		setActivePlaylist(playlist) {
-			activePlaylist = playlist;
-			playlist.quantity = playlist.tracks.length;
-			playlists = playlists.map((obj) => 
-				obj.id === activePlaylist.id ? activePlaylist : obj
-			);
-		},
-		getActivePlaylistTrack(id) {
-      return activePlaylist.tracks.find(({ id }) => id === id);
-    },
-    setActivePlaylistTrack(track) {
-    	//Update active playlist tracks
-      activePlaylist.tracks = activePlaylist.tracks.map((obj) =>
-        obj.id === track.id ? track : obj
-      );
-      //Update playlists respectively
-      playlists = playlists.map((obj) => 
-				obj.id === activePlaylist.id ? activePlaylist : obj
-			);
-    }
+	let openedPlaylist = $state({
+		id: null,
+		name: null
 	});
 
-	let currentTrackState = $state({
-    id: null,
-    index: null,
-    name: null,
-    author: null,
-    path: null
-  });
-  
-  setContext("currentTrack", {
-    getCurrentTrack() {
-      return currentTrackState;
-    },
-    getCurrentTrackId() {
-      return currentTrackState.id;
-    },
-    getCurrentTrackIndex() {
-      return currentTrackState.index;
-    },
-    getCurrentTrackName() {
-      return currentTrackState.name;
-    },
-    getCurrentTrackAuthor() {
-      return currentTrackState.author;
-    },
-    getCurrentTrackPath() {
-      return currentTrackState.path;
-    },
-    setCurrentTrack(track) {
-      currentTrackState = track;
-    },
-    setCurrentTrackId(id) {
-      currentTrackState.id = id;
-    },
-    setCurrentTrackIndex(index) {
-      currentTrackState.index = index;
-    },
-    setCurrentTrackName(name) {
-      currentTrackState.name = name;
-    },
-    setCurrentTrackAuthor(author) {
-      currentTrackState.author = author;
-    },
-    setCurrentTrackPath(path) {
-      currentTrackState.path = path;
-    },
-  });
-  
-  let playbackState = $state({
-    url: null,
+	setContext("openedPlaylist", {
+	    getOpenedPlaylist() {
+	    	return openedPlaylist;
+	    },
+	    setOpenedPlaylist(updatedPlaylist) {
+	    	openedPlaylist = updatedPlaylist;
+	    },
+	    getOpenedPlaylistId() {
+	    	return openedPlaylist.id;
+	    },
+	    setOpenedPlaylistId(updatedPlaylistId) {
+	    	openedPlaylist.id = updatedPlaylistId;
+	    },
+	    getOpenedPlaylistName() {
+	    	return openedPlaylist.name;
+	    },
+	    setOpenedPlaylistName(updatedPlaylistName) {
+	    	openedPlaylist.name = updatedPlaylistName;
+	    }
+	});
+
+	let playingPlaylist = $state({
+		id: null,
+		name: null
+	});
+
+	setContext("playingPlaylist", {
+	    getPlayingPlaylist() {
+	    	return playingPlaylist;
+	    },
+	    setPlayingPlaylist(updatedPlaylist) {
+	    	playingPlaylist = updatedPlaylist;
+	    },
+	    getPlayingPlaylistId() {
+	    	return playingPlaylist.id;
+	    },
+	    setPlayingPlaylistId(updatedPlaylistId) {
+	    	playingPlaylist.id = updatedPlaylistId;
+	    },
+	    getPlayingPlaylistName() {
+	    	return playingPlaylist.name;
+	    },
+	    setPlayingPlaylistName(updatedPlaylistName) {
+	    	playingPlaylist.name = updatedPlaylistName;
+	    }
+	});
+
+	let playingTrack = $state({
+		id: null,
+		index:null,
+		name: null,
+		path: null,
+		url: null,
+		isReady: false
+	});
+
+	setContext("playingTrack", {
+	    getPlayingTrack() {
+	    	return playingTrack;
+	    },
+	    setPlayingTrack(updatedTrack) {
+	    	playingTrack = updatedTrack;
+	    },
+	    getPlayingTrackId() {
+	    	return playingTrack.id;
+	    },
+	    setPlayingTrackId(updatedTrackId) {
+	    	playingTrack.id = updatedTrackId;
+	    },
+	    getPlayingTrackIndex() {
+	    	return playingTrack.index;
+	    },
+	    setPlayingTrackIndex(updatedTrackIndex) {
+	    	playingTrack.index = updatedTrackIndex;
+	    },
+	    getPlayingTrackName() {
+	    	return playingTrack.name;
+	    },
+	    setPlayingTrackName(updatedTrackName) {
+	    	playingTrack.name = updatedTrackName;
+	    },
+	    getPlayingTrackPath() {
+	    	return playingTrack.path;
+	    },
+	    setPlayingTrackPath(updatedTrackPath) {
+	    	playingTrack.path = updatedTrackPath;
+	    },
+	    getPlayingTrackUrl() {
+	    	return playingTrack.url;
+	    },
+	    setPlayingTrackUrl(updatedTrackUrl) {
+	    	playingTrack.url = updatedTrackUrl;
+	    },
+	    getPlayingTrackIsReady() {
+	    	return playingTrack.isReady;
+	    },
+	    setPlayingTrackIsReady(updatedTrackIsReady) {
+	    	playingTrack.isReady = updatedTrackIsReady;
+	    }
+	});
+
+
+  let playback = $state({
     duration: 0,
     time: 0,
     volume: 0,
-    isReady: false,
-    isPlaying: false
+    isPlaying: false,
+    isShuffle: false,
+    isRepeat: false
   });
   
-  
-
   setContext("playback", {
     getPlayback() {
-      return playbackState;
+      return playback;
     },
-    getPlaybackUrl() {
-      return playbackState.url;
+    setPlayback(updatedPlayback) {
+      playback = updatedPlayback;
     },
     getPlaybackDuration() {
-      return playbackState.duration;
+      return playback.duration;
+    },
+    setPlaybackDuration(updatedDuration) {
+      playback.duration = updatedDuration;
     },
     getPlaybackTime() {
-      return playbackState.time;
+      return playback.time;
+    },
+    setPlaybackTime(updatedTime) {
+      playback.time = updatedTime;
     },
     getPlaybackVolume() {
-      return playbackState.volume;
+      return playback.volume;
     },
-    getPlaybackReady() {
-      return playbackState.isReady;
+    setPlaybackVolume(updatedVolume) {
+      playback.volume = updatedVolume;
     },
-    getPlaybackPlaying() {
-      return playbackState.isPlaying;
+    getPlaybackIsPlaying() {
+      return playback.isPlaying;
     },
-    setPlayback(playback) {
-      playbackState = playback;
+    setPlaybackIsPlaying(bool) {
+      playback.isPlaying = bool;
     },
-    setPlaybackUrl(url) {
-      playbackState.url = url;
+    getPlaybackIsShuffle() {
+      return playback.isShuffle;
     },
-    setPlaybackDuration(duration) {
-      playbackState.duration = duration;
+    setPlaybackIsShuffle(bool) {
+      playback.isShuffle = bool;
     },
-    setPlaybackTime(time) {
-      playbackState.time = time;
+    getPlaybackIsRepeat() {
+      return playback.isRepeat;
     },
-    setPlaybackVolume(volume) {
-      playbackState.volume = volume;
-    },
-    setPlaybackReady(bool) {
-      playbackState.isReady = bool;
-    },
-    setPlaybackPlaying(bool) {
-      playbackState.isPlaying = bool;
-    },
-  });
-
-  let playbackModeState = $state({
-    isRepeat: false,
-    isShuffle: false
-  });
-  
-  setContext("playbackMode", {
-    getPlaybackMode() {
-      return playbackModeState;
-    },
-    getPlaybackModeIsRepeat() {
-      return playbackModeState.isRepeat;
-    },
-    getPlaybackModeIsShuffle() {
-      return playbackModeState.isShuffle;
-    },
-    setPlaybackMode(playbackMode) {
-      playbackModeState = playbackMode;
-    },
-    setPlaybackModeIsRepeat(bool) {
-      playbackModeState.isRepeat = bool;
-    },
-    setPlaybackModeIsShuffle(bool) {
-      playbackModeState.isShuffle = bool;
-    },
+    setPlaybackIsRepeat(bool) {
+      playback.isRepeat = bool;
+    }
   });
 
 
 	$effect(async () => {
-	    if (dbState.isReady) {
-	      playlists = await readData(dbName, storeName);
-
-	      playlists = playlists.sort(
-	        (a, b) => a.index - b.index,
-	      );
-	      isReady = true;
-	    }
-	});
-
-	$effect(async () => {
-	    if (isReady) {
-	    	try {
-		        await writeData(
-		          dbName,
-		          storeName,
-		          $state.snapshot(playlists),
-		        );
-		    } catch (error) {
+	    try {
+		      await writeData(
+		        dbName,
+		        storeName,
+		        $state.snapshot(playlists),
+		      );
+		  } catch (error) {
 		    	console.error(`Error writing the tracks to DB: ${error}`);
-		    }
-	    }
+		  }
 	});
 
 
@@ -230,50 +319,66 @@
 <div class="section">
 	<div class="section-header">
 		<div class="section-header-label">
-		{#if !activePlaylist}
+		{#if !openedPlaylist.id && !openedPlaylist.name}
 		 	{ label }
 		{:else}
 			<button
 		   	class="back-button"
-		   	onclick={() => activePlaylist = null}
+		   	onclick={() => {
+		   		openedPlaylist.id = null;
+		   		openedPlaylist.name = null;
+		   	}}
 		  >
 		   	{ label } 
 			</button>
 			<div class="section-header-label-text">
-				/ { activePlaylist.name }
+				/ { playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id).name}
 			</div>
 		   	
 		 {/if}
 		</div>
 		<div class="section-header-action">
-		{#if !activePlaylist}
-		 	<CatalogNew />
+		{#if !openedPlaylist.id && !openedPlaylist.name}
+		 	<CatalogNew
+		 		label={label}
+		  />
 		{/if}
-			
 		</div>
 	</div>
-	{#if !activePlaylist}
+	{#if !openedPlaylist.id && !openedPlaylist.name}
+		{#if isReady}
     <Catalog
       playlists={playlists}
+      label={label}
     />
+    {/if}
   {:else}
   	{#if type === "playlist"}
 	    <Player
-      	playlist={activePlaylist}
+	    	openedPlaylistData={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
+	    	currentPlayback={playback}
+	    	currentTrack={playingTrack}
     	/>
 	  {:else}
 	    <OneShotPlayer
-	      playlist={activePlaylist}
+	      playlist={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
 	    />
-	  {/if}
-    
+	  {/if}   
   {/if}
+  {#if type === "playlist"}
+	  <Playback 
+	    currentPlayback={playback}
+	   	currentTrack={playingTrack}
+	    openedPlaylistData={playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id)}
+	    playingPlaylistData={playlists.find(({ id: playlistId }) => playlistId === playingPlaylist.id)}
+		/>
+	{/if}
+  
 </div>
 
 <style>
 
 	.section {
-		font-family: "Roboto", serif;
 		height: 100%;
     max-height: 100%;
 		display: flex;
@@ -283,20 +388,24 @@
 	}
 
 	.section-header {
-	  display: grid;
-	  grid-template-columns: minmax(0, 1fr) auto; /* This is key */
-	  gap: 16px;
-	  padding-block: 0px;
-	  width: 100%;
+	  display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-block: 0px;
+    padding-inline: 16px;
+    width: auto;
+    border-bottom: 2px solid grey;
+    justify-content: space-between;
+    min-height: 40px;
+    max-height: 40px;
 	}
 
 	.section-header-label {
-	  font-size: 32px;
+	  font-size: 24px;
 	  font-weight: 600;
 	  display: flex;
 	  align-items: center;
-	  max-width: 70%; /* Reduced from 80% */
-	  min-width: 0; /* Critical for flex items with text overflow */
+
 	  overflow: hidden;
 	}
 
@@ -308,14 +417,23 @@
 	  min-width: 0; /* Important for text overflow to work in flex containers */
 	}
 
+	.section-header-action {
+
+	}
+
 	button {
 		background: none;
 		border: none;
+		margin: 0;
+		padding: 0;
 	}
 
 	.back-button {
-		font-size: 32px;
+		font-size: 24px;
 		font-weight: 600;
+		font-style: normal;
+		margin: 0;
+		padding: 0;
 		
 	}
 

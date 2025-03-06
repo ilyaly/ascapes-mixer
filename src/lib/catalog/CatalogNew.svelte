@@ -3,6 +3,8 @@
 
 	import NewListIcon from "../icons/NewListIcon.svelte"
 
+	let { label } = $props()
+
 	let playlistsState = getContext("playlists");
 
 	function handleClick() {
@@ -10,7 +12,8 @@
 		playlistsSnapshot.push(
 			{
 				id: crypto.randomUUID(),
-				name: `Playlist ${playlistsSnapshot.length}`,
+				index: null,
+				name: `${$state.snapshot(label)} playlist ${playlistsSnapshot.length}`,
 				description: "",
 				quantity: 0,
 				tracks: [],
@@ -20,7 +23,6 @@
 		for (let i = 0; i < playlistsSnapshot.length; i++) {
 	      playlistsSnapshot[i].index = i;
 	    }
-	    console.log(playlistsSnapshot)
 		playlistsState.setPlaylists(playlistsSnapshot)
 	}
 </script>

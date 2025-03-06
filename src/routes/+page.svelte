@@ -7,9 +7,7 @@
 
   import { onMount } from "svelte";
 
-  import MusicSection from "../lib/sections/MusicSection.svelte";
-  import AmbientSection from "../lib/sections/AmbientSection.svelte";
-  import EffectsSection from "../lib/sections/EffectsSection.svelte";
+  import Section from "../lib/sections/Section.svelte";
 
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
   import { exists, mkdir, BaseDirectory } from "@tauri-apps/plugin-fs";
@@ -69,7 +67,6 @@
     });
 
     menu.setAsAppMenu().then((res) => {
-        console.log('menu set success', res);
     });
   });
 
@@ -91,49 +88,49 @@
     }
   }
 
-
-  let isMusicCatalogsMode = $state(true);
-  let isAmbientCatalogsMode = $state(true);
-  let isEffectsCatalogsMode = $state(true);
-
-
 </script>
 
 
 <div class="container">
-  <div class="music">
-    <MusicSection
-      label={"Music"}
-      {dbName}
-      {dbState}
-      storeName={musicStoreName}
-    />
-  </div>
+  {#if dbState.isReady}
+    <div class="music">
+      <Section
+        label={"Music"}
+        type={"playlist"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={musicStoreName}
+      />
+    </div>
 
-  <div class="ambient">
-    <AmbientSection
-      label={"Ambient"}
-      {dbName}
-      {dbState}
-      storeName={ambientStoreName}
-    />
-  </div>
+    <div class="ambient">
+      <Section
+        label={"Ambient"}
+        type={"playlist"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={ambientStoreName}
+      />
+    </div>
 
-  <div class="one-shots">
-    <EffectsSection
-      label={"Effects"}
-      {dbName}
-      {dbState}
-      storeName={effectsStoreName}
-    />
-  </div>
+    <div class="one-shots">
+      <Section
+        label={"Effects"}
+        type={"samples"}
+        dbName={dbName}
+        dbState={dbState}
+        storeName={effectsStoreName}
+      />
+    </div>
+  {/if}
+  
   
   
   
 </div>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
   /* Remove default margins */
   :global(body, html) {
@@ -141,48 +138,51 @@
     padding: 0;
     height: 100vh;
     overflow: auto; /* Prevents scroll */
-    font-family: "Roboto", serif;
+    
+  }
+
+  :global(body, html, button, input, textarea) {
+    font-family: "Roboto Mono", serif;
     font-optical-sizing: auto;
-    font-weight: <weight>;
+    font-weight: 400;
     font-style: normal;
     font-variation-settings: "wdth" 100;
   }
 
   /* Grid container */
   .container {
-    font-family: "Roboto", serif;
+    font-size: 48px;
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    grid-template-rows: 1fr 1fr; /* Two equal rows */
-    gap: 8px; /* Adjust spacing */
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 70% 30%;
+    
   }
 
   /* Ensure all sections fit properly */
   .music,
   .ambient,
   .one-shots {
-    border: 1px solid #bdbdbd;
-    padding: 16px;
+    border: 2px solid #bdbdbd;
     overflow: hidden; /* Ensures no extra scroll */
   }
 
   /* Music section takes full height */
   .music {
-    grid-column: 1 / 2;
-    grid-row: 1 / 3; /* Spans two rows */
+
+  }
+
+  .ambient {
+
   }
 
   /* The right two sections */
   .one-shots {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
+    grid-column: 1 / span 2; /* Span across both columns */
   }
 
-  .ambient {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-  }
+
+
 
 
 </style>

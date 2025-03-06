@@ -9,35 +9,24 @@
 
 	let { item } = $props()
 
-	let playlistsState = getContext("playlists");
-	let activePlaylistState = getContext("activePlaylist");
+	let playlistsContext = getContext("playlists");
+	//let activePlaylistState = getContext("activePlaylist");
+	let openedPlaylistContext = getContext("openedPlaylist")
 
 	let name = $state(item.name);
 	let description = $state(item.description);
 	let isMouseOver = $state(false)
 
 	function handleNameChange() {
-		playlistsState.setPlaylist({
-			id: item.id,
-			name: name,
-			description: item.description,
-			quantity: item.quantity,
-			tracks: item.tracks,
-		})
+		playlistsContext.setPlaylistName(item.id, name)
 	}
 
 	function handleDescriptionChange() {
-		playlistsState.setPlaylist({
-			id: item.id,
-			name: item.name,
-			description: description,
-			quantity: item.quantity,
-			tracks: item.tracks,
-		})
+		playlistsContext.setPlaylistDescription(item.id, description)
 	}
 
 	async function handleDelete() {
-		let tempItems = $state.snapshot(playlistsState.getPlaylists());
+		let tempItems = $state.snapshot(playlistsContext.getPlaylists());
 	    tempItems = tempItems.filter((playlist) => playlist.id !== item.id);
 	    for (let i = 0; i < tempItems.length; i++) {
 	      tempItems[i].index = i;
@@ -58,37 +47,37 @@
 	    }
 	    
 
-	    playlistsState.setPlaylists(tempItems);
+	    playlistsContext.setPlaylists(tempItems);
 	}
 
 	function handleOpenPlaylist() {
-		activePlaylistState.setActivePlaylist(item)
+		openedPlaylistContext.setOpenedPlaylistId(item.id)
 	}
 </script>
 
-<div class="playlist">
-	<div class="playlist-header">
-		<div class="playlist-meta">
+<div class="catalog">
+	<div class="catalog-header">
+		<div class="catalog-meta">
 			<input
-				class="playlist-name"
+				class="catalog-name"
 		        type="text"
 		        name="name"
 		        required
 		        minlength="128"
 		        maxlength="128"
 		        autocomplete="off"
-		        placeholder="Enter playlist name"
+		        placeholder="Enter catalog name"
 		        bind:value={name}
 		        onchange={handleNameChange}
 		    />
 		    <textarea 
-				class="playlist-description" 
+				class="catalog-description" 
 				name="description" 
 				rows="2" 
 				cols="33"
 				bind:value={description}
 				onchange={handleDescriptionChange}
-				placeholder="Enter playlist description"
+				placeholder="Enter catalog description"
 			>
 			</textarea>
 		</div>
@@ -104,9 +93,9 @@
 
 	
 
-	<div class="playlist-footer">
+	<div class="catalog-footer">
 		<span
-			class="playlist-quantity"
+			class="catalog-quantity"
 		>
 			<NoteIcon />
 			{ item.quantity } tracks
@@ -123,30 +112,27 @@
 </div>
 
 <style>
-	.playlist {
-		font-family: "Roboto", serif;
+	.catalog {
 		height: fit-content;
-		padding: 16px;
+		padding: 8px;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
 		border: 1px solid #0000004d;
 		border-radius: 4px;
 		background-color: #fff;
-		box-shadow: 0 0 8px 2px #0000001a;
 	}
 
-	.playlist:hover {
+	.catalog:hover {
 		background-color: #f0f0ff;
 		
 	}
 
-	.playlist:hover button {
+	.catalog:hover button {
 		visibility: visible;
 	}
 
 
-	.playlist-header {
+	.catalog-header {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -154,14 +140,14 @@
 		gap: 16px;
 	}
 
-	.playlist-meta {
+	.catalog-meta {
 		display: flex;
     	flex-direction: column;
     	gap: 8px;
     	width: 100%;
 	}
 
-	.playlist-name {
+	.catalog-name {
 		font-size: 18px;
 		font-weight: 400;
 		margin: 0;
@@ -171,7 +157,7 @@
 		width: -webkit-fill-available;
 	}
 
-	.playlist-description {
+	.catalog-description {
 		font-size: 16px;
 		font-weight: 300;
 		margin: 0;
@@ -183,13 +169,13 @@
 		overflow: hidden;
 	}
 
-	.playlist-footer {
+	.catalog-footer {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 	}
 
-	.playlist-quantity {
+	.catalog-quantity {
 		display: flex;
 	    gap: 8px;
 	    align-items: center;
@@ -220,7 +206,6 @@
 	}
 
 	input, textarea {
-
 	    text-overflow: ellipsis;
 	    width: 50% /*-webkit-fill-available*/;
 	    margin-block: 4px;
