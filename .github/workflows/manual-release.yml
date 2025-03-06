@@ -1,11 +1,11 @@
 name: "publish"
 
 on:
-  push:
+  workflow_dispatch:
     branches:
       - release
 
-# This workflow will trigger on each push to the `release` branch to create or update a GitHub release, build your app, and upload the artifacts to the release.
+# This workflow should be triggered manually for the `release` branch to create or update a GitHub release, build app, and upload the artifacts to the release.
 
 jobs:
   publish-tauri:
