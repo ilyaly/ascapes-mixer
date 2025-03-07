@@ -208,10 +208,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    /* border: 1px solid grey; */
     padding: 16px;
     border-radius: 8px;
-    margin: 0px 16px 16px 16px
+    margin: 0px 16px 16px 16px;
+    background-color: #fff;
   }
 
   .playback-header {

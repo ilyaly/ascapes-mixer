@@ -143,7 +143,7 @@
 	    top: 50%;
 	    left: 50%;
 	    transform: translate(-50%, -50%);
-	    color: rgb(0 0 0 / 20%);
+	    color: rgb(0 0 0 / 50%);
 	    font-size: 32px;
 	    font-weight: 200;
 	}

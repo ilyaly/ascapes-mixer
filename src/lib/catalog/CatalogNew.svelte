@@ -7,13 +7,25 @@
 
 	let playlistsState = getContext("playlists");
 
+
+	const emojis = [
+	  "🎵", "🎼", "🎤", "🎸", "🎧", "🎹", "🎻", "🎺", "🎷", "🥁", // Music
+	  "🌿", "🌄", "🌙", "🍃", "🌅", "🌈", "🌾", "🌺", "🌬️", "🍂", // Ambient
+	  "🔊", "🎶", "💥", "📢", "🔔", "🎚️", "💡", "🎯", "🎛️", "⚡"  // SFX
+	];
+
+	function getRandomFromArray(array) {
+	  const randomIndex = Math.floor(Math.random() * array.length);
+	  return array[randomIndex];
+	}
+
 	function handleClick() {
 		let playlistsSnapshot = $state.snapshot(playlistsState.getPlaylists());
 		playlistsSnapshot.push(
 			{
 				id: crypto.randomUUID(),
 				index: null,
-				name: `${$state.snapshot(label)} playlist ${playlistsSnapshot.length}`,
+				name: `${getRandomFromArray(emojis)} playlist ${playlistsSnapshot.length}`,
 				description: "",
 				quantity: 0,
 				tracks: [],

@@ -433,10 +433,9 @@
 	  display: flex;
     align-items: center;
     gap: 16px;
-    padding-block: 0px;
+    padding-block: 16px;
     padding-inline: 16px;
     width: auto;
-    border-bottom: 2px solid grey;
     justify-content: space-between;
     min-height: 40px;
     max-height: 40px;

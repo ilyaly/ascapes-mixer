@@ -147,14 +147,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 4px;
-    background-color: #fff;
     border-radius: 8px;
     margin: 4px;
     padding: 4px;
   }
 
   .playlist-item:hover {
-    background-color: #f0f0ff;
+    background-color: #fff;
   }
 
   .playlist-item:hover .delete-button {
