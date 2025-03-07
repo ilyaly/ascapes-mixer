@@ -44,7 +44,6 @@
   $effect(async () => {
     if (currentPlayback.isPlaying && !currentTrack.isReady) {
       try {
-        console.log(currentTrack.path)
         let objectURL = await readFileFromDisk(
           currentTrack.path
         );
@@ -59,7 +58,6 @@
   });
 
   $effect(() => {
-    console.log(`Loading audio`)
     if (currentTrack.isReady) {
       audioRef.src = currentTrack.url;
       audioRef.load();

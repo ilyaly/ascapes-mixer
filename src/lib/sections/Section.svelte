@@ -26,8 +26,6 @@
 
 	let playlists = $state([]);
 
-	$inspect(playlists)
-
 	onMount(async () => {
 		let tempPlaylists = await readData(dbName, storeName);
 		tempPlaylists = tempPlaylists.sort(

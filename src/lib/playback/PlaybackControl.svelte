@@ -67,7 +67,6 @@
       );
     }
     if (nextTrack) {
-      console.log(nextTrack)
       playingTrackContext.setPlayingTrack(nextTrack);
     }
   }
