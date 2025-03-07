@@ -48,14 +48,7 @@
       openedPlaylistContext.getOpenedPlaylistId()
     );
 
-    playingTrackContext.setPlayingTrack({
-      id: item.id,
-      index:item.index,
-      name: item.name,
-      path: item.path,
-      url: item.url,
-      isReady: false
-    });
+    playingTrackContext.setPlayingTrack(item);
 
     playbackContext.setPlaybackIsPlaying(true);
   }
@@ -240,7 +233,7 @@
   .error button {
     fill: red;
   }
-  
+
   .error button:hover {
     cursor: not-allowed;
     fill: red;

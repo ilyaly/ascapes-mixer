@@ -58,6 +58,7 @@
   });
 
   $effect(() => {
+    console.log(`Loading audio`)
     if (currentTrack.isReady) {
       audioRef.src = currentTrack.url;
       audioRef.load();
@@ -148,17 +149,18 @@
   }
 </script>
 
+
 <div class="playback">
     
   <div class="playback-header">
+    
+  <div class="playback-body">
     <PlaybackMeta
         name={
           currentTrack.name ? currentTrack.name : "-"
         }
     />
   </div>
-  <div class="playback-body">
-    
     <PlaybackControl 
       currentPlayback={currentPlayback}
       currentTrack={currentTrack}
@@ -204,9 +206,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
     padding: 16px;
     border-radius: 8px;
+    margin: 0px 16px 16px 16px
   }
 
   .playback-header {
