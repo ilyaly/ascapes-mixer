@@ -10,7 +10,6 @@
   let { 
     currentPlayback,
     currentTrack,
-    playingPlaylist,
     playingPlaylistData
   } = $props();
 
@@ -23,8 +22,6 @@
   let currentTime = $state(0);
   let currentVolume = $state(1);
   let duration = $state(0);
-
-  console.log(BaseDirectory.AppLocalData)
 
   let audioRef;
 
@@ -52,7 +49,9 @@
         );
         playingTrackContext.setPlayingTrackUrl(objectURL);
         playingTrackContext.setPlayingTrackIsReady(true);
+        //playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
       } catch (error) {
+        playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
         console.error(`Error reading file fron disk: ${error}`);
       }
     }
@@ -163,7 +162,6 @@
     <PlaybackControl 
       currentPlayback={currentPlayback}
       currentTrack={currentTrack}
-      playingPlaylist={playingPlaylist}
       playingPlaylistData={playingPlaylistData}
     />
     <div class="volume-control">

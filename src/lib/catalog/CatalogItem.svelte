@@ -31,8 +31,6 @@
 	    for (let i = 0; i < tempItems.length; i++) {
 	      tempItems[i].index = i;
 	    }
-
-
 	    let tempTracks = $state.snapshot(item).tracks;
 
 	    if( tempTracks && tempTracks.length > 0 ) {
@@ -45,8 +43,6 @@
 		    	}
 		    }
 	    }
-	    
-
 	    playlistsContext.setPlaylists(tempItems);
 	}
 

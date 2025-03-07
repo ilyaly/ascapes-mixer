@@ -49,8 +49,10 @@
 	    	return playlists.find(({ id }) => id === playlistId);
 	    },
 	    setPlaylist(updatedPlaylist) {
-	    	playlists = items.map(playlist => 
-				  playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+	    	playlists = items.map(playlist => {
+		    		updatedPlaylist.quantity = updatedPlaylist.tracks.length;
+					  playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+		    	}
 				);
 	    },
 	    setPlaylistIndex(playlistId, updatedIndex) {
@@ -141,6 +143,16 @@
 
 	    	let track = playlist.tracks.find(({ id }) => id === trackId);
 	    	Object.assign(track, {"url": updatedUrl});
+	    },
+	    getPlaylistTrackAvailable(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.tracks.find(({ id }) => id === trackId).available;
+	    },
+	    setPlaylistTrackAvailable(playlistId, trackId, updatedAvailability) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"available": updatedAvailability});
 	    }
 	});
 

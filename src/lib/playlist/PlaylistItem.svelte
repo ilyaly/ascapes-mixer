@@ -78,6 +78,7 @@
     }
 
     playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
+    playlistsContext.setPlaylistQuantity(openedPlaylistId, tempTracks.length);
     /*ToDo
       
       Need to implement playback stop if currently playing track was deleted.
@@ -94,16 +95,28 @@
 <div
   class="playlist-item {isCurrentTrack ? 'active' : ''}"
 >
-  <div class="playlist-item-info">
+  <div class="playlist-item-info {item.available ? '': 'error'}">
+
+
     {#if !isCurrentTrack || !playbackContext.getPlayback().isPlaying}
-      <button class="button play-button" onclick={handlePlay}>
-        <PlayIcon />
+      <button 
+        class="play-button"
+        onclick={handlePlay}
+        disabled={!item.available}
+      >
+      <PlayIcon
+        disabled={!item.available}
+      />
       </button>
     {:else}
-      <button class="button pause-button" onclick={handlePause}>
-        <PauseIcon />
+      <button class="pause-button" onclick={handlePause}>
+        <PauseIcon
+          disabled={!item.available}
+      />
       </button>
     {/if}
+
+    
 
     <div class="playlist-item-meta">
       <input
@@ -119,6 +132,7 @@
         onmouseleave={() => {
           isFocus = false;
         }}
+        disabled={!item.available}
       />
     </div>
   </div>
@@ -136,7 +150,6 @@
   
   .playlist-item {
     width: auto;
-    
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -156,10 +169,6 @@
     visibility: visible;
   }
 
-  .active {
-    background-color: #0000001a;
-  }
-
   .playlist-item-info {
     width: 100%;;
     display: flex;
@@ -168,7 +177,7 @@
   }
 
   .active {
-    background-color: #0000001a;
+    background-color: #f0f0ff80;
   }
 
   .playlist-item-meta {
@@ -197,6 +206,10 @@
     width: auto;
   }
 
+  .error input {
+    color: red;
+  }
+
   button {
 
     width: 48px;
@@ -221,6 +234,15 @@
   }
 
   .delete-button:hover {
+    fill: red;
+  }
+
+  .error button {
+    fill: red;
+  }
+  
+  .error button:hover {
+    cursor: not-allowed;
     fill: red;
   }
 
