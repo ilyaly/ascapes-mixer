@@ -6,7 +6,7 @@
 ### Improvements
 
 - Updated layout and styles.
-- Added feature allowing to controll playback on the library view.
+- Added feature allowing to control playback on the library view.
 
 
 ## 0.2.2 (2025-03-02)
