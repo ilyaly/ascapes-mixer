@@ -355,7 +355,7 @@
 		   	{ label } 
 			</button>
 			<div class="section-header-label-text">
-				/ { playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id).name}
+				&nbsp;/&nbsp;{ playlists.find(({ id: playlistId }) => playlistId === openedPlaylist.id).name}
 			</div>
 		   	
 		 {/if}
