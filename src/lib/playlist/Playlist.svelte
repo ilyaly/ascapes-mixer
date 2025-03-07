@@ -75,13 +75,14 @@
 
           reader.readAsDataURL(file);
         });
+
         tempItems.push({
           id: uuid,
           index: null,
           name: file.name,
           path: `./audio/${file.name}`,
           url: null,
-          isPlaying: false,
+          available: true
         });
       }
 

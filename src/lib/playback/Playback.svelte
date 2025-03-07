@@ -10,7 +10,6 @@
   let { 
     currentPlayback,
     currentTrack,
-    playingPlaylist,
     playingPlaylistData
   } = $props();
 
@@ -23,8 +22,6 @@
   let currentTime = $state(0);
   let currentVolume = $state(1);
   let duration = $state(0);
-
-  console.log(BaseDirectory.AppLocalData)
 
   let audioRef;
 
@@ -52,7 +49,9 @@
         );
         playingTrackContext.setPlayingTrackUrl(objectURL);
         playingTrackContext.setPlayingTrackIsReady(true);
+        playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
       } catch (error) {
+        playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
         console.error(`Error reading file fron disk: ${error}`);
       }
     }
@@ -120,7 +119,8 @@
   function handlePlaybackEnded() {
     let nextTrack;
     let tracks = $state.snapshot(playingPlaylistData).tracks;
-    
+    tracks = tracks.filter((track) => track.available === true);
+
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let nextTrackIndex = currentTrackIndex + 1;
 
@@ -149,21 +149,21 @@
   }
 </script>
 
+
 <div class="playback">
     
   <div class="playback-header">
+    
+  <div class="playback-body">
     <PlaybackMeta
         name={
           currentTrack.name ? currentTrack.name : "-"
         }
     />
   </div>
-  <div class="playback-body">
-    
     <PlaybackControl 
       currentPlayback={currentPlayback}
       currentTrack={currentTrack}
-      playingPlaylist={playingPlaylist}
       playingPlaylistData={playingPlaylistData}
     />
     <div class="volume-control">
@@ -206,9 +206,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    border: 1px solid grey;
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 4px;
+    margin: 0px 16px 8px 16px;
+    background-color: #fff;
+    box-shadow: 0 0 8px 2px #0000001a;
   }
 
   .playback-header {

@@ -155,9 +155,13 @@
 
 <style>
   .pad {
+    display: flex;
+    justify-content: center;
+    align-content: center;
     position: relative;
     border: 1px solid #0000004d;
     border-radius: 8px; 
+    padding: 16px;
   }
 
   .pad:hover {
@@ -175,8 +179,6 @@
 
   .pad-footer {
     display: flex;
-    min-height: 80px;
-    align-items: flex-start;
   }
 
   .pad-footer-head {

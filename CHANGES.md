@@ -1,10 +1,19 @@
 # Change Log  
 
+
+## 0.2.5 (2025-03-07)
+
+### Improvements
+
+- Updated layout and styles.
+- Added feature allowing to control playback on the library view.
+
+
 ## 0.2.2 (2025-03-02)
 
 ### Improvements
 
-- Delete button are only displayed on mouse over  
+- Delete button are only displayed on mouse over.  
 
 ## 0.2.1 (2025-02-28)  
 

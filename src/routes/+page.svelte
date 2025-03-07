@@ -95,7 +95,7 @@
   {#if dbState.isReady}
     <div class="music">
       <Section
-        label={"Music"}
+        label={"🎹music"}
         type={"playlist"}
         dbName={dbName}
         dbState={dbState}
@@ -105,7 +105,7 @@
 
     <div class="ambient">
       <Section
-        label={"Ambient"}
+        label={"🍃ambient"}
         type={"playlist"}
         dbName={dbName}
         dbState={dbState}
@@ -115,7 +115,7 @@
 
     <div class="one-shots">
       <Section
-        label={"Effects"}
+        label={"💥effects"}
         type={"samples"}
         dbName={dbName}
         dbState={dbState}
@@ -163,21 +163,22 @@
   .music,
   .ambient,
   .one-shots {
-    border: 2px solid #bdbdbd;
+    border: 0px solid black;
     overflow: hidden; /* Ensures no extra scroll */
   }
 
   /* Music section takes full height */
   .music {
-
+    background-color: #EAF4FC;
   }
 
   .ambient {
-
+    background-color: #EAF9F0;
   }
 
   /* The right two sections */
   .one-shots {
+    background-color: #FFF5E6;
     grid-column: 1 / span 2; /* Span across both columns */
   }
 

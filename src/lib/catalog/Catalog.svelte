@@ -136,15 +136,14 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-	    width: 100%; /* Changed from -webkit-fill-available */
+	    width: 100%; 
 	    justify-content: center;
 	    align-items: center;
 	    position: absolute;
 	    top: 50%;
 	    left: 50%;
 	    transform: translate(-50%, -50%);
-	    /*pointer-events: none;  Allow clicks to pass through */
-	    color: rgb(0 0 0 / 20%);
+	    color: rgb(0 0 0 / 50%);
 	    font-size: 32px;
 	    font-weight: 200;
 	}

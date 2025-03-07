@@ -26,8 +26,6 @@
 
 	let playlists = $state([]);
 
-	$inspect(playlists)
-
 	onMount(async () => {
 		let tempPlaylists = await readData(dbName, storeName);
 		tempPlaylists = tempPlaylists.sort(
@@ -49,8 +47,10 @@
 	    	return playlists.find(({ id }) => id === playlistId);
 	    },
 	    setPlaylist(updatedPlaylist) {
-	    	playlists = items.map(playlist => 
-				  playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+	    	playlists = items.map(playlist => {
+		    		updatedPlaylist.quantity = updatedPlaylist.tracks.length;
+					  playlist.id === updatedPlaylist.id ? updatedPlaylist : playlist
+		    	}
 				);
 	    },
 	    setPlaylistIndex(playlistId, updatedIndex) {
@@ -141,6 +141,16 @@
 
 	    	let track = playlist.tracks.find(({ id }) => id === trackId);
 	    	Object.assign(track, {"url": updatedUrl});
+	    },
+	    getPlaylistTrackAvailable(playlistId, trackId) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+	    	return playlist.tracks.find(({ id }) => id === trackId).available;
+	    },
+	    setPlaylistTrackAvailable(playlistId, trackId, updatedAvailability) {
+	    	let playlist = playlists.find(({ id }) => id === playlistId);
+
+	    	let track = playlist.tracks.find(({ id }) => id === trackId);
+	    	Object.assign(track, {"available": updatedAvailability});
 	    }
 	});
 
@@ -413,7 +423,7 @@
     max-height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+
 
 	}
 
@@ -421,10 +431,8 @@
 	  display: flex;
     align-items: center;
     gap: 16px;
-    padding-block: 0px;
-    padding-inline: 16px;
+    padding: 16px;
     width: auto;
-    border-bottom: 2px solid grey;
     justify-content: space-between;
     min-height: 40px;
     max-height: 40px;

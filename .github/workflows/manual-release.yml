@@ -1,4 +1,4 @@
-name: "publish"
+name: "manual-publish"
 
 on:
   workflow_dispatch:
@@ -54,7 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          tagName: manual-build-app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "Ascapes Mixer v__VERSION__"
           releaseBody: "See the CHANGES.md for changes. See the assets to download this version and install."
           releaseDraft: true
