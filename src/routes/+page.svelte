@@ -136,7 +136,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 100;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-100.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-100.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-100italic - cyrillic_latin */
   @font-face {
@@ -144,7 +144,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 100;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-100italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-100italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-200 - cyrillic_latin */
   @font-face {
@@ -152,7 +152,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 200;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-200.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-200.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-200italic - cyrillic_latin */
   @font-face {
@@ -160,7 +160,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 200;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-200italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-200italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-300 - cyrillic_latin */
   @font-face {
@@ -168,7 +168,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 300;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-300italic - cyrillic_latin */
   @font-face {
@@ -176,7 +176,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 300;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-300italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-300italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-regular - cyrillic_latin */
   @font-face {
@@ -184,7 +184,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 400;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-italic - cyrillic_latin */
   @font-face {
@@ -192,7 +192,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 400;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-500 - cyrillic_latin */
   @font-face {
@@ -200,7 +200,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 500;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-500italic - cyrillic_latin */
   @font-face {
@@ -208,7 +208,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 500;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-500italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-500italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-600 - cyrillic_latin */
   @font-face {
@@ -216,7 +216,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 600;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-600italic - cyrillic_latin */
   @font-face {
@@ -224,7 +224,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 600;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-600italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-600italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-700 - cyrillic_latin */
   @font-face {
@@ -232,7 +232,7 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 700;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
   /* roboto-mono-700italic - cyrillic_latin */
   @font-face {
@@ -240,7 +240,7 @@
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 700;
-    src: url('../fonts/roboto-mono-v23-cyrillic_latin-700italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+    src: url('/fonts/roboto-mono-v23-cyrillic_latin-700italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
   }
 
   /* Remove default margins */
