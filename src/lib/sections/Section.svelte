@@ -425,7 +425,7 @@
     max-height: 100%;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+
 
 	}
 
@@ -433,8 +433,7 @@
 	  display: flex;
     align-items: center;
     gap: 16px;
-    padding-block: 16px;
-    padding-inline: 16px;
+    padding: 16px;
     width: auto;
     justify-content: space-between;
     min-height: 40px;

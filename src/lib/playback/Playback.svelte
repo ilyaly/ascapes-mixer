@@ -209,9 +209,10 @@
     justify-content: space-between;
     gap: 8px;
     padding: 16px;
-    border-radius: 8px;
-    margin: 0px 16px 16px 16px;
+    border-radius: 4px;
+    margin: 0px 16px 8px 16px;
     background-color: #fff;
+    box-shadow: 0 0 8px 2px #0000001a;
   }
 
   .playback-header {
