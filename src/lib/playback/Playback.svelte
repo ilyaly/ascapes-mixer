@@ -44,12 +44,13 @@
   $effect(async () => {
     if (currentPlayback.isPlaying && !currentTrack.isReady) {
       try {
+        console.log(currentTrack.path)
         let objectURL = await readFileFromDisk(
           currentTrack.path
         );
         playingTrackContext.setPlayingTrackUrl(objectURL);
         playingTrackContext.setPlayingTrackIsReady(true);
-        //playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
+        playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
       } catch (error) {
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
         console.error(`Error reading file fron disk: ${error}`);
@@ -120,7 +121,8 @@
   function handlePlaybackEnded() {
     let nextTrack;
     let tracks = $state.snapshot(playingPlaylistData).tracks;
-    
+    tracks = tracks.filter((track) => track.available === true);
+
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let nextTrackIndex = currentTrackIndex + 1;
 

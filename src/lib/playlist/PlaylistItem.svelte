@@ -47,8 +47,7 @@
     playingPlaylistContext.setPlayingPlaylistName(
       openedPlaylistContext.getOpenedPlaylistId()
     );
-
-    playingTrackContext.setPlayingTrack(item);
+    playingTrackContext.setPlayingTrack($state.snapshot(item));
 
     playbackContext.setPlaybackIsPlaying(true);
   }

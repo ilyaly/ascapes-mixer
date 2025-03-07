@@ -32,7 +32,8 @@
   function handleBack() {
     let nextTrack;
     let tracks = $state.snapshot(playingPlaylistData).tracks;
-
+    tracks = tracks.filter((track) => track.available === true);
+    
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let previousTrackIndex = currentTrackIndex - 1;
     
@@ -53,6 +54,7 @@
   function handleForward() {
     let nextTrack;
     let tracks = $state.snapshot(playingPlaylistData).tracks;
+    tracks = tracks.filter((track) => track.available === true);
 
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let nextTrackIndex = currentTrackIndex + 1;
@@ -65,6 +67,7 @@
       );
     }
     if (nextTrack) {
+      console.log(nextTrack)
       playingTrackContext.setPlayingTrack(nextTrack);
     }
   }
