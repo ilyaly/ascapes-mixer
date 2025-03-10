@@ -25,7 +25,7 @@
   let currentVolume = $state(masterVolume);
   let duration = $state(0);
 
-  let audioRef;
+  let audioRef = $state(null);
 
   $effect(() => {
     if (masterVolume) {

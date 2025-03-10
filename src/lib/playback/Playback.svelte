@@ -211,6 +211,7 @@
     margin: 0px 16px 8px 16px;
     background-color: #fff;
     box-shadow: 0 0 8px 2px #0000001a;
+    border-top: 1px solid #0000001a;
   }
 
   .playback-header {
@@ -234,14 +235,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
-  }
-
-  .playback-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
     gap: 8px;
   }
 

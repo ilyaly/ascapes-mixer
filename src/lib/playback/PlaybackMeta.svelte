@@ -21,6 +21,7 @@
     font-size: 16px;
     font-style: italic;
     font-weight: 400;
+    max-width: 420px;
   }
 
 </style>

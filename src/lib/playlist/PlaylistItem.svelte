@@ -37,6 +37,10 @@
       track.id,
       track.name
     )
+
+    playingTrackContext.setPlayingTrackName(
+      track.name
+    )
   }
 
   function handlePlay() {
