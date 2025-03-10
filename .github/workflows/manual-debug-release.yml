@@ -16,13 +16,13 @@ jobs:
       matrix:
         include:
           - platform: "macos-latest" # for Arm based macs (M1 and above).
-            args: "--target aarch64-apple-darwin --debug"
+            args: "--target aarch64-apple-darwin --includeDebug"
           - platform: "macos-latest" # for Intel based macs.
-            args: "--target x86_64-apple-darwin --debug"
+            args: "--target x86_64-apple-darwin --includeDebug"
           - platform: "ubuntu-22.04" # for Tauri v1 you could replace this with ubuntu-20.04.
-            args: "--debug"
+            args: "--includeDebug"
           - platform: "windows-latest"
-            args: "--debug"
+            args: "--includeDebug"
 
     runs-on: ${{ matrix.platform }}
     steps:
