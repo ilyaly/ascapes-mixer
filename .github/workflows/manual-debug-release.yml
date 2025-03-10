@@ -1,4 +1,4 @@
-name: "manual-publish"
+name: "manual-publish-debug"
 
 on:
   workflow_dispatch:
