@@ -1,13 +1,15 @@
 # Change Log  
 
 
-## 0.2.5 (2025-03-07)
+## 0.2.5 (2025-03-11)
 
 ### Improvements
 
-- Updated layout and styles.
-- Added feature allowing to control playback on the library view.
-
+- Updated layout, fonts, and styles for a better user experience.
+- Added a feature to control SFX playback volume.
+- Refactored application state management.
+- Added a feature to control playback in the library view.
+- Fixed various bugs.
 
 ## 0.2.2 (2025-03-02)
 

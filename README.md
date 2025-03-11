@@ -20,6 +20,10 @@ Ascapes Mixer is an audio player and mixer designed for TTRPG actual play, allow
 - Added tracks are stored in `%localappdata%/ascapes.mixer/audio/`.  
 - Playlist metadata is stored in IndexedDB.  
 
+## Known issue
+
+- The application may not work on some versions of macOS.
+
 ## Installation  
 
 1. Download the latest installer for your OS from the [Releases](https://github.com/ilyaly/ascapes-mixer/releases) page.  
