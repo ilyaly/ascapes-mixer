@@ -19,13 +19,17 @@
   let ambianceStoreName = "ambient-tracks";
 
   let effectsStoreName = "oneshot-tracks";
-  
+
   let dbState = $state({
-    isReady: false
+    isReady: false,
+    isError: false,
+    error: null
   });
 
   let fsState = $state({
-    isReady: false
+    isReady: false,
+    isError: false,
+    error: null
   })
 
   onMount(async () => {
@@ -83,6 +87,9 @@
       dbState.isReady = true;
 
     } catch (error) {
+      dbState.isReady = false;
+      dbState.isError = true;
+      dbState.error = error;
       console.error("Database initialization error:", error)
     }
   }
@@ -99,52 +106,71 @@
 
       fsState.isReady = true;
     } catch (error) {
+      fsState.isReady = false;
+      fsState.isError = true;
+      fsState.error = error;
       console.error("File system initialization error:", error)
     }
   }
 
-
-
 </script>
 
+{#if dbState.isReady && fsState.isReady}
+  <div class="container">
+      <div class="music">
+        <Section
+          label={"🎹 music"}
+          type={"playlist"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={musicStoreName}
+        />
+      </div>
 
-<div class="container">
-  {#if dbState.isReady}
-    <div class="music">
-      <Section
-        label={"🎹 music"}
-        type={"playlist"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={musicStoreName}
-      />
-    </div>
+      <div class="ambient">
+        <Section
+          label={"🍃 ambiance"}
+          type={"playlist"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={ambianceStoreName}
+        />
+      </div>
 
-    <div class="ambient">
-      <Section
-        label={"🍃 ambiance"}
-        type={"playlist"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={ambianceStoreName}
-      />
-    </div>
+      <div class="one-shots">
+        <Section
+          label={"💥 effects"}
+          type={"samples"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={effectsStoreName}
+        />
+      </div>
+  </div>
+{/if}
 
-    <div class="one-shots">
-      <Section
-        label={"💥 effects"}
-        type={"samples"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={effectsStoreName}
-      />
-    </div>
-  {/if}
-  
-  
-  
-  
-</div>
+{#if dbState.isError || fsState.isError}
+  <div class="errors-container">
+    <span class="errors-container-header">
+      Oops! Something definitely went wrong... 😵‍💫
+    </span>
+    {#if dbState.error}
+      <span class="error">
+        Database initialization error: {dbState.error}
+      </span>
+    {/if}
+    {#if fsState.error}
+      <span class="error">
+        File system initialization error: {fsState.error}
+      </span>
+    {/if}
+    <span>Consider creating an issue on <a href="https://github.com/ilyaly/ascapes-mixer/issues/new">GitHub</a></span>
+  </div>
+{/if}
+
 
 <style>
   /* roboto-mono-100 - cyrillic_latin */
@@ -275,6 +301,25 @@
     font-weight: 400;
     font-style: normal;
     font-variation-settings: "wdth" 100;
+  }
+
+  .errors-container {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    font-size: 16px;
+  }
+
+  .errors-container-header {
+    font-size: 24px;
+  }
+
+  .error {
+    color: red;
   }
 
   /* Grid container */
