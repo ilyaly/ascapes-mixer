@@ -61,7 +61,7 @@
 
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
-        let uuid = crypto.randomUUID();
+        let uuid = uuidv4();
 
         // Wrap the FileReader in a Promise
         const dataUrl = await new Promise((resolve, reject) => {

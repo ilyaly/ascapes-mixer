@@ -25,6 +25,7 @@
     "@tauri-apps/plugin-dialog": "^2.2.0",
     "@tauri-apps/plugin-fs": "^2.2.0",
     "@tauri-apps/plugin-store": "^2.2.0",
-    "svelte-dnd-action": "^0.9.54"
+    "svelte-dnd-action": "^0.9.54",
+    "uuid": "^11.1.0"
   }
 }
