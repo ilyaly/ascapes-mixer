@@ -10,12 +10,21 @@
 	let { item } = $props()
 
 	let playlistsContext = getContext("playlists");
-	//let activePlaylistState = getContext("activePlaylist");
+	let playingPlaylistContext = getContext("playingPlaylist");
 	let openedPlaylistContext = getContext("openedPlaylist")
 
 	let name = $state(item.name);
 	let description = $state(item.description);
-	let isMouseOver = $state(false)
+	let isMouseOver = $state(false);
+	let isPlaying = $state(false);
+
+	$effect(() => {
+		if (playingPlaylistContext.getPlayingPlaylist().id === item.id) {
+			isPlaying = true;
+		} else {
+			isPlaying = false;
+		}
+	})
 
 	function handleNameChange() {
 		playlistsContext.setPlaylistName(item.id, name)
@@ -51,7 +60,7 @@
 	}
 </script>
 
-<div class="catalog">
+<div class="catalog {isPlaying ? 'playing' : ''}">
 	<div class="catalog-header">
 		<div class="catalog-meta">
 			<input
@@ -116,6 +125,11 @@
 		border: 1px solid #0000004d;
 		border-radius: 4px;
 		background-color: #fff;
+	}
+
+	.playing {
+		-webkit-animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
+	    animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
 	}
 
 	.catalog:hover {
@@ -238,4 +252,29 @@
 	    border-radius: 4px;
 	    outline: none; /* Remove default outline */
 	}
+
+
+	@-webkit-keyframes shadow-drop-center {
+	  0% {
+	    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	  }
+	  100% {
+	    -webkit-box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.30);
+	            box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.30);
+	  }
+	}
+	@keyframes shadow-drop-center {
+	  0% {
+	    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	  }
+	  100% {
+	    -webkit-box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.30);
+	            box-shadow: 0 0 10px 0px rgba(0, 0, 0, 0.30);
+	  }
+	}
+
+
+
 </style>

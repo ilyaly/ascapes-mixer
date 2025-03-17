@@ -110,7 +110,7 @@
   {#if dbState.isReady}
     <div class="music">
       <Section
-        label={"🎹music"}
+        label={"🎹 music"}
         type={"playlist"}
         dbName={dbName}
         dbState={dbState}
@@ -120,7 +120,7 @@
 
     <div class="ambient">
       <Section
-        label={"🍃ambient"}
+        label={"🍃 ambiance"}
         type={"playlist"}
         dbName={dbName}
         dbState={dbState}
@@ -130,7 +130,7 @@
 
     <div class="one-shots">
       <Section
-        label={"💥effects"}
+        label={"💥 effects"}
         type={"samples"}
         dbName={dbName}
         dbState={dbState}

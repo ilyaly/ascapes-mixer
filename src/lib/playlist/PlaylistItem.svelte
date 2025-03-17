@@ -172,7 +172,9 @@
   }
 
   .active {
-    background-color: #f0f0ff80;
+    
+    -webkit-animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
+    animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
   }
 
   .playlist-item-meta {
@@ -265,5 +267,30 @@
     background-color: #fff;
     border-radius: 4px;
     outline: none; /* Remove default outline */
+  }
+
+  @-webkit-keyframes shadow-drop-center {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+              box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    100% {
+      -webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
+              box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
+      border: 1px solid rgba(0, 0, 0, 0.40);
+    }
+  }
+  @keyframes shadow-drop-center {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+              box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    100% {
+      -webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
+              box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
+      border: 1px solid rgba(0, 0, 0, 0.40);
+    }
   }
 </style>
