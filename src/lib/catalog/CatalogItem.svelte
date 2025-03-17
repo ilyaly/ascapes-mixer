@@ -71,7 +71,7 @@
 		        minlength="128"
 		        maxlength="128"
 		        autocomplete="off"
-		        placeholder="Enter catalog name"
+		        placeholder="Enter playlist name"
 		        bind:value={name}
 		        onchange={handleNameChange}
 		    />
@@ -82,7 +82,7 @@
 				cols="33"
 				bind:value={description}
 				onchange={handleDescriptionChange}
-				placeholder="Enter catalog description"
+				placeholder="Enter playlist description"
 			>
 			</textarea>
 		</div>

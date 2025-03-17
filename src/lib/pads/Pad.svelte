@@ -165,7 +165,7 @@
   }
 
   .pad:hover {
-    background-color: #f0f0ff;
+    background-color: #ffffff;
   }
 
 

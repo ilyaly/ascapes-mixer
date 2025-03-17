@@ -16,10 +16,10 @@
 
   let musicStoreName = "music-tracks";
 
-  let ambientStoreName = "ambient-tracks";
+  let ambianceStoreName = "ambient-tracks";
 
   let effectsStoreName = "oneshot-tracks";
-
+  
   let dbState = $state({
     isReady: false
   });
@@ -78,7 +78,7 @@
   async function initDb() {
     try {
       await registerStore(dbName, musicStoreName);
-      await registerStore(dbName, ambientStoreName);
+      await registerStore(dbName, ambianceStoreName);
       await registerStore(dbName, effectsStoreName);
       dbState.isReady = true;
 
@@ -103,6 +103,8 @@
     }
   }
 
+
+
 </script>
 
 
@@ -124,7 +126,7 @@
         type={"playlist"}
         dbName={dbName}
         dbState={dbState}
-        storeName={ambientStoreName}
+        storeName={ambianceStoreName}
       />
     </div>
 

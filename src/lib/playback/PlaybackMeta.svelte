@@ -22,6 +22,8 @@
     font-style: italic;
     font-weight: 400;
     max-width: 420px;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
 </style>

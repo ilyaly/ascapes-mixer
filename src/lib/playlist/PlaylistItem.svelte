@@ -172,7 +172,8 @@
   }
 
   .active {
-    
+    background-color: #ffffff;
+    border-radius: 32px;
     -webkit-animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
     animation: shadow-drop-center 1s ease-in-out infinite alternate-reverse both;
   }
@@ -273,24 +274,21 @@
     0% {
       -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
               box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      
     }
     100% {
       -webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
-              box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
-      border: 1px solid rgba(0, 0, 0, 0.40);
+              box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);       
     }
   }
   @keyframes shadow-drop-center {
     0% {
       -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-              box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+              box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);       
     }
     100% {
       -webkit-box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
               box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.30);
-      border: 1px solid rgba(0, 0, 0, 0.40);
     }
   }
 </style>
