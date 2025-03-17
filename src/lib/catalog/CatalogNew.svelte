@@ -1,4 +1,6 @@
 <script>
+	import { v4 as uuidv4 } from 'uuid';
+
 	import { getContext } from "svelte";
 
 	import NewListIcon from "../icons/NewListIcon.svelte"
@@ -21,9 +23,10 @@
 
 	function handleClick() {
 		let playlistsSnapshot = $state.snapshot(playlistsState.getPlaylists());
+		let uuid = uuidv4();
 		playlistsSnapshot.push(
 			{
-				id: crypto.randomUUID(),
+				id: uuid,
 				index: null,
 				name: `${getRandomFromArray(emojis)} playlist ${playlistsSnapshot.length}`,
 				description: "",

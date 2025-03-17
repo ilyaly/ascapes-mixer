@@ -28,6 +28,8 @@ Ascapes Mixer is an audio player and mixer designed for TTRPG actual play, allow
 
 ## Development  
 
+Before starting development you have to have a Rust and Node.js installed on your computer.
+
 To set up the development environment, clone the repository and run:  
 
 ```bash
