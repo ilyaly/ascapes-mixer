@@ -24,8 +24,13 @@
     isReady: false,
   });
 
+  let fsState = $state({
+    isReady: false;
+  })
+
   onMount(async () => {
-    initApp();
+    initFs();
+    initDb();
 
     const menu = await Menu.new({
         items: [
@@ -70,21 +75,31 @@
     });
   });
 
-  async function initApp() {
+  async function initDb() {
     try {
       await registerStore(dbName, musicStoreName);
       await registerStore(dbName, ambientStoreName);
       await registerStore(dbName, effectsStoreName);
       dbState.isReady = true;
 
-      let audioDir = await exists("audio", {
+    } catch (error) {
+      console.error("Database initialization error:", error)
+    }
+  }
+
+  async function initFs() {
+    try {
+      let audio = await exists("audio", {
         baseDir: BaseDirectory.AppLocalData,
       });
-      if (!audioDir) {
-        await mkdir("audio", { baseDir: BaseDirectory.AppLocalData });
-      }
+
+      if (!audio) {
+        await mkdir("audio", { baseDir: BaseDirectory.AppLocalData, recursive: true});
+      };
+
+      fsState.isReady = true;
     } catch (error) {
-      console.error("Error opening the database:", error);
+      console.error("File system initialization error:", error)
     }
   }
 
