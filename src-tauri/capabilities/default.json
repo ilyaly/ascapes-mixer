@@ -19,7 +19,7 @@
     "fs:scope-download-recursive",
     "fs:scope-resource-recursive",
     "store:default",
-    "dialog:default"
+    "dialog:default",
     {
       "identifier": "fs:scope",
       "allow": [
@@ -27,6 +27,6 @@
         {"path": "$APPLOCALDATA/*"},
         {"path": "$APPLOCALDATA/**"}
       ]
-    },
+    }
   ]
 }
