@@ -1,5 +1,10 @@
 # Change Log  
 
+## 0.2.6 (2025-03-17)
+
+### Improvements
+
+- Fix build for macOS.
 
 ## 0.2.5 (2025-03-11)
 
