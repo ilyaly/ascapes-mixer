@@ -21,11 +21,11 @@
   let effectsStoreName = "oneshot-tracks";
 
   let dbState = $state({
-    isReady: false,
+    isReady: false
   });
 
   let fsState = $state({
-    isReady: false;
+    isReady: false
   })
 
   onMount(async () => {
