@@ -1,4 +1,5 @@
 <script>
+  import { platform } from '@tauri-apps/plugin-os';
   import { getVersion } from '@tauri-apps/api/app';
   import { Menu } from '@tauri-apps/api/menu';
   import { message } from '@tauri-apps/plugin-dialog';
@@ -16,23 +17,73 @@
 
   let musicStoreName = "music-tracks";
 
-  let ambientStoreName = "ambient-tracks";
+  let ambianceStoreName = "ambient-tracks";
 
   let effectsStoreName = "oneshot-tracks";
 
   let dbState = $state({
-    isReady: false
+    isReady: false,
+    isError: false,
+    error: null
   });
 
   let fsState = $state({
-    isReady: false
+    isReady: false,
+    isError: false,
+    error: null
   })
 
   onMount(async () => {
     initFs();
     initDb();
+    //ToDo somehow handle menu for both windows and mac
+    // https://v2.tauri.app/learn/window-menu/
+    // maybe check os: https://v2.tauri.app/plugin/os-info/#example-os-platform
+    
+    const currentPlatform = platform();
 
-    const menu = await Menu.new({
+    if (currentPlatform === "macos") {
+      const menu1 = await Menu.Submenu.new({
+        text: 'about',
+        id: 'about',
+        items: [
+          await Menu.MenuItem.new({
+            id: 'about',
+            text: 'About',
+            enabled: true,
+            action: async () => {
+              const appVersion = await getVersion();
+              await message(
+                `Ascapes Mixer\n\nVersion ${appVersion}\n\nAn audio player and mixer for tabletop role-playing games.\n\nCopyright (c) 2025 Ilya Shevelev\n\nSource code: https://github.com/ilyaly/ascapes-mixer\n\nMIT license`,
+                { 
+                  title: 'About',
+                  kind: 'info',
+                  okLabel: "Ok" 
+                }
+              );
+              //window.open("https://github.com/ilyaly/ascapes-mixer");
+            },
+          }),
+        ],
+      });
+
+      const menu2 = await Menu.Submenu.new({
+        text: 'update',
+        id: 'update',
+        items: [
+          await Menu.MenuItem.new({
+            id: 'update',
+            text: 'Item-1',
+            enabled: true,
+            action: () => console.log('item-1'),
+          }),
+        ],
+      });
+      const appMenu = await menu.Menu.new({ id: 'appMenu', items: [menu1, menu2] });
+      await appMenu.setAsAppMenu();
+
+    } else {
+      const menu = await Menu.new({
         items: [
           {
             id: 'about',
@@ -51,14 +102,14 @@
             },
           },
           {
-            id: 'releases',
-            text: 'Releases',
+            id: 'update',
+            text: 'Update',
             action: async () => {
-
+              const appVersion = await getVersion();
               const confirmation = await confirm(
-                `Open the application's releases webpage?`,
+                `Installed application version: ${appVersion}.\n\nTo update the application, visit releases page, download the latest release and install it manually.\n\nOpen the releases page?`,
                 { 
-                  title: 'Releases',
+                  title: 'Update',
                   kind: 'info'
                 }
               );
@@ -69,20 +120,29 @@
             },
           }
         ],
-    });
+      });
 
-    menu.setAsAppMenu().then((res) => {
-    });
+      await menu.setAsAppMenu();
+    }
+    
+
+    
+    /*
+    
+    */
   });
 
   async function initDb() {
     try {
       await registerStore(dbName, musicStoreName);
-      await registerStore(dbName, ambientStoreName);
+      await registerStore(dbName, ambianceStoreName);
       await registerStore(dbName, effectsStoreName);
       dbState.isReady = true;
 
     } catch (error) {
+      dbState.isReady = false;
+      dbState.isError = true;
+      dbState.error = error;
       console.error("Database initialization error:", error)
     }
   }
@@ -99,50 +159,87 @@
 
       fsState.isReady = true;
     } catch (error) {
+      fsState.isReady = false;
+      fsState.isError = true;
+      fsState.error = error;
       console.error("File system initialization error:", error)
+    }
+  }
+
+  async function getLatestRelease() {
+    const url = `https://api.github.com/repos/ilyaly/ascapes-mixer/releases/latest`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Error fetching data from GitHub');
+      }
+
+      const data = await response.json();
+      console.log('Latest release version:', data);
+    } catch (error) {
+      console.error('Error:', error);
     }
   }
 
 </script>
 
+{#if dbState.isReady && fsState.isReady}
+  <div class="container">
+      <div class="music">
+        <Section
+          label={"🎹 music"}
+          type={"playlist"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={musicStoreName}
+        />
+      </div>
 
-<div class="container">
-  {#if dbState.isReady}
-    <div class="music">
-      <Section
-        label={"🎹music"}
-        type={"playlist"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={musicStoreName}
-      />
-    </div>
+      <div class="ambient">
+        <Section
+          label={"🍃 ambiance"}
+          type={"playlist"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={ambianceStoreName}
+        />
+      </div>
 
-    <div class="ambient">
-      <Section
-        label={"🍃ambient"}
-        type={"playlist"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={ambientStoreName}
-      />
-    </div>
+      <div class="one-shots">
+        <Section
+          label={"💥 effects"}
+          type={"samples"}
+          dbName={dbName}
+          dbState={dbState}
+          fsState={fsState}
+          storeName={effectsStoreName}
+        />
+      </div>
+  </div>
+{/if}
 
-    <div class="one-shots">
-      <Section
-        label={"💥effects"}
-        type={"samples"}
-        dbName={dbName}
-        dbState={dbState}
-        storeName={effectsStoreName}
-      />
-    </div>
-  {/if}
-  
-  
-  
-  
-</div>
+{#if dbState.isError || fsState.isError}
+  <div class="errors-container">
+    <span class="errors-container-header">
+      Oops! Something definitely went wrong... 😵‍💫
+    </span>
+    {#if dbState.error}
+      <span class="error">
+        Database initialization error: {dbState.error}
+      </span>
+    {/if}
+    {#if fsState.error}
+      <span class="error">
+        File system initialization error: {fsState.error}
+      </span>
+    {/if}
+    <span>Consider creating an issue on <a href="https://github.com/ilyaly/ascapes-mixer/issues/new">GitHub</a></span>
+  </div>
+{/if}
+
 
 <style>
   /* roboto-mono-100 - cyrillic_latin */
@@ -273,6 +370,25 @@
     font-weight: 400;
     font-style: normal;
     font-variation-settings: "wdth" 100;
+  }
+
+  .errors-container {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    font-size: 16px;
+  }
+
+  .errors-container-header {
+    font-size: 24px;
+  }
+
+  .error {
+    color: red;
   }
 
   /* Grid container */

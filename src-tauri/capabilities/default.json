@@ -2,7 +2,9 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "enables the default permissions",
-  "windows": ["main"],
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
     "fs:default",
@@ -23,10 +25,17 @@
     {
       "identifier": "fs:scope",
       "allow": [
-        {"path": "$APPLOCALDATA"},
-        {"path": "$APPLOCALDATA/*"},
-        {"path": "$APPLOCALDATA/**"}
+        {
+          "path": "$APPLOCALDATA"
+        },
+        {
+          "path": "$APPLOCALDATA/*"
+        },
+        {
+          "path": "$APPLOCALDATA/**"
+        }
       ]
-    }
+    },
+    "os:default"
   ]
 }
