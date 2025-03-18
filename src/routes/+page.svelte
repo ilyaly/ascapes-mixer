@@ -35,7 +35,6 @@
   onMount(async () => {
     initFs();
     initDb();
-
     const menu = await Menu.new({
         items: [
           {
@@ -55,14 +54,14 @@
             },
           },
           {
-            id: 'releases',
-            text: 'Releases',
+            id: 'update',
+            text: 'Update',
             action: async () => {
-
+              const appVersion = await getVersion();
               const confirmation = await confirm(
-                `Open the application's releases webpage?`,
+                `You can update the application manually by downloading and installing the latest released version.\n\nInstalled application version ${appVersion}\n\nOpen the application's releases webpage?`,
                 { 
-                  title: 'Releases',
+                  title: 'Update',
                   kind: 'info'
                 }
               );
