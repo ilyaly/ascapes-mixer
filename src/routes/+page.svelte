@@ -44,8 +44,8 @@
 
     if (currentPlatform === "macos") {
       const menu1 = await Menu.Submenu.new({
-        text: 'about',
-        id: 'about',
+        text: '-',
+        id: 'appMenu',
         items: [
           await Menu.MenuItem.new({
             id: 'about',
