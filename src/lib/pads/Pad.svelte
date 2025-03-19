@@ -15,6 +15,7 @@
 
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
+  let openedPlaylistContext = getContext("openedPlaylist")
 
   let name = $state($state.snapshot(item.name));
 
@@ -95,11 +96,7 @@
     }
 
     playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
-    /*ToDo
-      
-      Need to implement playback stop if currently playing track was deleted.
-
-    */
+    playlistsContext.setPlaylistQuantity(openedPlaylistId, tempTracks.length);
 
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
