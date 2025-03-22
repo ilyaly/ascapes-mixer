@@ -31,6 +31,7 @@
  * @property {int} index - The index of the collection of playlists.
  * @property {string} path - The relative path to the track.
  * @property {string} url - The track's url (src).
+ * @property {boolean} available - Whether the associated file is available.
  */
 
 	/**
@@ -42,7 +43,7 @@
  * @property {boolean} isActive - Whether the playlist is active or not.
  * @property {int} quantity - Quantity of tracks in the playlist.
  */
-	
+
 	let playlists = $state([]);
 
 	onMount(async () => {

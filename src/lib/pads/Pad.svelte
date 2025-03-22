@@ -40,10 +40,10 @@
   /*
     ToDo:
 
-    - By some reason this is triggered twice and thus we get two error for every file with error when openning 
+    - By some reason this is triggered three times and thus we get two error for every file with error when openning 
   */
   $effect(async () => {
-    if (!isReady) {
+    if (item.available && !isReady) {
       try {
         let objectURL = await readFileFromDisk($state.snapshot(item.path));
         url = objectURL;
