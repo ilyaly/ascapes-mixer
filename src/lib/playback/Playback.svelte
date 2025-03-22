@@ -1,4 +1,6 @@
 <script>
+  import { v4 as uuidv4 } from 'uuid';
+
   import { exists, readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
   import { getContext } from "svelte";
@@ -16,6 +18,7 @@
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
   let playingTrackContext = getContext("playingTrack");
+  let notificationsContext = getContext("notifications")
 
   let url = $state(null);
   let fakeCurrentTime = $state(0); //Needed to prevent currentTime is being set twice on seeking
@@ -52,7 +55,7 @@
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
       } catch (error) {
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
-        console.error(`Error reading file fron disk: ${error}`);
+        addFileUnavailableNotification(currentTrack);
       }
     }
   });
@@ -84,6 +87,18 @@
       audioRef.pause();
     }
   });
+
+  function addFileUnavailableNotification(currentTrack) {
+    let tempNotifications = $state.snapshot(notificationsContext.getNotifications());
+    tempNotifications.push(
+      {
+        id: uuidv4(),
+        text: `File associated with the "${currentTrack.name}" track  is unavailable. Please delete the track and re-import it.`
+      } 
+    )
+
+    notificationsContext.setNotifications(tempNotifications);
+  }
 
   function getRandomIntInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
