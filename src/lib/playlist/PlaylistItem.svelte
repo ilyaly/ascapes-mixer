@@ -92,28 +92,25 @@
   class="playlist-item {isCurrentTrack ? 'active' : ''}"
 >
   <div class="playlist-item-info {item.available ? '': 'error'}">
-
-
-    {#if !isCurrentTrack || !playbackContext.getPlayback().isPlaying}
-      <button 
-        class="play-button"
-        onclick={handlePlay}
-        disabled={!item.available}
-      >
-      <PlayIcon
-        disabled={!item.available}
-      />
-      </button>
-    {:else}
-      <button class="pause-button" onclick={handlePause}>
-        <PauseIcon
+    {#if item.available}
+      {#if !isCurrentTrack || !playbackContext.getPlayback().isPlaying}
+        <button 
+          class="play-button"
+          onclick={handlePlay}
           disabled={!item.available}
-      />
-      </button>
+        >
+        <PlayIcon
+          disabled={!item.available}
+        />
+        </button>
+      {:else}
+        <button class="pause-button" onclick={handlePause}>
+          <PauseIcon
+            disabled={!item.available}
+        />
+        </button>
+      {/if}
     {/if}
-
-    
-
     <div class="playlist-item-meta">
       <input
         type="text"
@@ -131,6 +128,9 @@
         disabled={!item.available}
       />
     </div>
+    {#if !item.available}
+      <span class="playlist-item-error">file&nbspunavailable</span>
+    {/if}
   </div>
 
   <div class="playlist-item-actions">
@@ -168,6 +168,7 @@
     width: 100%;;
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 8px;
   }
 
@@ -204,8 +205,17 @@
     width: auto;
   }
 
+  .playlist-item-error {
+    font-size: 12px;
+    font-style: italic;
+    color: #fff;
+    background: rgba(255, 0, 0, 0.50);
+    padding: 4px;
+    border-radius: 4px;
+  }
+
   .error input {
-    color: red;
+    color: grey;
   }
 
   button {
@@ -246,16 +256,16 @@
 
   input {
     text-overflow: ellipsis;
-    width: 50% /*-webkit-fill-available*/;
+    width: 50% 
     margin-block: 4px;
     padding-block: 4px;
     margin-inline: 4px;
     padding-inline: 4px;
     font-size: 16px;
     background: none;
-    border: 0px solid grey; /* Green border on focus */
+    border: 0px solid grey; 
     border-radius: 4px;
-    outline: none; /* Remove default outline */
+    outline: none; 
   }
 
   input:hover {
@@ -264,10 +274,10 @@
 
   input:focus {
     width: -webkit-fill-available;
-    border: 0px solid blue; /* Green border on focus */
+    border: 0px solid blue; 
     background-color: #fff;
     border-radius: 4px;
-    outline: none; /* Remove default outline */
+    outline: none; 
   }
 
   @-webkit-keyframes shadow-drop-center {

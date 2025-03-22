@@ -182,7 +182,7 @@
           }}
         >
           <Pad
-            playlistId={id} 
+            openedPlaylistData={openedPlaylistData} 
             item={item} 
             masterVolume={masterVolume}
           />
