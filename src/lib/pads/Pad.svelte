@@ -1,4 +1,6 @@
 <script>
+  import { v4 as uuidv4 } from 'uuid';
+
   import {
     exists,
     readFile,
@@ -15,7 +17,8 @@
 
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
-  let openedPlaylistContext = getContext("openedPlaylist")
+  let openedPlaylistContext = getContext("openedPlaylist");
+  let notificationsContext = getContext("notifications");
 
   let name = $state($state.snapshot(item.name));
 
@@ -34,7 +37,11 @@
     }
   })
 
+  /*
+    ToDo:
 
+    - By some reason this is triggered twice and thus we get two error for every file with error when openning 
+  */
   $effect(async () => {
     if (!isReady) {
       try {
@@ -53,7 +60,7 @@
     tempNotifications.push(
       {
         id: uuidv4(),
-        text: `File associated with the "${currentTrack.name}" track  is unavailable. Please delete the track and re-import it.`
+        text: `File associated with the "${name}" track  is unavailable. Please delete the track and re-import it.`
       } 
     )
     notificationsContext.setNotifications(tempNotifications);
@@ -95,9 +102,9 @@
   }
 
   async function handleDelete() {
-    let openedPlaylistId = openedPlaylistContext.getOpenedPlaylistId();
+    let openedPlaylistId = $state.snapshot(openedPlaylistContext.getOpenedPlaylistId());
 
-    let tempPlaylist = playlistsContext.getPlaylist(openedPlaylistId)
+    let tempPlaylist =  $state.snapshot(playlistsContext.getPlaylist(openedPlaylistId));
 
     let tempTracks = tempPlaylist.tracks;
 
@@ -207,7 +214,11 @@
     color: #fff;
     background: rgba(255, 0, 0, 0.50);
     padding: 4px;
-    border-radius: 4px;
+    border-radius: 5px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 4px;
   }
 
   .error input {

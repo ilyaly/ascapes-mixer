@@ -51,14 +51,18 @@
     }
   }
 
+  /*
+  ToDo:
+
+  - Support forward, back when there are tracks with errors
+  */
   function handleForward() {
     let nextTrack;
     let tracks = $state.snapshot(playingPlaylistData).tracks;
     tracks = tracks.filter((track) => track.available === true);
-
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let nextTrackIndex = currentTrackIndex + 1;
-    
+
     if (nextTrackIndex === tracks.length) {
       nextTrack = tracks.find((obj) => obj.index === 0);
     } else {
@@ -66,6 +70,7 @@
         (obj) => obj.index === currentTrackIndex + 1,
       );
     }
+    console.log(nextTrack)
     if (nextTrack) {
       playingTrackContext.setPlayingTrack(nextTrack);
     }
