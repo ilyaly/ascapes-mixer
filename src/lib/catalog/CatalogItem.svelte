@@ -45,11 +45,14 @@
 	    if( tempTracks && tempTracks.length > 0 ) {
 	    	for (let j = 0; j < tempTracks.length; j++) {
 		    	let track = tempTracks[j];
-		    	try {
-		    		await remove(track.path, { baseDir: BaseDirectory.AppLocalData });
-		    	} catch (error) {
-		    		console.error(`Error deleting file from disk: ${error}`);
+		    	if (track.available) {
+		    		try {
+		    			await remove(track.path, { baseDir: BaseDirectory.AppLocalData });
+			    	} catch (error) {
+			    		console.error(`Error deleting file from disk: ${error}`);
+			    	}
 		    	}
+		    	
 		    }
 	    }
 	    playlistsContext.setPlaylists(tempItems);

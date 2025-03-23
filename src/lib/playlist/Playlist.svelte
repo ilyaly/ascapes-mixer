@@ -1,7 +1,7 @@
 <script>
   import { v4 as uuidv4 } from 'uuid';
   
-  import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
+  import { exists, writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
 
   import { onMount } from "svelte";
   import { getContext } from "svelte";
@@ -68,15 +68,21 @@
         let file = files[i];
         let uuid = uuidv4();
 
-        // Wrap the FileReader in a Promise
-        const dataUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-
-          reader.onload = (e) => resolve(e.target.result);
-          reader.onerror = (e) => reject(e);
-
-          reader.readAsDataURL(file);
+        let isFileExists = await exists(`./audio/${file.name}`, {
+          baseDir: BaseDirectory.AppLocalData,
         });
+
+        if (!isFileExists) {
+          const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(e);
+
+            reader.readAsDataURL(file);
+          });
+        }
+        
 
         tempItems.push({
           id: uuid,
