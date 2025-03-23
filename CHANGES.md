@@ -1,5 +1,13 @@
 # Change Log  
 
+## 0.2.7 (2025-03-24)
+
+### Improvements
+
+- Implemented proper handling for missing files in playlists.
+- Added error notifications when missing files are detected.
+- Fixed issues with the "Next" and "Previous" track actions when there are missing files in a playlist.
+
 ## 0.2.6 (2025-03-17)
 
 ### Improvements
