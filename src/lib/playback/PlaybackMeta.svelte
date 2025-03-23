@@ -15,6 +15,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    height: 24px;
   }
 
   .audio-name {

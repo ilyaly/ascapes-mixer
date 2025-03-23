@@ -24,6 +24,26 @@
 	let isReady = $state(false);
 	let masterVolume = $state(1); 
 
+	/**
+ * @typedef {Object} Track
+ * @property {string} id - The unique identifier for track.
+ * @property {string} name - The name of the track.
+ * @property {int} index - The index of the collection of playlists.
+ * @property {string} path - The relative path to the track.
+ * @property {string} url - The track's url (src).
+ * @property {boolean} available - Whether the associated file is available.
+ */
+
+	/**
+ * @typedef {Object} Playlist
+ * @property {string} id - The unique identifier for playlist.
+ * @property {string} name - The name of the playlist.
+ * @property {string} description - The description of the playlist.
+ * @property {int} index - The index of the playlist.
+ * @property {boolean} isActive - Whether the playlist is active or not.
+ * @property {int} quantity - Quantity of tracks in the playlist.
+ */
+
 	let playlists = $state([]);
 
 	onMount(async () => {

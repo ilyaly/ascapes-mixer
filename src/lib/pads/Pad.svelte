@@ -1,4 +1,6 @@
 <script>
+  import { v4 as uuidv4 } from 'uuid';
+
   import {
     exists,
     readFile,
@@ -11,11 +13,12 @@
   import PauseIcon from "../icons/PauseIcon.svelte";
   import DeleteIcon from "../icons/DeleteIcon.svelte";
 
-  let { playlistId, item, masterVolume } = $props();
+  let { openedPlaylistData, item, masterVolume } = $props();
 
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
-  let openedPlaylistContext = getContext("openedPlaylist")
+  let openedPlaylistContext = getContext("openedPlaylist");
+  let notificationsContext = getContext("notifications");
 
   let name = $state($state.snapshot(item.name));
 
@@ -34,18 +37,34 @@
     }
   })
 
+  /*
+    ToDo:
 
+    - By some reason this is triggered three times and thus we get two error for every file with error when openning 
+  */
   $effect(async () => {
-    if (!isReady) {
+    if (item.available && !isReady) {
       try {
         let objectURL = await readFileFromDisk($state.snapshot(item.path));
         url = objectURL;
         isReady = true;
       } catch (error) {
-        console.error(`Error reading file fron disk: ${error}`);
+        playlistsContext.setPlaylistTrackAvailable(openedPlaylistData.id, item.id, false)
+        addFileUnavailableNotification(item);
       }
     }
   });
+
+  function addFileUnavailableNotification(track) {
+    let tempNotifications = $state.snapshot(notificationsContext.getNotifications());
+    tempNotifications.push(
+      {
+        id: uuidv4(),
+        text: `File associated with the "${name}" track  is unavailable. Please delete the track and re-import it.`
+      } 
+    )
+    notificationsContext.setNotifications(tempNotifications);
+  }
 
   async function readFileFromDisk(path) {
     const contents = await readFile(path, {
@@ -83,9 +102,9 @@
   }
 
   async function handleDelete() {
-    let openedPlaylistId = openedPlaylistContext.getOpenedPlaylistId();
+    let openedPlaylistId = $state.snapshot(openedPlaylistContext.getOpenedPlaylistId());
 
-    let tempPlaylist = playlistsContext.getPlaylist(openedPlaylistId)
+    let tempPlaylist =  $state.snapshot(playlistsContext.getPlaylist(openedPlaylistId));
 
     let tempTracks = tempPlaylist.tracks;
 
@@ -102,20 +121,22 @@
   }
 </script>
 
-<div class="pad">
-  <div class="pad-header">
-    {#if !isPlaying}
-      <button class="button play-button" onclick={handlePlay}>
-        <PlayIcon size={50} />
-      </button>
-    {:else}
-      <button class="button pause-button" onclick={handlePause}>
-        <PauseIcon size={50}/>
-      </button>
-    {/if}
+<div class="pad {item.available ? '': 'error'}">
+  <div class="pad-playback">
+    {#if item.available}
+      {#if !isPlaying}
+        <button class="button play-button" onclick={handlePlay}>
+          <PlayIcon size={50} />
+        </button>
+      {:else}
+        <button class="button pause-button" onclick={handlePause}>
+          <PauseIcon size={50}/>
+        </button>
+      {/if}
+    {/if} 
   </div>
-  <div class="pad-footer">
-    <div class="pad-footer-head">
+  <div class="pad-info">
+    <div class="pad-name">
       <input
         type="text"
         name="name"
@@ -126,11 +147,16 @@
         placeholder={name}
         bind:value={name}
         onchange={handleNameChange}
+        disabled={!item.available}
       />
-      <button class="button delete-button" onclick={handleDelete}>
-        <DeleteIcon />
-      </button>
+      {#if !item.available}
+        <span class="pad-error">file&nbspunavailable</span>
+      {/if}
     </div>
+    
+    <button class="button delete-button" onclick={handleDelete}>
+      <DeleteIcon />
+    </button>
   </div>
   <div 
     class="progress" 
@@ -165,24 +191,40 @@
     background-color: #ffffff;
   }
 
-
-  .pad-header {
-
-    
+  .pad-playback {
     display: flex;
     justify-content: center;
     min-height: 90px;
   }
 
-  .pad-footer {
+  .pad-info {
     display: flex;
+    flex-direction: row;
   }
 
-  .pad-footer-head {
+  .pad-name {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
+
+  .pad-error {
+    font-size: 12px;
+    font-style: italic;
+    color: #fff;
+    background: rgba(255, 0, 0, 0.50);
+    padding: 4px;
+    border-radius: 5px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 4px;
+  }
+
+  .error input {
+    color: grey;
+  }
+
 
   /* Progress bar */
   .progress {

@@ -7,8 +7,11 @@
 
 
   import { onMount } from "svelte";
+  import { setContext, getContext } from "svelte";
 
   import Section from "../lib/sections/Section.svelte";
+  import Notifications from "../lib/notifications/Notifications.svelte";
+  import LoadingIcon from "../lib/icons/LoadingIcon.svelte";
 
   import { deleteDatabase, registerStore } from "../lib/utils/indexeddb.js";
   import { exists, mkdir, BaseDirectory } from "@tauri-apps/plugin-fs";
@@ -31,6 +34,18 @@
     isReady: false,
     isError: false,
     error: null
+  })
+
+  let notifications = $state([
+  ]);
+
+  setContext("notifications", {
+      getNotifications() {
+        return notifications;
+      },
+      setNotifications(items) {
+        notifications = items;
+      }
   })
 
   onMount(async () => {
@@ -183,62 +198,77 @@
   }
 
 </script>
-
-{#if dbState.isReady && fsState.isReady}
-  <div class="container">
-      <div class="music">
-        <Section
-          label={"🎹 music"}
-          type={"playlist"}
-          dbName={dbName}
-          dbState={dbState}
-          fsState={fsState}
-          storeName={musicStoreName}
+  <div class="page-wrapper">
+    <Notifications
+        notifications={notifications}
+    />
+  {#if !dbState.isReady && !fsState.isReady}
+    <div class="loading-container">
+      <div class="loading-indicator">
+        <LoadingIcon 
+          size={48}
         />
       </div>
-
-      <div class="ambient">
-        <Section
-          label={"🍃 ambiance"}
-          type={"playlist"}
-          dbName={dbName}
-          dbState={dbState}
-          fsState={fsState}
-          storeName={ambianceStoreName}
-        />
-      </div>
-
-      <div class="one-shots">
-        <Section
-          label={"💥 effects"}
-          type={"samples"}
-          dbName={dbName}
-          dbState={dbState}
-          fsState={fsState}
-          storeName={effectsStoreName}
-        />
-      </div>
-  </div>
-{/if}
-
-{#if dbState.isError || fsState.isError}
-  <div class="errors-container">
-    <span class="errors-container-header">
-      Oops! Something definitely went wrong... 😵‍💫
-    </span>
-    {#if dbState.error}
-      <span class="error">
-        Database initialization error: {dbState.error}
+      <span class="loading-text">
+          Loading your tracks
       </span>
-    {/if}
-    {#if fsState.error}
-      <span class="error">
-        File system initialization error: {fsState.error}
+    </div>
+  {:else}
+    <div class="container">
+        <div class="music">
+          <Section
+            label={"🎹 music"}
+            type={"playlist"}
+            dbName={dbName}
+            dbState={dbState}
+            fsState={fsState}
+            storeName={musicStoreName}
+          />
+        </div>
+
+        <div class="ambient">
+          <Section
+            label={"🍃 ambiance"}
+            type={"playlist"}
+            dbName={dbName}
+            dbState={dbState}
+            fsState={fsState}
+            storeName={ambianceStoreName}
+          />
+        </div>
+
+        <div class="one-shots">
+          <Section
+            label={"💥 effects"}
+            type={"samples"}
+            dbName={dbName}
+            dbState={dbState}
+            fsState={fsState}
+            storeName={effectsStoreName}
+          />
+        </div>
+    </div>
+  {/if}
+
+  {#if dbState.isError || fsState.isError}
+    <div class="errors-container">
+      <span class="errors-container-header">
+        Oops! Something definitely went wrong... 😵‍💫
       </span>
-    {/if}
-    <span>Consider creating an issue on <a href="https://github.com/ilyaly/ascapes-mixer/issues/new">GitHub</a></span>
-  </div>
-{/if}
+      {#if dbState.error}
+        <span class="error">
+          Database initialization error: {dbState.error}
+        </span>
+      {/if}
+      {#if fsState.error}
+        <span class="error">
+          File system initialization error: {fsState.error}
+        </span>
+      {/if}
+      <span>Consider creating an issue on <a href="https://github.com/ilyaly/ascapes-mixer/issues/new">GitHub</a></span>
+    </div>
+  {/if}
+</div>
 
 
 <style>
@@ -372,6 +402,43 @@
     font-variation-settings: "wdth" 100;
   }
 
+  .loading-container {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    font-size: 16px;
+  }
+
+  .loading-indicator {
+    display: flex;
+    width: fit-content;
+    height: auto;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+
+  .loading-text {
+    width: 250px;
+    display: flex;
+    margin-left: 40px;
+    font-size: 16px;
+  }
+
+  .loading-text:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+    animation: ellipsis steps(4, end) 900ms infinite;
+    content: "...";
+    /* ascii code for the ellipsis character */
+    width: 0px;
+  }
+
   .errors-container {
     display: flex;
     gap: 32px;
@@ -391,13 +458,15 @@
     color: red;
   }
 
+
+
   /* Grid container */
   .container {
     font-size: 48px;
     height: 100vh;
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 60% 40%;
+    grid-template-rows: 65% 35%;
     
   }
 
@@ -425,6 +494,27 @@
   }
 
 
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @-webkit-keyframes ellipsis {
+    to {
+      width: 40px;
+    }
+  }
+
+  @keyframes ellipsis {
+    to {
+      width: 40px;
+    }
+  }
 
 
 

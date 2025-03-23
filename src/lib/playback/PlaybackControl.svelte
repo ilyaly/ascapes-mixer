@@ -31,21 +31,29 @@
 
   function handleBack() {
     let nextTrack;
-    let tracks = $state.snapshot(playingPlaylistData).tracks;
-    tracks = tracks.filter((track) => track.available === true);
-    
+    let tempTracks = $state.snapshot(playingPlaylistData).tracks;
+
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let previousTrackIndex = currentTrackIndex - 1;
-    
+
+    const findAvailableTrack = (startIndex) => {
+      let index = startIndex;
+      while (index >= 0) {
+        let track = tempTracks.find((obj) => obj.index === index);
+        if (track && track.available) {
+          return track;
+        }
+        index--;
+      }
+      return undefined;
+    };
+
     if (previousTrackIndex === -1) {
-      nextTrack = tracks.find(
-        (obj) => obj.index === tracks.length - 1,
-      );
+      nextTrack = findAvailableTrack(tempTracks.length - 1);
     } else {
-      nextTrack = tracks.find(
-        (obj) => obj.index === currentTrackIndex - 1,
-      );
+      nextTrack = findAvailableTrack(previousTrackIndex);
     }
+
     if (nextTrack) {
       playingTrackContext.setPlayingTrack(nextTrack);
     }
@@ -53,23 +61,32 @@
 
   function handleForward() {
     let nextTrack;
-    let tracks = $state.snapshot(playingPlaylistData).tracks;
-    tracks = tracks.filter((track) => track.available === true);
-
+    let tempTracks = $state.snapshot(playingPlaylistData).tracks;
     let currentTrackIndex = $state.snapshot(currentTrack).index;
     let nextTrackIndex = currentTrackIndex + 1;
-    
-    if (nextTrackIndex === tracks.length) {
-      nextTrack = tracks.find((obj) => obj.index === 0);
+
+    const findAvailableTrack = (startIndex) => {
+      let index = startIndex;
+      while (index < tempTracks.length) {
+        let track = tempTracks.find((obj) => obj.index === index);
+        if (track && track.available) {
+          return track;
+        }
+        index++;
+      }
+      return undefined;
+    };
+
+    if (nextTrackIndex === tempTracks.length) {
+      nextTrack = findAvailableTrack(0);
     } else {
-      nextTrack = tracks.find(
-        (obj) => obj.index === currentTrackIndex + 1,
-      );
+      nextTrack = findAvailableTrack(nextTrackIndex);
     }
     if (nextTrack) {
       playingTrackContext.setPlayingTrack(nextTrack);
     }
   }
+
 
   function handleShuffle() {
     if (!currentPlayback.isShuffle) {
@@ -85,7 +102,6 @@
     } else {
       playbackContext.setPlaybackIsRepeat(false);
     }
-    console.log(currentPlayback.isRepeat)
   }
 
 </script>
