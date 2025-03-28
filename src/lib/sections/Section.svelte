@@ -242,6 +242,16 @@
 	    setPlayingTrack(updatedTrack) {
 	    	playingTrack = updatedTrack;
 	    },
+	    resetPlayingTrack() {
+	    	playingTrack = {
+	    		id: null,
+					index:null,
+					name: null,
+					path: null,
+					url: null,
+					isReady: false
+	    	}
+	    },
 	    getPlayingTrackId() {
 	    	return playingTrack.id;
 	    },

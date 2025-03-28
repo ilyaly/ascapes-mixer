@@ -15,8 +15,6 @@
     playingPlaylistData
   } = $props();
 
-  $inspect(currentPlayback)
-
   let playlistsContext = getContext("playlists");
   let playbackContext = getContext("playback");
   let playingTrackContext = getContext("playingTrack");
@@ -56,8 +54,10 @@
         playingTrackContext.setPlayingTrackIsReady(true);
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, true)
       } catch (error) {
+        playbackContext.setPlaybackIsPlaying(false)
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
         addFileUnavailableNotification(currentTrack);
+        playingTrackContext.resetPlayingTrack()
       }
     }
   });

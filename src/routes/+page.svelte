@@ -94,7 +94,7 @@
           }),
         ],
       });
-      const appMenu = await menu.Menu.new({ id: 'appMenu', items: [menu1, menu2] });
+      const appMenu = await Menu.new({ id: 'appMenu', items: [menu1, menu2] });
       await appMenu.setAsAppMenu();
 
     } else {
@@ -148,17 +148,28 @@
   });
 
   async function initDb() {
-    try {
-      await registerStore(dbName, musicStoreName);
-      await registerStore(dbName, ambianceStoreName);
-      await registerStore(dbName, effectsStoreName);
-      dbState.isReady = true;
-
-    } catch (error) {
-      dbState.isReady = false;
-      dbState.isError = true;
-      dbState.error = error;
-      console.error("Database initialization error:", error)
+    const maxRetries = 3;
+    let attempts = 0;
+    
+    while (attempts < maxRetries) {
+      try {
+        await registerStore(dbName, musicStoreName);
+        await registerStore(dbName, ambianceStoreName);
+        await registerStore(dbName, effectsStoreName);
+        dbState.isReady = true;
+        return;
+      } catch (error) {
+        attempts++;
+        if (attempts === maxRetries) {
+          dbState.isError = true;
+          dbState.error = error;
+          notifications.push({
+            type: 'error',
+            message: 'Failed to initialize database after multiple attempts'
+          });
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+      }
     }
   }
 
@@ -178,22 +189,6 @@
       fsState.isError = true;
       fsState.error = error;
       console.error("File system initialization error:", error)
-    }
-  }
-
-  async function getLatestRelease() {
-    const url = `https://api.github.com/repos/ilyaly/ascapes-mixer/releases/latest`;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Error fetching data from GitHub');
-      }
-
-      const data = await response.json();
-      console.log('Latest release version:', data);
-    } catch (error) {
-      console.error('Error:', error);
     }
   }
 

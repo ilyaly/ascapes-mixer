@@ -24,7 +24,7 @@
 
   let isReady = $state(false);
   let isPlaying = $state(false);
-  let url = $state();
+  let url = $state(null);
   let currentTime = $state(0);
   let currentVolume = $state(masterVolume);
   let duration = $state(0);
@@ -37,23 +37,30 @@
     }
   })
 
-  /*
-    ToDo:
-
-    - By some reason this is triggered three times and thus we get two error for every file with error when openning 
-  */
   $effect(async () => {
-    if (item.available && !isReady) {
+    if (isPlaying && !isReady) {
       try {
-        let objectURL = await readFileFromDisk($state.snapshot(item.path));
+        let objectURL = await readFileFromDisk(
+          $state.snapshot(item.path)
+        );
         url = objectURL;
         isReady = true;
+        playlistsContext.setPlaylistTrackAvailable(openedPlaylistData.id, item.id, true)
       } catch (error) {
+        isReady = false;
+        isPlaying = false;
         playlistsContext.setPlaylistTrackAvailable(openedPlaylistData.id, item.id, false)
         addFileUnavailableNotification(item);
       }
     }
   });
+
+  $effect(() => {
+    if (isPlaying && isReady) {
+      audioRef.play();
+    }
+  });
+
 
   function addFileUnavailableNotification(track) {
     let tempNotifications = $state.snapshot(notificationsContext.getNotifications());
@@ -83,8 +90,6 @@
 
   function handlePlay() {
     isPlaying = true;
-
-    audioRef.play();
   }
 
   function handlePause() {
@@ -163,7 +168,7 @@
     style:width="{(currentTime / duration) * 100}%"
   >
   </div>
-  {#if url}
+  {#if item.available && url}
     <audio
       src={url}
       bind:this={audioRef}
