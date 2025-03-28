@@ -57,7 +57,8 @@
         playbackContext.setPlaybackIsPlaying(false)
         playlistsContext.setPlaylistTrackAvailable(playingPlaylistData.id, currentTrack.id, false)
         addFileUnavailableNotification(currentTrack);
-        playingTrackContext.resetPlayingTrack()
+        handlePlaybackEnded()
+        
       }
     }
   });
@@ -170,6 +171,8 @@
       playingTrackContext.setPlayingTrack(nextTrack);
       playbackContext.setPlaybackTime(0);
       audioRef.play();
+    } else {
+      playingTrackContext.resetPlayingTrack()
     }
     
   }

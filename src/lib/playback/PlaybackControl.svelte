@@ -56,6 +56,8 @@
 
     if (nextTrack) {
       playingTrackContext.setPlayingTrack(nextTrack);
+    } else {
+      playingTrackContext.resetPlayingTrack()
     }
   }
 
@@ -84,6 +86,8 @@
     }
     if (nextTrack) {
       playingTrackContext.setPlayingTrack(nextTrack);
+    } else {
+      playingTrackContext.resetPlayingTrack()
     }
   }
 

@@ -20,12 +20,16 @@
     $state.snapshot(item)
   );
 
+
+
   let isCurrentTrack = $state(track.id === playingTrackContext.getPlayingTrackId());
   let isFocus = $state(false);
 
   $effect(() => {
     track = $state.snapshot(item);
   });
+
+  $inspect(track)
 
   $effect(() => {
     isCurrentTrack = track.id === playingTrackContext.getPlayingTrackId();
@@ -75,12 +79,12 @@
 
     playlistsContext.setPlaylistTracks(openedPlaylistId, tempTracks)
     playlistsContext.setPlaylistQuantity(openedPlaylistId, tempTracks.length);
-    /*ToDo
-      
-      Need to implement playback stop if currently playing track was deleted.
 
-    */
-
+    if (isCurrentTrack) {
+      playbackContext.setPlaybackIsPlaying(false)
+      playingTrackContext.resetPlayingTrack()
+    }
+    
     await remove(item.path, { baseDir: BaseDirectory.AppLocalData });
   }
 
